@@ -27,3 +27,7 @@ dev-dependencies = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
