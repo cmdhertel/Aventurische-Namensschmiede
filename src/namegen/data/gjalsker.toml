@@ -1,6 +1,7 @@
 [meta]
-region   = "Gjalsker"
-language = "de"
+region       = "Gjalsker"
+abbreviation = "GJA"
+language     = "de"
 notes    = "Gjalskisch: aus Hjaldingschem und Ur-Tulamidya. Keltisch anmutend. Männer: Vaternamen mit bren, Frauen: Mutternamen mit brai. Schamanen: dur statt Elternteil. Ehrentitel Gon für Sieger der Kraftspiele."
 
 [simple.first]

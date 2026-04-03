@@ -1,6 +1,7 @@
 [meta]
-region   = "Mittelreich: Rommilyser Mark"
-language = "de"
+region       = "Mittelreich: Rommilyser Mark"
+abbreviation = "ROM"
+language     = "de"
 notes    = "Ehemaliges Darpatien. Starke Traviafrömmigkeit. Namensbestandteile: Buch-, Gans-/Gäns-, Fried-(-friede), Herd-(-herde/-herda), -linde, Traut-(-traud/-traute) häufig."
 
 [simple.first]

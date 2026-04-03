@@ -57,6 +57,7 @@ class ComposeConfig(BaseModel):
 
 class RegionMeta(BaseModel):
     region:   str
+    abbreviation: Annotated[str, Field(min_length=3, max_length=3)]
     language: str = "de"
     notes:    str = ""
 

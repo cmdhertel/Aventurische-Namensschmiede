@@ -1,6 +1,7 @@
 [meta]
-region   = "Aranien"
-language = "de"
+region       = "Aranien"
+abbreviation = "ARA"
+language     = "de"
 notes    = "Mischung aus mittelreichischen und tulamidischen Einflüssen (Baburinisches Sprachgewirr). Matriarchat: Männer führen Vaternamen mit ibn, Frauen Mutternamen mit saba/-sunni/-sunya. Adelsnamen mit von oder ay/ai."
 
 [simple.first]
