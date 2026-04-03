@@ -18,6 +18,15 @@ für aventurische Helden und Meisterpersonen, direkt aus dem Browser oder dem Te
 
 ---
 
+## Hinweis zur Entstehung (AI / Tech-Demo)
+
+> **Wichtiger Hinweis:** Ein Großteil dieser Codebase wurde mit Unterstützung von
+> AI-Tools erstellt (insbesondere **ChatGPT Codex** und **Claude Code**).
+> Das Projekt dient bewusst als persönliches Lern- und Experimentierprojekt,
+> um praktische Erfahrung mit AI-gestützter Softwareentwicklung zu sammeln.
+
+---
+
 ## Schnellstart (Docker)
 
 ```bash
@@ -102,6 +111,7 @@ Für Kompositions-Namen (`[compose.first]` / `[compose.last]`) siehe eine besteh
 
 ---
 
+
 ## Entwicklung
 
 ```bash
@@ -122,3 +132,15 @@ zu Ulisses Spiele. Es wird weder gesponsert noch unterstützt oder genehmigt.
 Es ist nicht kommerziell und wird kostenlos bereitgestellt.
 
 Erstellt gemäß den [Fan-Richtlinien von Ulisses Spiele](https://ulisses-spiele.de/fan-richtlinie/).
+
+## Datenquellen & Umsetzung
+
+- Namens- und Professionsdaten nutzen bewusst Begriffe aus **Das Schwarze Auge**;
+  die Nutzung erfolgt im Rahmen der Ulisses-Fan-Richtlinie als nicht-kommerzielles
+  Fanprojekt.
+- Begriffe und Bezeichnungen orientieren sich an aventurischen Quellen aus dem
+  DSA-Umfeld (u. a. Regelwiki als Referenz).
+- Im Web-Frontend gibt es zusätzlich eine eigene Seite **`/rechtliches`** mit
+  Markenhinweis, Fanprojekt-Disclaimer und Quellenpolitik.
+- Falls Inhalte problematisch sind, bitte Issue/PR öffnen oder direkt melden, dann
+  werden betroffene Daten zeitnah angepasst oder entfernt.

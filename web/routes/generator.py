@@ -52,6 +52,11 @@ async def index(
     })
 
 
+@router.get("/rechtliches")
+async def legal_page(request: Request):
+    return _TEMPLATES.TemplateResponse(request, "rechtliches.html", {})
+
+
 @router.post("/generate")
 async def generate_names(
     request: Request,
