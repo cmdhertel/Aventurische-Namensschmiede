@@ -55,3 +55,8 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}/namegen-web:${{ github.sha }}
             ghcr.io/${{ github.repository }}/namegen-web:latest
+      - name: Build CLI Docker image
+        run: docker build -f Dockerfile -t dsa-namegen-cli:ci .
+
+      - name: Build Web Docker image
+        run: docker build -f web/Dockerfile -t dsa-namegen-web:ci .
