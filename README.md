@@ -18,6 +18,15 @@ für aventurische Helden und Meisterpersonen, direkt aus dem Browser oder dem Te
 
 ---
 
+## Hinweis zur Entstehung (AI / Tech-Demo)
+
+> **Wichtiger Hinweis:** Ein Großteil dieser Codebase wurde mit Unterstützung von
+> AI-Tools erstellt (insbesondere **ChatGPT Codex** und **Claude Code**).
+> Das Projekt dient bewusst als persönliches Lern- und Experimentierprojekt,
+> um praktische Erfahrung mit AI-gestützter Softwareentwicklung zu sammeln.
+
+---
+
 ## Schnellstart (Docker)
 
 ```bash
