@@ -1,5 +1,26 @@
 # Observability & Monitoring
 
+## Container-Stack (Grafana Best Practices)
+
+Der Docker-Compose-Stack umfasst eine vollständige, entkoppelte Pipeline:
+
+1. **Web-App** exportiert OTLP-Metriken und OTLP-Spans an den Collector.
+2. **OpenTelemetry Collector** übernimmt Entgegennahme, Batching und Routing.
+3. **Prometheus** scraped die Collector-Metriken (`otel-collector:9464`).
+4. **Tempo** speichert Traces/Spans.
+5. **Grafana** nutzt provisionierte Datasources für Prometheus + Tempo.
+
+Starten:
+
+```bash
+docker compose up --build
+```
+
+Zugriff:
+- Grafana: `http://localhost:3000` (admin/admin)
+- Prometheus: `http://localhost:9090`
+- Tempo: `http://localhost:3200`
+
 ## Signal-Definitionen
 
 ### Availability SLO
