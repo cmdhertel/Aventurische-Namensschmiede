@@ -3,67 +3,217 @@
 @tailwind utilities;
 
 @layer base {
-  html  { @apply scroll-smooth; }
-  body  { @apply bg-stone-950 text-amber-50 font-body antialiased; }
-  h1, h2, h3 { @apply font-display; }
+  html { @apply scroll-smooth; }
 
-  select {
-    @apply bg-stone-800 border border-stone-700 rounded-lg px-3 py-2
-           text-amber-50 w-full
-           focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent
-           appearance-none;
+  body {
+    @apply antialiased;
+    font-family: 'Crimson Text', Georgia, serif;
   }
-  input[type="number"] {
-    @apply bg-stone-800 border border-stone-700 rounded-lg px-3 py-2
-           text-amber-50 w-full
-           focus:outline-none focus:ring-2 focus:ring-amber-600;
+
+  h1, h2, h3, h4 {
+    font-family: 'Cinzel', Georgia, serif;
+  }
+
+  /* ── CSS-Variablen für Theming ──────────────────────────────────────────── */
+  :root {
+    --color-bg:          #fdf9f0;
+    --color-surface:     #ffffff;
+    --color-card-bg:     #ffffff;
+    --color-card-border: #e8d5a3;
+    --color-input-bg:    #f9f0da;
+    --color-input-border:#c4a87a;
+    --color-text:        #3a2210;
+    --color-text-muted:  #9b7c5a;
+    --color-text-faint:  #c4a87a;
+    --color-accent:      #8B1A1A;
+    --color-accent-hover:#a02020;
+    --color-accent-text: #ffffff;
+    --color-accent-soft: rgba(139,26,26,0.08);
+    --color-divider:     #e8d5a3;
+    --color-entry-bg:    #fdf9f0;
+    --color-entry-hover: #ffffff;
+    --color-scrollbar-track: #f9f0da;
+    --color-scrollbar-thumb: #c4a87a;
+  }
+
+  :root.dark {
+    --color-bg:          #0c0a09;
+    --color-surface:     #171310;
+    --color-card-bg:     #1a1612;
+    --color-card-border: #2e2820;
+    --color-input-bg:    #111008;
+    --color-input-border:#3d3228;
+    --color-text:        #f0e6d3;
+    --color-text-muted:  #7a6650;
+    --color-text-faint:  #4a3c2e;
+    --color-accent:      #c9a84c;
+    --color-accent-hover:#d4b860;
+    --color-accent-text: #0c0a09;
+    --color-accent-soft: rgba(201,168,76,0.08);
+    --color-divider:     #2e2820;
+    --color-entry-bg:    rgba(255,255,255,0.03);
+    --color-entry-hover: rgba(255,255,255,0.06);
+    --color-scrollbar-track: #1c1917;
+    --color-scrollbar-thumb: #44403c;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  /* ── Form controls ──────────────────────────────────────────────────────── */
+  select {
+    @apply w-full rounded-lg px-3 py-2 text-sm appearance-none
+           focus:outline-none focus:ring-2 transition-colors duration-200;
+    background-color: var(--color-input-bg);
+    border: 1px solid var(--color-input-border);
+    color: var(--color-text);
+    font-family: 'Inter', system-ui, sans-serif;
+    --tw-ring-color: var(--color-accent);
+  }
+
+  input[type="range"] {
+    @apply w-full cursor-pointer;
+    accent-color: var(--color-accent);
   }
 }
 
 @layer components {
-  /* Buttons */
+
+  /* ── Buttons ──────────────────────────────────────────────────────────── */
   .btn {
-    @apply inline-flex items-center gap-2 font-semibold rounded-lg px-4 py-2
-           transition-all duration-200 cursor-pointer select-none
-           disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center gap-2 rounded-lg px-4 py-2
+           font-semibold text-sm transition-all duration-200 cursor-pointer
+           select-none disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98];
+    font-family: 'Inter', system-ui, sans-serif;
   }
+
   .btn-primary {
-    @apply btn bg-amber-700 hover:bg-amber-600 active:bg-amber-800
-           text-white shadow-lg shadow-amber-900/40;
+    @apply btn shadow-lg;
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
   }
+  .btn-primary:hover {
+    background-color: var(--color-accent-hover);
+  }
+
   .btn-secondary {
-    @apply btn bg-stone-800 hover:bg-stone-700 active:bg-stone-900
-           text-amber-200 border border-stone-600;
+    @apply btn border;
+    background-color: var(--color-input-bg);
+    border-color: var(--color-input-border);
+    color: var(--color-text-muted);
   }
-  .btn-danger {
-    @apply btn bg-red-950 hover:bg-red-900 text-red-300 border border-red-900;
+  .btn-secondary:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
   }
 
-  /* Cards */
+  .btn-icon {
+    @apply inline-flex items-center justify-center w-9 h-9 rounded-lg
+           transition-all duration-200 cursor-pointer;
+    color: var(--color-text-muted);
+  }
+  .btn-icon:hover {
+    background-color: var(--color-input-bg);
+    color: var(--color-text);
+  }
+
+  /* ── Cards ────────────────────────────────────────────────────────────── */
   .card {
-    @apply bg-stone-900 border border-stone-800 rounded-xl;
+    @apply rounded-xl border transition-all duration-200;
+    background-color: var(--color-card-bg);
+    border-color: var(--color-card-border);
   }
-  .card-hover {
-    @apply card hover:border-amber-900/60 transition-colors duration-200;
+  .card-interactive {
+    @apply card cursor-pointer;
+  }
+  .card-interactive:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent-soft), 0 4px 16px var(--color-accent-soft);
   }
 
-  /* Form helpers */
+  /* ── Form helpers ─────────────────────────────────────────────────────── */
   .form-label {
-    @apply block text-xs font-medium uppercase tracking-wider text-stone-500 mb-1.5;
-  }
-  .radio-group { @apply flex flex-wrap gap-4; }
-  .radio-option { @apply flex items-center gap-2 cursor-pointer; }
-  .radio-option input {
-    @apply accent-amber-600 w-4 h-4 cursor-pointer;
+    @apply block text-xs font-semibold uppercase tracking-widest mb-2;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--color-text-muted);
   }
 
-  /* HTMX loading indicator */
-  .htmx-indicator        { @apply hidden; }
+  /* ── Radio pills ──────────────────────────────────────────────────────── */
+  .radio-pill input { @apply sr-only; }
+  .radio-pill {
+    @apply cursor-pointer;
+  }
+  .radio-pill span {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border
+           transition-all duration-150 select-none;
+    font-family: 'Inter', system-ui, sans-serif;
+    border-color: var(--color-input-border);
+    color: var(--color-text-muted);
+  }
+  .radio-pill span:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+  .radio-pill input:checked + span {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background-color: var(--color-accent-soft);
+  }
+
+  /* ── HTMX indicator ───────────────────────────────────────────────────── */
+  .htmx-indicator               { @apply hidden; }
   .htmx-request .htmx-indicator { @apply flex; }
   .htmx-request.htmx-indicator  { @apply flex; }
 
-  /* Gender badges */
-  .badge-male    { @apply text-xs px-2 py-0.5 rounded-full bg-blue-900/40 text-blue-300; }
-  .badge-female  { @apply text-xs px-2 py-0.5 rounded-full bg-rose-900/40 text-rose-300; }
-  .badge-neutral { @apply text-xs px-2 py-0.5 rounded-full bg-stone-700 text-stone-400; }
+  /* ── Gender badges ────────────────────────────────────────────────────── */
+  .badge {
+    @apply text-xs px-2.5 py-0.5 rounded-full font-medium tracking-wide;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .badge-male    { @apply badge bg-blue-900/30 text-blue-300; }
+  .badge-female  { @apply badge bg-rose-900/30 text-rose-300; }
+  .badge-neutral { @apply badge; background-color: var(--color-input-bg); color: var(--color-text-muted); }
+
+  :root:not(.dark) .badge-male    { @apply bg-blue-100 text-blue-800; }
+  :root:not(.dark) .badge-female  { @apply bg-rose-100 text-rose-800; }
+
+  /* ── Ornamental divider ───────────────────────────────────────────────── */
+  .ornament {
+    @apply flex items-center gap-3 text-xs tracking-[0.3em] uppercase;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--color-text-faint);
+  }
+  .ornament::before,
+  .ornament::after {
+    content: '';
+    @apply flex-1 h-px;
+    background-color: var(--color-divider);
+  }
+
+  /* ── Section header ───────────────────────────────────────────────────── */
+  .section-header {
+    @apply text-sm tracking-[0.2em] uppercase;
+    font-family: 'Cinzel', Georgia, serif;
+    color: var(--color-accent);
+    opacity: 0.8;
+  }
+
+  /* ── Name list entry ──────────────────────────────────────────────────── */
+  .name-entry {
+    @apply flex flex-col px-4 py-3 rounded-lg border
+           transition-all duration-150;
+    background-color: var(--color-entry-bg);
+    border-color: var(--color-divider);
+  }
+  .name-entry:hover {
+    background-color: var(--color-entry-hover);
+    border-color: var(--color-accent);
+  }
 }
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--color-scrollbar-thumb); border-radius: 3px; }
