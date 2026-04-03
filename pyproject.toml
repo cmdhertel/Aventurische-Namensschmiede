@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dsa-namegen"
+version = "0.1.0"
+description = "Name generator for Das Schwarze Auge (The Dark Eye) RPG"
+requires-python = ">=3.11"
+dependencies = [
+    "typer>=0.12",
+    "pydantic>=2.0",
+    "rich>=13.0",
+    "questionary>=2.0",
+    "pyperclip>=1.8",
+    "reportlab>=4.0",
+]
+
+[project.scripts]
+namegen = "namegen.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/namegen"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]

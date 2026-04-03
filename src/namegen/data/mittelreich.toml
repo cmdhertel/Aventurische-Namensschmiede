@@ -1,0 +1,40 @@
+[meta]
+region   = "Mittelreich"
+language = "de"
+notes    = "Das Herz Aventuriens. Namen folgen bosparanisch-germanischen Mustern."
+
+[simple.first]
+male    = ["Aldric", "Gerwin"]
+female  = ["Alrike", "Rowena"]
+neutral = []
+
+[simple.last]
+male    = ["von Gareth", "der Tapfere"]
+female  = ["von Gareth", "die Mutige"]
+neutral = ["Sturmwind"]
+
+[compose.first]
+infix_probability = 0.4
+
+[compose.first.male]
+prefix = ["Al", "Ger", "Wil"]
+infix  = ["d", "win", "helm"]
+suffix = ["ric", "bert", "hard"]
+
+[compose.first.female]
+prefix = ["Al", "Ros", "Kuni"]
+infix  = ["rik", "lin"]
+suffix = ["a", "e", "inde"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Sturm", "Fels"]
+infix  = []
+suffix = ["wind", "burg", "heim"]
