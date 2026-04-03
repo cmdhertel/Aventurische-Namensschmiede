@@ -35,17 +35,6 @@ _tracer: Tracer = get_tracer("namenschmiede.web")
 _metrics: AppMetrics | None = None
 
 
-def _safe_full_name(value: object) -> str:
-    """Liest den Namen defensiv aus NameResult/CharacterResult-kompatiblen Objekten."""
-    full_name = getattr(value, "full_name", None)
-    if isinstance(full_name, str) and full_name:
-        return full_name
-
-    first_name = getattr(value, "first_name", getattr(value, "first", ""))
-    last_name = getattr(value, "last_name", getattr(value, "last", ""))
-    return f"{first_name} {last_name}".strip()
-
-
 def configure_observability(
     *,
     logger: logging.Logger,
@@ -111,14 +100,17 @@ async def generate_names(
                 for _ in range(count)
             ]
             template = "partials/character_row.html"
-            output_chars = sum(len(f"{_safe_full_name(c)} {c.profession}".strip()) for c in results)
+            output_chars = sum(
+                len(f"{c.first} {c.last} {c.profession.value}")
+                for c in results
+            )
         else:
             results = [
                 generate(region=region, mode=gmode, gender=gend)
                 for _ in range(count)
             ]
             template = "partials/name_row.html"
-            output_chars = sum(len(_safe_full_name(n)) for n in results)
+            output_chars = sum(len(f"{n.first} {n.last}") for n in results)
 
         input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
 
