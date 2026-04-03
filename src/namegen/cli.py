@@ -13,7 +13,7 @@ from rich.table import Table
 from .chargen import generate_character
 from .generator import GeneratorError, generate
 from .loader import LoaderError, list_regions, load_region
-from .models import Gender, GenerationMode, NameResult
+from .models import Gender, GenerationMode, NameResult, ProfessionCategory
 from .output import OutputFormat, write as output_write
 
 app = typer.Typer(
@@ -40,9 +40,10 @@ RegionArg     = Annotated[str,           typer.Argument(help="Region ID (z.B. ko
 GenderOpt     = Annotated[Gender,        typer.Option("--gender", "-g", help="male | female | any", case_sensitive=False)]
 CountOpt      = Annotated[int,           typer.Option("--count", "-n", help="Anzahl Namen.", min=1, max=100)]
 ComponentsOpt = Annotated[bool,          typer.Option("--components", "-c", help="Silbenbausteine anzeigen (nur compose).")]
-CharacterOpt  = Annotated[bool,          typer.Option("--character", "-C", help="Vollständigen Charakter generieren (Beruf, Alter, Eigenschaften).")]
-FormatOpt     = Annotated[OutputFormat,  typer.Option("--format", "-f", help="Ausgabeformat: rich | plain | json | csv | markdown | clipboard | pdf", case_sensitive=False)]
-OutputOpt     = Annotated[Optional[Path],typer.Option("--output", "-o", help="Ausgabedatei (Standard: stdout / Standardname für PDF).")]
+CharacterOpt  = Annotated[bool,               typer.Option("--character", "-C", help="Vollständigen Charakter generieren (Beruf, Alter, Eigenschaften).")]
+CategoryOpt   = Annotated[ProfessionCategory, typer.Option("--category", "-k", help="Berufskategorie: alle | geweihte | zauberer | kaempfer | profan", case_sensitive=False)]
+FormatOpt     = Annotated[OutputFormat,       typer.Option("--format", "-f", help="Ausgabeformat: rich | plain | json | csv | markdown | clipboard | pdf", case_sensitive=False)]
+OutputOpt     = Annotated[Optional[Path],     typer.Option("--output", "-o", help="Ausgabedatei (Standard: stdout / Standardname für PDF).")]
 
 
 # ── Commands ───────────────────────────────────────────────────────────────────
@@ -53,12 +54,13 @@ def cmd_simple(
     gender:          GenderOpt     = Gender.ANY,
     count:           CountOpt      = 1,
     character:       CharacterOpt  = False,
+    category:        CategoryOpt   = ProfessionCategory.ALL,
     fmt:             FormatOpt     = OutputFormat.RICH,
     output:          OutputOpt     = None,
 ) -> None:
     """Namen aus vordefinierten Listen generieren."""
     _run(region, GenerationMode.SIMPLE, gender, count, show_components=False,
-         character=character, fmt=fmt, dest=output)
+         character=character, category=category, fmt=fmt, dest=output)
 
 
 @app.command("compose")
@@ -68,12 +70,13 @@ def cmd_compose(
     count:           CountOpt      = 1,
     show_components: ComponentsOpt = False,
     character:       CharacterOpt  = False,
+    category:        CategoryOpt   = ProfessionCategory.ALL,
     fmt:             FormatOpt     = OutputFormat.RICH,
     output:          OutputOpt     = None,
 ) -> None:
     """Namen aus Silbenbausteinen zusammensetzen."""
     _run(region, GenerationMode.COMPOSE, gender, count, show_components,
-         character=character, fmt=fmt, dest=output)
+         character=character, category=category, fmt=fmt, dest=output)
 
 
 @app.command("menu")
@@ -114,11 +117,13 @@ def _run(
     fmt: OutputFormat,
     dest: Path | None,
     character: bool = False,
+    category: ProfessionCategory = ProfessionCategory.ALL,
 ) -> None:
     try:
         if character:
             results = [
-                generate_character(region=region, mode=mode, gender=gender)
+                generate_character(region=region, mode=mode, gender=gender,
+                                   profession_category=category)
                 for _ in range(count)
             ]
         else:

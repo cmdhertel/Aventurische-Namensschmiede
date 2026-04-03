@@ -21,6 +21,14 @@ class GenerationMode(StrEnum):
     COMPOSE = "compose"
 
 
+class ProfessionCategory(StrEnum):
+    ALL      = "alle"
+    GEWEIHTE = "geweihte"
+    ZAUBERER = "zauberer"
+    KAEMPFER = "kaempfer"   # weltliche.kaempfer + weltliche.ordensleute
+    PROFAN   = "profan"     # weltliche.profane
+
+
 # ── Region TOML sub-models ────────────────────────────────────────────────────
 
 class GenderedStringPool(BaseModel):

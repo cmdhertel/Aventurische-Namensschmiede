@@ -104,7 +104,7 @@
             </div>
           </div>
 
-          <!-- Charakterbogen -->
+          <!-- Charakterbogen Toggle -->
           <div>
             <span class="form-label">Ausgabe</span>
             <div class="flex items-center gap-3 cursor-pointer select-none"
@@ -125,6 +125,26 @@
                   Beruf, Alter und Eigenschaften hinzufügen
                 </p>
               </div>
+            </div>
+          </div>
+
+          <!-- Berufskategorie (nur sichtbar wenn Charakterbogen aktiv) -->
+          <div id="category-section" style="display:none;">
+            <span class="form-label">Berufskategorie</span>
+            <div class="radio-group flex-wrap">
+              {% for val, label in [
+                ('alle',      'Alle'),
+                ('geweihte',  'Geweihte'),
+                ('zauberer',  'Zauberer'),
+                ('kaempfer',  'Kämpfer'),
+                ('profan',    'Profane'),
+              ] %}
+              <label class="radio-pill">
+                <input type="radio" name="profession_category" value="{{ val }}"
+                       {% if val == 'alle' %}checked{% endif %} />
+                <span>{{ label }}</span>
+              </label>
+              {% endfor %}
             </div>
           </div>
 
@@ -207,18 +227,21 @@
 {% block scripts %}
 <script>
   function toggleCharacter() {
-    const cb    = document.getElementById('character-checkbox');
-    const track = document.getElementById('char-track');
-    const thumb = document.getElementById('char-thumb');
+    const cb      = document.getElementById('character-checkbox');
+    const track   = document.getElementById('char-track');
+    const thumb   = document.getElementById('char-thumb');
+    const catSection = document.getElementById('category-section');
     cb.checked = !cb.checked;
     if (cb.checked) {
       track.style.backgroundColor = 'var(--color-accent)';
       track.style.borderColor     = 'var(--color-accent)';
       thumb.style.transform       = 'translateX(1rem)';
+      catSection.style.display    = '';
     } else {
       track.style.backgroundColor = 'var(--color-input-bg)';
       track.style.borderColor     = 'var(--color-input-border)';
       thumb.style.transform       = '';
+      catSection.style.display    = 'none';
     }
   }
 

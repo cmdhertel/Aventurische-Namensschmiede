@@ -13,7 +13,7 @@ from fastapi.templating import Jinja2Templates
 from namegen.chargen import generate_character
 from namegen.generator import generate
 from namegen.loader import list_regions, load_region
-from namegen.models import Gender, GenerationMode
+from namegen.models import Gender, GenerationMode, ProfessionCategory
 
 router = APIRouter()
 
@@ -55,20 +55,23 @@ async def index(
 @router.post("/generate")
 async def generate_names(
     request: Request,
-    region:    str  = Form(...),
-    gender:    str  = Form("any"),
-    mode:      str  = Form("simple"),
-    count:     int  = Form(5),
-    character: bool = Form(False),
+    region:              str  = Form(...),
+    gender:              str  = Form("any"),
+    mode:                str  = Form("simple"),
+    count:               int  = Form(5),
+    character:           bool = Form(False),
+    profession_category: str  = Form("alle"),
 ):
     count = max(1, min(count, 50))
     region_data = load_region(region)
-    gmode = GenerationMode(mode)
-    gend  = Gender(gender)
+    gmode    = GenerationMode(mode)
+    gend     = Gender(gender)
+    category = ProfessionCategory(profession_category)
 
     if character:
         results = [
-            generate_character(region=region, mode=gmode, gender=gend)
+            generate_character(region=region, mode=gmode, gender=gend,
+                               profession_category=category)
             for _ in range(count)
         ]
         template = "partials/character_row.html"

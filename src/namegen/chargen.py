@@ -15,21 +15,46 @@ from .models import (
     Gender,
     GenerationMode,
     PhysicalTraits,
+    ProfessionCategory,
 )
 
 
 # ── Data loading ───────────────────────────────────────────────────────────────
 
 @lru_cache(maxsize=1)
-def _load_professions() -> list[str]:
-    data = files("namegen.data").joinpath("professions.toml").read_bytes()
-    return tomllib.loads(data.decode())["professions"]["general"]
+def _load_regelwiki_raw() -> dict:
+    data = files("namegen.data").joinpath("professions_regelwiki.toml").read_bytes()
+    return tomllib.loads(data.decode())
 
 
 @lru_cache(maxsize=1)
 def _load_traits_raw() -> dict:
     data = files("namegen.data").joinpath("traits.toml").read_bytes()
     return tomllib.loads(data.decode())
+
+
+def _load_professions_by_category(category: ProfessionCategory) -> list[str]:
+    """Return the regelwiki profession list for the given category."""
+    raw = _load_regelwiki_raw()["professionen"]
+    match category:
+        case ProfessionCategory.GEWEIHTE:
+            return raw["geweihte"]
+        case ProfessionCategory.ZAUBERER:
+            return raw["zauberer"]
+        case ProfessionCategory.KAEMPFER:
+            w = raw["weltliche"]
+            return w["kaempfer"] + w["ordensleute"]
+        case ProfessionCategory.PROFAN:
+            return raw["weltliche"]["profane"]
+        case _:  # ALL
+            w = raw["weltliche"]
+            return (
+                raw["geweihte"]
+                + raw["zauberer"]
+                + w["kaempfer"]
+                + w["ordensleute"]
+                + w["profane"]
+            )
 
 
 # ── Age distribution ───────────────────────────────────────────────────────────
@@ -43,7 +68,6 @@ def _generate_age(rng: random.Random) -> int:
         age = rng.randint(18, 80)
         if age <= 70:
             return age
-        # Linear decline: 70 → 1.0, 80 → 0.1
         threshold = 1.0 - (age - 70) * 0.09
         if rng.random() < threshold:
             return age
@@ -51,16 +75,24 @@ def _generate_age(rng: random.Random) -> int:
 
 # ── Profession selection ───────────────────────────────────────────────────────
 
-def _pick_profession(region: str, rng: random.Random) -> str:
+def _pick_profession(
+    region: str,
+    category: ProfessionCategory,
+    rng: random.Random,
+) -> str:
     """
-    Merge global professions with region-specific ones.
-    Region-specific professions are weighted 2× to reflect local prevalence.
+    Pick a profession from the regelwiki list for the given category.
+    For ProfessionCategory.ALL, regional professions are added with 2× weight
+    to reflect local prevalence.
     """
-    global_list = _load_professions()
-    region_data = load_region(region)
-    regional_list = region_data.character.professions
+    base_pool = _load_professions_by_category(category)
 
-    pool = global_list + regional_list * 2 if regional_list else global_list
+    if category == ProfessionCategory.ALL:
+        regional = load_region(region).character.professions
+        pool = base_pool + regional * 2 if regional else base_pool
+    else:
+        pool = base_pool
+
     return rng.choice(pool)
 
 
@@ -68,19 +100,15 @@ def _pick_profession(region: str, rng: random.Random) -> str:
 
 def _generate_traits(rng: random.Random) -> CharacterTraits:
     raw = _load_traits_raw()
-    physical_raw = raw["physical"]
-    personality_raw = raw["personality"]
-    background_raw = raw["background"]
-
     return CharacterTraits(
         physical=PhysicalTraits(
-            hair=rng.choice(physical_raw["hair"]),
-            eyes=rng.choice(physical_raw["eyes"]),
-            build=rng.choice(physical_raw["build"]),
+            hair=rng.choice(raw["physical"]["hair"]),
+            eyes=rng.choice(raw["physical"]["eyes"]),
+            build=rng.choice(raw["physical"]["build"]),
         ),
-        personality=rng.choice(personality_raw["traits"]),
-        motivation=rng.choice(background_raw["motivations"]),
-        quirk=rng.choice(background_raw["quirks"]),
+        personality=rng.choice(raw["personality"]["traits"]),
+        motivation=rng.choice(raw["background"]["motivations"]),
+        quirk=rng.choice(raw["background"]["quirks"]),
     )
 
 
@@ -90,6 +118,7 @@ def generate_character(
     region: str,
     mode: GenerationMode = GenerationMode.SIMPLE,
     gender: Gender = Gender.ANY,
+    profession_category: ProfessionCategory = ProfessionCategory.ALL,
     rng: random.Random | None = None,
 ) -> CharacterResult:
     """Generate a full fluff character (name + age + profession + traits)."""
@@ -97,7 +126,7 @@ def generate_character(
 
     name = generate(region=region, mode=mode, gender=gender, rng=_rng)
     age = _generate_age(_rng)
-    profession = _pick_profession(region, _rng)
+    profession = _pick_profession(region, profession_category, _rng)
     traits = _generate_traits(_rng)
 
     return CharacterResult(
