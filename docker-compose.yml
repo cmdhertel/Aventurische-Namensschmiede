@@ -69,6 +69,11 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./ops/observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+<<<<<<< codex/add-grafana-container-to-docker-compose-el3gvt
+      - ./ops/observability/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./ops/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+=======
+>>>>>>> feature/observabilty
     restart: unless-stopped
     depends_on:
       - prometheus

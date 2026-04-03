@@ -88,6 +88,10 @@ Mit `docker compose up --build` startet ein kompletter Grafana-Stack containerba
 - Grafana (Visualisierung)
 
 Die Web-App sendet OTLP automatisch an `http://otel-collector:4318`.
+
+Vorkonfiguriertes Grafana-Dashboard wird automatisch provisioniert:
+- **Aventurische Namenschmiede - Observability**
+- Pfad: `Namenschmiede`-Folder in Grafana
 - Nützliche Metriken:
   - `http.server.request.count`
   - `http.server.request.duration` (ms)

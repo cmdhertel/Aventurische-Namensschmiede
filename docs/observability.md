@@ -8,7 +8,7 @@ Der Docker-Compose-Stack umfasst eine vollständige, entkoppelte Pipeline:
 2. **OpenTelemetry Collector** übernimmt Entgegennahme, Batching und Routing.
 3. **Prometheus** scraped die Collector-Metriken (`otel-collector:9464`).
 4. **Tempo** speichert Traces/Spans.
-5. **Grafana** nutzt provisionierte Datasources für Prometheus + Tempo.
+5. **Grafana** nutzt provisionierte Datasources für Prometheus + Tempo sowie ein sofort nutzbares Dashboard.
 
 Starten:
 
@@ -20,6 +20,10 @@ Zugriff:
 - Grafana: `http://localhost:3000` (admin/admin)
 - Prometheus: `http://localhost:9090`
 - Tempo: `http://localhost:3200`
+
+Automatisch provisioniertes Dashboard:
+- Folder: `Namenschmiede`
+- Dashboard: `Aventurische Namenschmiede - Observability`
 
 ## Signal-Definitionen
 
