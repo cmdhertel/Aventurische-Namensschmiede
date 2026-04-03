@@ -1,6 +1,7 @@
 [meta]
-region   = "Bornland"
-language = "de"
+region       = "Bornland"
+abbreviation = "BOR"
+language     = "de"
 notes    = "Garethi mit fremden Einflüssen (nivesisch, norbardisch). Koseformen auf -ja, -ka, -scha. Leibeigene ohne Familiennamen. Adelsnamen oft hochtrabend bis lächerlich."
 
 [simple.first]

@@ -1,6 +1,7 @@
 [meta]
-region   = "Mittelreich: Greifenfurt"
-language = "de"
+region       = "Mittelreich: Greifenfurt"
+abbreviation = "GRF"
+language     = "de"
 notes    = "Praios-Glaube prägt die Namensgebung stark. Kampf gegen die Orks. Namen mit Greif-, Praio-, Gold-, Ucuri- häufig."
 
 [simple.first]

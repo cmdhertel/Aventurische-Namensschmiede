@@ -1,6 +1,7 @@
 [meta]
-region   = "Maraskan"
-language = "de"
+region       = "Maraskan"
+abbreviation = "MAR"
+language     = "de"
 notes    = "Maraskani-Namen: Aus Garethi/Tulamidisch abgeleitet + typische Endungen. Herkunftsort statt Familienname. Beinamen wechseln mit dem Leben. Typische Endungen (w): -jid/-jida/-sab/-yscha. (m): -eran/-jian/-jin/-mold/-ziber/-rech."
 
 [simple.first]

@@ -1,6 +1,7 @@
 [meta]
-region   = "Mittelreich"
-language = "de"
+region       = "Mittelreich"
+abbreviation = "MIT"
+language     = "de"
 notes    = "Das Herz Aventuriens. Namen folgen bosparanisch-germanischen Mustern."
 
 [simple.first]
