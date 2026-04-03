@@ -62,11 +62,17 @@ class RegionMeta(BaseModel):
     notes:    str = ""
 
 
+class CharacterConfig(BaseModel):
+    """Region-specific character data (professions, etc.)."""
+    professions: list[str] = Field(default_factory=list)
+
+
 class RegionData(BaseModel):
     """Top-level model representing one parsed region TOML file."""
-    meta:    RegionMeta
-    simple:  SimpleConfig  = Field(default_factory=SimpleConfig)
-    compose: ComposeConfig = Field(default_factory=ComposeConfig)
+    meta:      RegionMeta
+    simple:    SimpleConfig   = Field(default_factory=SimpleConfig)
+    compose:   ComposeConfig  = Field(default_factory=ComposeConfig)
+    character: CharacterConfig = Field(default_factory=CharacterConfig)
 
 
 # ── Generator output ──────────────────────────────────────────────────────────
@@ -79,6 +85,39 @@ class NameComponents(BaseModel):
     last_prefix:  str | None = None
     last_infix:   str | None = None
     last_suffix:  str | None = None
+
+
+class PhysicalTraits(BaseModel):
+    hair:  str
+    eyes:  str
+    build: str
+
+
+class CharacterTraits(BaseModel):
+    physical:    PhysicalTraits
+    personality: str
+    motivation:  str
+    quirk:       str
+
+
+class CharacterResult(BaseModel):
+    """Full fluff character sheet wrapping a NameResult."""
+    name:       "NameResult"
+    age:        int
+    profession: str
+    traits:     CharacterTraits
+
+    @property
+    def full_name(self) -> str:
+        return self.name.full_name
+
+    @property
+    def gender(self) -> "Gender":
+        return self.name.gender
+
+    @property
+    def region(self) -> str:
+        return self.name.region
 
 
 class NameResult(BaseModel):

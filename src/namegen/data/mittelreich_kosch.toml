@@ -124,3 +124,11 @@ suffix = [
   "stein", "faust", "berg", "feld", "burg", "tal", "grund", "bruch",
   "fels", "wald", "bach", "dorf", "grad", "furt", "hof", "mark"
 ]
+
+# ── Character data ─────────────────────────────────────────────────────────────
+[character]
+professions = [
+  "Bergmann", "Köhler", "Waldläufer", "Zwergenhändler", "Grubenwächter",
+  "Salzhändler", "Torfstecher", "Holzfäller", "Förster", "Brauknecht",
+  "Flößer", "Müllergeselle", "Koschbauer", "Erzschmelzer",
+]

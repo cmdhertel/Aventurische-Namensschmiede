@@ -8,6 +8,13 @@ _GENDER_SHORT = {"male": "M", "female": "W", "any": "–"}
 
 
 def build_pdf_bytes(name_data: list[dict]) -> bytes:
+    """Dispatcher: routes to character or name PDF builder based on data content."""
+    if name_data and "age" in name_data[0]:
+        return _build_character_pdf_bytes(name_data)
+    return _build_name_pdf_bytes(name_data)
+
+
+def _build_name_pdf_bytes(name_data: list[dict]) -> bytes:
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
@@ -148,6 +155,103 @@ def build_pdf_bytes(name_data: list[dict]) -> bytes:
 
     story.append(tbl)
     story.append(Spacer(1, 0.5*cm))
+    doc.build(story)
+
+    return buf.getvalue()
+
+
+def _build_character_pdf_bytes(char_data: list[dict]) -> bytes:
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+    from reportlab.lib.units import cm
+    from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+
+    _GENDER_SHORT = {"male": "M", "female": "W", "any": "–"}
+
+    buf = io.BytesIO()
+
+    BORDER    = colors.HexColor("#999999")
+    HEADER_BG = colors.HexColor("#DDDDDD")
+    ROW_ALT   = colors.HexColor("#F5F5F5")
+
+    regions = sorted({e.get("region", "") for e in char_data if e.get("region")})
+    region_label = ", ".join(regions) if regions else "–"
+
+    doc = SimpleDocTemplate(
+        buf,
+        pagesize=A4,
+        leftMargin=2*cm, rightMargin=2*cm,
+        topMargin=2.5*cm, bottomMargin=2*cm,
+    )
+
+    base_styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        "DSATitle", parent=base_styles["Heading1"],
+        textColor=colors.black, fontSize=16, spaceAfter=4,
+    )
+    subtitle_style = ParagraphStyle(
+        "DSASubtitle", parent=base_styles["Normal"],
+        textColor=colors.HexColor("#555555"), fontSize=9, spaceAfter=14,
+    )
+    cell_style = ParagraphStyle(
+        "DSACell", parent=base_styles["Normal"],
+        fontSize=8, leading=10,
+    )
+
+    story = [
+        Paragraph("Das Schwarze Auge – Charakterliste", title_style),
+        Paragraph(f"Region: {region_label}  ·  {len(char_data)} Charaktere", subtitle_style),
+    ]
+
+    # Columns: Name | G | Alter | Beruf | Eigenschaften
+    name_w   = 3.8 * cm
+    g_w      = 0.6 * cm
+    age_w    = 1.0 * cm
+    job_w    = 3.0 * cm
+    traits_w = 8.6 * cm
+
+    header = ["Name", "G", "Alter", "Beruf", "Eigenschaften"]
+    table_data = [header]
+
+    for e in char_data:
+        traits_text = (
+            f"Haare {e.get('hair','–')}, Augen {e.get('eyes','–')}, {e.get('build','–')} · "
+            f"{e.get('personality','–')} · {e.get('motivation','–')} · {e.get('quirk','–')}"
+        )
+        table_data.append([
+            Paragraph(f"<b>{e.get('full_name','')}</b>", cell_style),
+            _GENDER_SHORT.get(e.get("gender", "any"), "–"),
+            str(e.get("age", "–")),
+            Paragraph(e.get("profession", "–"), cell_style),
+            Paragraph(traits_text, cell_style),
+        ])
+
+    tbl = Table(
+        table_data,
+        colWidths=[name_w, g_w, age_w, job_w, traits_w],
+        repeatRows=1,
+    )
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND",    (0, 0), (-1, 0),  HEADER_BG),
+        ("FONTNAME",      (0, 0), (-1, 0),  "Helvetica-Bold"),
+        ("FONTSIZE",      (0, 0), (-1, 0),  9),
+        ("TOPPADDING",    (0, 0), (-1, 0),  6),
+        ("BOTTOMPADDING", (0, 0), (-1, 0),  6),
+        ("FONTNAME",      (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE",      (0, 1), (-1, -1), 8),
+        ("TOPPADDING",    (0, 1), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
+        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [colors.white, ROW_ALT]),
+        ("BOX",           (0, 0), (-1, -1), 0.75, BORDER),
+        ("INNERGRID",     (0, 0), (-1, -1), 0.25, BORDER),
+        ("VALIGN",        (0, 0), (-1, -1), "TOP"),
+        ("ALIGN",         (1, 0), (1, -1),  "CENTER"),
+        ("ALIGN",         (2, 0), (2, -1),  "CENTER"),
+    ]))
+
+    story.append(tbl)
+    story.append(Spacer(1, 0.5 * cm))
     doc.build(story)
 
     return buf.getvalue()

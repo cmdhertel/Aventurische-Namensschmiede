@@ -1,0 +1,37 @@
+# Globale Berufsliste – kulturübergreifend in Aventurien verbreitet
+# Regionsspezifische Berufe kommen in die jeweilige region.toml unter [character]
+
+[professions]
+general = [
+  # Kampf & Söldnertum
+  "Söldner", "Krieger", "Stadtwächter", "Leibwächter", "Reisläufer",
+  "Bogenschütze", "Knappe", "Ritter",
+
+  # Handel & Handwerk
+  "Händler", "Krämer", "Wirt", "Gastwirt", "Schmied", "Zimmermann",
+  "Töpfer", "Weber", "Gerber", "Bäcker", "Schuster", "Schneider",
+  "Tischler", "Seiler", "Böttcher", "Küfer",
+
+  # Landwirtschaft & Natur
+  "Bauer", "Fischer", "Jäger", "Hirte", "Holzfäller", "Müller",
+  "Gärtner", "Imker",
+
+  # Gelehrsamkeit & Magie
+  "Magier", "Gelehrter", "Schreiber", "Arzt", "Wundarzt", "Hebamme",
+  "Alchimist", "Astrologe", "Bibliothekar",
+
+  # Kirche & Glaube
+  "Geweihter", "Novize", "Tempelwächter", "Pilger", "Almosen-Bruder",
+
+  # Verwaltung & Adel
+  "Stadtschreiber", "Steuereintreiber", "Herold", "Verwalter", "Ratsherr",
+
+  # Unterwelt & Grauzone
+  "Streuner", "Bettler", "Diebesgilde-Läufer", "Schmuggler", "Fährmann",
+
+  # Unterhaltung
+  "Gaukler", "Barde", "Schausteller", "Spielmann",
+
+  # Transport & Reise
+  "Fuhrmann", "Kurier", "Stallknecht", "Schiffer",
+]

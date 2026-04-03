@@ -39,3 +39,11 @@ infix_probability = 0.0
 prefix = ["Sturm", "Fels"]
 infix  = []
 suffix = ["wind", "burg", "heim"]
+
+# ── Character data ─────────────────────────────────────────────────────────────
+[character]
+professions = [
+  "Ritter", "Stadtwächter", "Knappe", "Hofnarr", "Zunftmeister",
+  "Fernhändler", "Kirchenmann", "Stadtschreiber", "Söldner",
+  "Ratsdiener", "Brauer", "Marktaufseher",
+]

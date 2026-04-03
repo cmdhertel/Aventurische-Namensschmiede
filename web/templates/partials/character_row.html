@@ -1,0 +1,65 @@
+{% for r in results %}
+{% set gv = r.name.resolved_gender.value %}
+<div class="name-entry character-entry group px-4 py-3
+            bg-stone-800/50 rounded-lg border border-stone-700/40
+            hover:border-stone-600/60 hover:bg-stone-800/70
+            transition-all duration-150"
+     data-full-name="{{ r.full_name }}"
+     data-gender="{{ gv }}"
+     data-region="{{ r.region }}"
+     data-region-abbr="{{ region_abbr }}"
+     data-mode="{{ r.name.mode.value }}"
+     data-age="{{ r.age }}"
+     data-profession="{{ r.profession }}"
+     data-hair="{{ r.traits.physical.hair }}"
+     data-eyes="{{ r.traits.physical.eyes }}"
+     data-build="{{ r.traits.physical.build }}"
+     data-personality="{{ r.traits.personality }}"
+     data-motivation="{{ r.traits.motivation }}"
+     data-quirk="{{ r.traits.quirk }}">
+
+  <!-- Kopfzeile: Name + Badge + Löschen -->
+  <div class="flex items-center gap-3">
+    <div class="flex-1 min-w-0">
+      <p class="font-display text-amber-100 font-semibold truncate text-sm sm:text-base">
+        {{ r.full_name }}
+      </p>
+      <p class="text-xs text-stone-500 mt-0.5">
+        {{ r.region }} · {{ r.age }} Jahre · {{ r.profession }}
+      </p>
+    </div>
+
+    <!-- Geschlecht-Badge -->
+    <span class="shrink-0
+      {% if gv == 'male' %}badge-male
+      {% elif gv == 'female' %}badge-female
+      {% else %}badge-neutral{% endif %}">
+      {{ gender_de[gv] }}
+    </span>
+
+    <!-- Löschen-Button -->
+    <button
+      type="button"
+      onclick="removeName(this)"
+      aria-label="Entfernen"
+      class="shrink-0 text-stone-700 hover:text-red-500 transition-colors
+             opacity-0 group-hover:opacity-100 focus:opacity-100 text-xl leading-none">
+      &times;
+    </button>
+  </div>
+
+  <!-- Eigenschaften -->
+  <div class="mt-2 pt-2 border-t border-stone-700/40 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-0.5
+              text-xs text-stone-400">
+    <span><span class="text-stone-600">Äußeres</span>
+      &nbsp;Haare {{ r.traits.physical.hair }}, Augen {{ r.traits.physical.eyes }}, {{ r.traits.physical.build }}</span>
+    <span><span class="text-stone-600">Wesen</span>
+      &nbsp;{{ r.traits.personality }}</span>
+    <span><span class="text-stone-600">Ziel</span>
+      &nbsp;{{ r.traits.motivation }}</span>
+    <span><span class="text-stone-600">Eigenart</span>
+      &nbsp;{{ r.traits.quirk }}</span>
+  </div>
+
+</div>
+{% endfor %}

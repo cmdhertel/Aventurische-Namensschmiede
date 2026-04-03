@@ -111,3 +111,11 @@ prefix = [
 infix  = []
 suffix = ["ski", "ske", "sen", "ssen", "ken", "kow", "off", "eff", "row",
           "ow", "is", "nin", "kis"]
+
+# ── Character data ─────────────────────────────────────────────────────────────
+[character]
+professions = [
+  "Bernsteinsucher", "Pelzhändler", "Grenzreiter", "Schwertgeselle",
+  "Fährmann", "Waldläufer", "Stammesältester", "Wikinger-Söldner",
+  "Schiffsbauer", "Honighändler",
+]

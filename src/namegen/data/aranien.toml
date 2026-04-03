@@ -93,3 +93,11 @@ prefix = [
 infix  = []
 suffix = ["ristani", "jan", "dar", "hjan", "hazir", "kitab", "tahan", "bumi",
           "nah", "man", "andi", "brugger", "shem", "hani"]
+
+# ── Character data ─────────────────────────────────────────────────────────────
+[character]
+professions = [
+  "Karawanenführer", "Wüstenläufer", "Teppichhändler", "Wasserträger",
+  "Sklavenhändler", "Dolmetscher", "Beduinenbote", "Oasenwirt",
+  "Sandalenmacher", "Gewürzkrämer",
+]

@@ -1,0 +1,80 @@
+# Globale Charaktereigenschaften – kulturübergreifend
+# Alle Listen sind auf Deutsch und in Aventurien plausibel
+
+[physical]
+hair = [
+  "schwarz", "dunkelbraun", "kastanienbraun", "hellbraun", "blond",
+  "rotblond", "kupferrot", "aschblond", "grau", "weiß", "silbern",
+  "mit grauen Schläfen",
+]
+eyes = [
+  "tiefbraun", "haselnussbraun", "bernsteinfarben", "grünlich",
+  "graugrün", "stahlgrau", "eisblau", "hellblau", "dunkelblau", "schwarz",
+]
+build = [
+  "schlank", "hager", "drahtig", "sehnig", "muskulös", "kräftig",
+  "untersetzt", "breitschultrig", "wohlgenährt", "stämmig",
+  "von zierlicher Gestalt", "hochgewachsen und schlank",
+]
+
+[personality]
+traits = [
+  "mutig bis zur Tollkühnheit",
+  "vorsichtig und bedächtig",
+  "neugierig auf alles Fremde",
+  "verschlossen und wortkarg",
+  "redselig und gesellig",
+  "geizig und berechnend",
+  "großzügig bis zur Naivität",
+  "jähzornig, aber schnell wieder versöhnt",
+  "geduldig wie ein Stein",
+  "tief misstrauisch gegenüber Fremden",
+  "leichtgläubig und vertrauensselig",
+  "ehrgeizig und zielstrebig",
+  "pflichtbewusst bis zur Sturheit",
+  "gutmütig und hilfsbereit",
+  "sarkastisch und trocken im Witz",
+  "fromm und gottergeben",
+  "abergläubisch und zeichengläubig",
+  "melancholisch und nachdenklich",
+  "optimistisch und unerschütterlich",
+  "pragmatisch und nüchtern",
+]
+
+[background]
+motivations = [
+  "sucht Ruhm und Anerkennung",
+  "strebt nach Reichtum",
+  "hungert nach Abenteuern",
+  "will die eigene Familie schützen",
+  "strebt nach Wissen und Weisheit",
+  "kämpft für Gerechtigkeit",
+  "dient einem Gott aufrichtig",
+  "muss alte Schulden begleichen",
+  "sucht einen verschollenen Angehörigen",
+  "will einer dunklen Vergangenheit entkommen",
+  "hofft auf ein ruhiges Leben irgendwann",
+  "will eine alte Schmach tilgen",
+  "folgt einem Eid bis zum Ende",
+  "sucht Antworten auf eine alte Frage",
+]
+quirks = [
+  "pfeift leise beim Nachdenken",
+  "sammelt ungewöhnliche Steine",
+  "spricht mit Tieren, als könnten sie antworten",
+  "ist unfähig zu lügen, auch wenn es klüger wäre",
+  "fürchtet sich heimlich vor Spinnen",
+  "singt oder summt im Schlaf",
+  "misstraut Magiern grundsätzlich",
+  "trägt stets einen Glücksbringer bei sich",
+  "kann nicht stillsitzen und wippt ständig mit dem Fuß",
+  "vergisst nie ein Gesicht, aber ständig Namen",
+  "zählt Schritte beim Gehen",
+  "kaut auf einem Holzstäbchen herum",
+  "spricht von sich selbst in der dritten Person",
+  "muss nach jedem Kampf etwas essen",
+  "schreibt alles Wichtige auf die Hand",
+  "schläft nur mit dem Rücken zur Wand",
+  "hat eine Schwäche für Würfelspiele",
+  "flucht immer in einer anderen Sprache",
+]
