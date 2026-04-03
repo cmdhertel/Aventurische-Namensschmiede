@@ -17,6 +17,10 @@ from namegen.generator import generate
 from namegen.loader import list_regions, load_region
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 from observability import AppMetrics
+<<<<<<< codex/enhance-logging-with-metrics-and-traces-ox08f7
+from observability_utils import safe_full_name
+=======
+>>>>>>> feature/observabilty
 
 router = APIRouter()
 
@@ -35,6 +39,10 @@ _tracer: Tracer = get_tracer("namenschmiede.web")
 _metrics: AppMetrics | None = None
 
 
+<<<<<<< codex/enhance-logging-with-metrics-and-traces-ox08f7
+
+=======
+>>>>>>> feature/observabilty
 def configure_observability(
     *,
     logger: logging.Logger,
@@ -100,17 +108,25 @@ async def generate_names(
                 for _ in range(count)
             ]
             template = "partials/character_row.html"
+<<<<<<< codex/enhance-logging-with-metrics-and-traces-ox08f7
+            output_chars = sum(len(f"{safe_full_name(c)} {c.profession}".strip()) for c in results)
+=======
             output_chars = sum(
                 len(f"{c.first} {c.last} {c.profession.value}")
                 for c in results
             )
+>>>>>>> feature/observabilty
         else:
             results = [
                 generate(region=region, mode=gmode, gender=gend)
                 for _ in range(count)
             ]
             template = "partials/name_row.html"
+<<<<<<< codex/enhance-logging-with-metrics-and-traces-ox08f7
+            output_chars = sum(len(safe_full_name(n)) for n in results)
+=======
             output_chars = sum(len(f"{n.first} {n.last}") for n in results)
+>>>>>>> feature/observabilty
 
         input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
 
