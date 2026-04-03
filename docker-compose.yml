@@ -11,10 +11,9 @@ services:
       OTEL_SERVICE_NAME: "aventurische-namensschmiede-web"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
     depends_on:
-      otel-collector:
-        condition: service_healthy
+      - otel-collector
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2)"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -28,12 +27,6 @@ services:
     volumes:
       - ./ops/observability/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:13133/"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
     networks:
       - app_net
 
@@ -48,16 +41,9 @@ services:
       - prometheus_data:/prometheus
     restart: unless-stopped
     depends_on:
-      otel-collector:
-        condition: service_healthy
+      - otel-collector
     ports:
       - "9090:9090"
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/healthy"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
     networks:
       - app_net
 
@@ -70,12 +56,6 @@ services:
     restart: unless-stopped
     ports:
       - "3200:3200"
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3200/ready"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
     networks:
       - app_net
 
@@ -91,18 +71,10 @@ services:
       - ./ops/observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
     restart: unless-stopped
     depends_on:
-      prometheus:
-        condition: service_healthy
-      tempo:
-        condition: service_healthy
+      - prometheus
+      - tempo
     ports:
       - "3000:3000"
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
     networks:
       - app_net
 
