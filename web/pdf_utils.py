@@ -40,25 +40,36 @@ def build_pdf_bytes(name_data: list[dict]) -> bytes:
         parent=styles["Normal"],
         textColor=colors.HexColor("#555555"),
         fontSize=9,
+        leading=11,
         spaceAfter=14,
+    )
+    legend_style = ParagraphStyle(
+        "DSALegend",
+        parent=styles["Normal"],
+        textColor=colors.HexColor("#555555"),
+        fontSize=8,
+        leading=10,
+        spaceAfter=10,
     )
 
     regions = sorted({entry.get("region", "–") for entry in name_data if entry.get("region")})
     has_multiple_regions = len(regions) > 1
-    if has_multiple_regions:
-        region_label = f"{len(regions)} Regionen"
-    elif regions:
-        region_label = regions[0]
-    else:
-        region_label = "–"
+    region_label = ", ".join(regions) if regions else "–"
+    region_codes: dict[str, str] = {
+        region: f"R{idx}"
+        for idx, region in enumerate(regions, start=1)
+    }
 
     story = [
         Paragraph("Das Schwarze Auge – Namensliste", title_style),
         Paragraph(f"Region: {region_label}  ·  {len(name_data)} Namen", subtitle_style),
     ]
+    if has_multiple_regions:
+        code_legend = " · ".join(f"{code} = {region}" for region, code in region_codes.items())
+        story.append(Paragraph(f"Abkürzungen: {code_legend}", legend_style))
 
     if has_multiple_regions:
-        header = ["Name", "G", "Region", "Name", "G", "Region"]
+        header = ["Name", "G", "Reg.", "Name", "G", "Reg."]
     else:
         header = ["Name", "G", "Name", "G"]
     table_data = [header]
@@ -70,10 +81,10 @@ def build_pdf_bytes(name_data: list[dict]) -> bytes:
             table_data.append([
                 left["full_name"],
                 _GENDER_SHORT.get(left.get("gender", "any"), "–"),
-                left.get("region", "–"),
+                region_codes.get(left.get("region", ""), "–"),
                 right["full_name"] if right else "",
                 _GENDER_SHORT.get(right.get("gender", "any"), "–") if right else "",
-                right.get("region", "–") if right else "",
+                region_codes.get(right.get("region", ""), "–") if right else "",
             ])
         else:
             table_data.append([
@@ -84,9 +95,9 @@ def build_pdf_bytes(name_data: list[dict]) -> bytes:
             ])
 
     if has_multiple_regions:
-        name_w = 4.8 * cm
+        name_w = 5.7 * cm
         g_w = 0.8 * cm
-        region_w = 2.2 * cm
+        region_w = 0.75 * cm
         col_widths = [name_w, g_w, region_w, name_w, g_w, region_w]
         center_columns = (1, 4)
         separator_columns = (2,)
@@ -116,6 +127,9 @@ def build_pdf_bytes(name_data: list[dict]) -> bytes:
     ]
     for col in center_columns:
         styles.append(("ALIGN", (col, 0), (col, -1), "CENTER"))
+    if has_multiple_regions:
+        styles.append(("FONTSIZE", (2, 1), (2, -1), 8))
+        styles.append(("FONTSIZE", (5, 1), (5, -1), 8))
     for col in separator_columns:
         styles.append(("LINEAFTER", (col, 0), (col, -1), 1.0, BORDER))
 
