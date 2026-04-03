@@ -37,13 +37,16 @@ def _parse_region(region_name: str) -> RegionData:
     return RegionData.model_validate(raw_dict)
 
 
+_NON_REGION_TOML = {"professions.toml", "professions_regelwiki.toml", "traits.toml"}
+
+
 def list_regions() -> list[str]:
     """Return all region IDs derived from TOML filenames in the data package."""
     data_dir = files(_DATA_PACKAGE)
     return sorted(
         p.name.removesuffix(".toml")
         for p in data_dir.iterdir()  # type: ignore[union-attr]
-        if p.name.endswith(".toml")
+        if p.name.endswith(".toml") and p.name not in _NON_REGION_TOML
     )
 
 
