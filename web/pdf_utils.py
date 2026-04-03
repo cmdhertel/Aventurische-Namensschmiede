@@ -43,29 +43,62 @@ def build_pdf_bytes(name_data: list[dict]) -> bytes:
         spaceAfter=14,
     )
 
-    region = name_data[0].get("region", "–") if name_data else "–"
+    regions = sorted({entry.get("region", "–") for entry in name_data if entry.get("region")})
+    has_multiple_regions = len(regions) > 1
+    if has_multiple_regions:
+        region_label = f"{len(regions)} Regionen"
+    elif regions:
+        region_label = regions[0]
+    else:
+        region_label = "–"
+
     story = [
         Paragraph("Das Schwarze Auge – Namensliste", title_style),
-        Paragraph(f"Region: {region}  ·  {len(name_data)} Namen", subtitle_style),
+        Paragraph(f"Region: {region_label}  ·  {len(name_data)} Namen", subtitle_style),
     ]
 
-    header = ["Name", "G", "Name", "G"]
+    if has_multiple_regions:
+        header = ["Name", "G", "Region", "Name", "G", "Region"]
+    else:
+        header = ["Name", "G", "Name", "G"]
     table_data = [header]
 
     for i in range(0, len(name_data), 2):
         left  = name_data[i]
         right = name_data[i + 1] if i + 1 < len(name_data) else None
-        table_data.append([
-            left["full_name"],
-            _GENDER_SHORT.get(left.get("gender", "any"), "–"),
-            right["full_name"] if right else "",
-            _GENDER_SHORT.get(right.get("gender", "any"), "–") if right else "",
-        ])
+        if has_multiple_regions:
+            table_data.append([
+                left["full_name"],
+                _GENDER_SHORT.get(left.get("gender", "any"), "–"),
+                left.get("region", "–"),
+                right["full_name"] if right else "",
+                _GENDER_SHORT.get(right.get("gender", "any"), "–") if right else "",
+                right.get("region", "–") if right else "",
+            ])
+        else:
+            table_data.append([
+                left["full_name"],
+                _GENDER_SHORT.get(left.get("gender", "any"), "–"),
+                right["full_name"] if right else "",
+                _GENDER_SHORT.get(right.get("gender", "any"), "–") if right else "",
+            ])
 
-    name_w = 7.25 * cm
-    g_w    = 1.0  * cm
-    tbl = Table(table_data, colWidths=[name_w, g_w, name_w, g_w], repeatRows=1)
-    tbl.setStyle(TableStyle([
+    if has_multiple_regions:
+        name_w = 4.8 * cm
+        g_w = 0.8 * cm
+        region_w = 2.2 * cm
+        col_widths = [name_w, g_w, region_w, name_w, g_w, region_w]
+        center_columns = (1, 4)
+        separator_columns = (2,)
+    else:
+        name_w = 7.25 * cm
+        g_w = 1.0 * cm
+        col_widths = [name_w, g_w, name_w, g_w]
+        center_columns = (1, 3)
+        separator_columns = (1,)
+
+    tbl = Table(table_data, colWidths=col_widths, repeatRows=1)
+    styles = [
         ("BACKGROUND",    (0, 0), (-1, 0),  HEADER_BG),
         ("TEXTCOLOR",     (0, 0), (-1, 0),  colors.black),
         ("FONTNAME",      (0, 0), (-1, 0),  "Helvetica-Bold"),
@@ -77,13 +110,16 @@ def build_pdf_bytes(name_data: list[dict]) -> bytes:
         ("TOPPADDING",    (0, 1), (-1, -1), 4),
         ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
         ("ROWBACKGROUNDS",(0, 1), (-1, -1), [colors.white, ROW_ALT]),
-        ("LINEAFTER",     (1, 0), (1, -1),  1.0, BORDER),
         ("BOX",           (0, 0), (-1, -1), 0.75, BORDER),
         ("INNERGRID",     (0, 0), (-1, -1), 0.25, BORDER),
         ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
-        ("ALIGN",         (1, 0), (1, -1),  "CENTER"),
-        ("ALIGN",         (3, 0), (3, -1),  "CENTER"),
-    ]))
+    ]
+    for col in center_columns:
+        styles.append(("ALIGN", (col, 0), (col, -1), "CENTER"))
+    for col in separator_columns:
+        styles.append(("LINEAFTER", (col, 0), (col, -1), 1.0, BORDER))
+
+    tbl.setStyle(TableStyle(styles))
 
     story.append(tbl)
     story.append(Spacer(1, 0.5*cm))
