@@ -18,6 +18,7 @@ from namegen.loader import list_regions, load_region
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 from observability import AppMetrics
 from observability_utils import safe_full_name
+from observability_utils import safe_full_name
 
 router = APIRouter()
 
@@ -34,8 +35,6 @@ _GENDER_DE = {
 _logger = logging.getLogger("namenschmiede.observability")
 _tracer: Tracer = get_tracer("namenschmiede.web")
 _metrics: AppMetrics | None = None
-
-
 
 def configure_observability(
     *,
@@ -103,12 +102,14 @@ async def generate_names(
             ]
             template = "partials/character_row.html"
             output_chars = sum(len(f"{safe_full_name(c)} {c.profession}".strip()) for c in results)
+            output_chars = sum(len(f"{safe_full_name(c)} {c.profession}".strip()) for c in results)
         else:
             results = [
                 generate(region=region, mode=gmode, gender=gend)
                 for _ in range(count)
             ]
             template = "partials/name_row.html"
+            output_chars = sum(len(safe_full_name(n)) for n in results)
             output_chars = sum(len(safe_full_name(n)) for n in results)
 
         input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
