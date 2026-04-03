@@ -1,6 +1,7 @@
 [meta]
-region   = "Al'Anfa & Tiefer Süden"
-language = "de"
+region       = "Al'Anfa & Tiefer Süden"
+abbreviation = "ALF"
+language     = "de"
 notes    = "Blumige, klangvolle Namen. Frauen: Endungen auf -e oder -is vornehm. Koseformen: -ela/-ita (w), -elo/-ito (m). Nachnamen mit -ez/-uez/-es/-os/-z bildbar. Kein klassischer Adel, stattdessen Grandenfamilien."
 
 [simple.first]

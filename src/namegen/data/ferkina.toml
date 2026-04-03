@@ -1,6 +1,7 @@
 [meta]
-region   = "Ferkina"
-language = "de"
+region       = "Ferkina"
+abbreviation = "FER"
+language     = "de"
 notes    = "Urtulamidisch geprägt, rau und hart. Männer und unverheiratete Frauen: Vaternamen mit iban/sabu. Verheiratete Frauen: Ehemann-Name mit zawshi-. Stammesnamen mit Bdn/Ulad/Bern."
 
 [simple.first]

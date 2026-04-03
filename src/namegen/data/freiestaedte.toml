@@ -1,6 +1,7 @@
 [meta]
-region   = "Freie Städte des Nordens & Dominium Donnerbach"
-language = "de"
+region       = "Freie Städte des Nordens & Dominium Donnerbach"
+abbreviation = "FRS"
+language     = "de"
 notes    = "Mischung aus Garethi, Nivesisch, Norbardisch und Bornisch. Familiennamen außerhalb der Städte selten. Im Dominium Donnerbach starker Rondrakia-Einfluss."
 
 [simple.first]
