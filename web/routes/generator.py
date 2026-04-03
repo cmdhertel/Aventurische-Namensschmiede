@@ -10,6 +10,7 @@ from fastapi import APIRouter, Form, Query, Request
 from fastapi.responses import StreamingResponse
 from fastapi.templating import Jinja2Templates
 
+from namegen.chargen import generate_character
 from namegen.generator import generate
 from namegen.loader import list_regions, load_region
 from namegen.models import Gender, GenerationMode
@@ -54,23 +55,36 @@ async def index(
 @router.post("/generate")
 async def generate_names(
     request: Request,
-    region: str = Form(...),
-    gender: str = Form("any"),
-    mode:   str = Form("simple"),
-    count:  int = Form(5),
+    region:    str  = Form(...),
+    gender:    str  = Form("any"),
+    mode:      str  = Form("simple"),
+    count:     int  = Form(5),
+    character: bool = Form(False),
 ):
     count = max(1, min(count, 50))
     region_data = load_region(region)
-    results = [
-        generate(region=region, mode=GenerationMode(mode), gender=Gender(gender))
-        for _ in range(count)
-    ]
+    gmode = GenerationMode(mode)
+    gend  = Gender(gender)
+
+    if character:
+        results = [
+            generate_character(region=region, mode=gmode, gender=gend)
+            for _ in range(count)
+        ]
+        template = "partials/character_row.html"
+    else:
+        results = [
+            generate(region=region, mode=gmode, gender=gend)
+            for _ in range(count)
+        ]
+        template = "partials/name_row.html"
+
     return _TEMPLATES.TemplateResponse(
-        request, "partials/name_row.html",
+        request, template,
         {
-            "results": results,
-            "gender_de": _GENDER_DE,
-            "region_abbr": region_data.meta.abbreviation,
+            "results":      results,
+            "gender_de":    _GENDER_DE,
+            "region_abbr":  region_data.meta.abbreviation,
         },
     )
 

@@ -10,6 +10,7 @@ from rich import box
 from rich.console import Console
 from rich.table import Table
 
+from .chargen import generate_character
 from .generator import GeneratorError, generate
 from .loader import LoaderError, list_regions, load_region
 from .models import Gender, GenerationMode, NameResult
@@ -39,6 +40,7 @@ RegionArg     = Annotated[str,           typer.Argument(help="Region ID (z.B. ko
 GenderOpt     = Annotated[Gender,        typer.Option("--gender", "-g", help="male | female | any", case_sensitive=False)]
 CountOpt      = Annotated[int,           typer.Option("--count", "-n", help="Anzahl Namen.", min=1, max=100)]
 ComponentsOpt = Annotated[bool,          typer.Option("--components", "-c", help="Silbenbausteine anzeigen (nur compose).")]
+CharacterOpt  = Annotated[bool,          typer.Option("--character", "-C", help="Vollständigen Charakter generieren (Beruf, Alter, Eigenschaften).")]
 FormatOpt     = Annotated[OutputFormat,  typer.Option("--format", "-f", help="Ausgabeformat: rich | plain | json | csv | markdown | clipboard | pdf", case_sensitive=False)]
 OutputOpt     = Annotated[Optional[Path],typer.Option("--output", "-o", help="Ausgabedatei (Standard: stdout / Standardname für PDF).")]
 
@@ -50,11 +52,13 @@ def cmd_simple(
     region: RegionArg,
     gender:          GenderOpt     = Gender.ANY,
     count:           CountOpt      = 1,
+    character:       CharacterOpt  = False,
     fmt:             FormatOpt     = OutputFormat.RICH,
     output:          OutputOpt     = None,
 ) -> None:
     """Namen aus vordefinierten Listen generieren."""
-    _run(region, GenerationMode.SIMPLE, gender, count, show_components=False, fmt=fmt, dest=output)
+    _run(region, GenerationMode.SIMPLE, gender, count, show_components=False,
+         character=character, fmt=fmt, dest=output)
 
 
 @app.command("compose")
@@ -63,11 +67,13 @@ def cmd_compose(
     gender:          GenderOpt     = Gender.ANY,
     count:           CountOpt      = 1,
     show_components: ComponentsOpt = False,
+    character:       CharacterOpt  = False,
     fmt:             FormatOpt     = OutputFormat.RICH,
     output:          OutputOpt     = None,
 ) -> None:
     """Namen aus Silbenbausteinen zusammensetzen."""
-    _run(region, GenerationMode.COMPOSE, gender, count, show_components, fmt=fmt, dest=output)
+    _run(region, GenerationMode.COMPOSE, gender, count, show_components,
+         character=character, fmt=fmt, dest=output)
 
 
 @app.command("menu")
@@ -107,11 +113,19 @@ def _run(
     show_components: bool,
     fmt: OutputFormat,
     dest: Path | None,
+    character: bool = False,
 ) -> None:
-    results: list[NameResult] = []
     try:
-        for _ in range(count):
-            results.append(generate(region=region, mode=mode, gender=gender))
+        if character:
+            results = [
+                generate_character(region=region, mode=mode, gender=gender)
+                for _ in range(count)
+            ]
+        else:
+            results = [
+                generate(region=region, mode=mode, gender=gender)
+                for _ in range(count)
+            ]
     except (GeneratorError, LoaderError) as exc:
         console.print(f"[red]Fehler:[/red] {exc}")
         raise typer.Exit(1)

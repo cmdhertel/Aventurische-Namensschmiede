@@ -13,7 +13,7 @@ from rich import box
 from rich.console import Console
 from rich.table import Table
 
-from .models import GenerationMode, NameResult
+from .models import CharacterResult, GenerationMode, NameResult
 
 console = Console()
 
@@ -31,7 +31,7 @@ class OutputFormat(StrEnum):
 
 
 def write(
-    results: list[NameResult],
+    results: list[NameResult] | list[CharacterResult],
     fmt: OutputFormat = OutputFormat.RICH,
     dest: Path | None = None,
     show_components: bool = False,
@@ -40,21 +40,125 @@ def write(
     if not results:
         return
 
+    if isinstance(results[0], CharacterResult):
+        _write_characters(results, fmt, dest)  # type: ignore[arg-type]
+        return
+
     match fmt:
         case OutputFormat.RICH:
-            _write_rich(results, show_components)
+            _write_rich(results, show_components)  # type: ignore[arg-type]
         case OutputFormat.PLAIN:
-            _write_text(_to_plain(results), dest)
+            _write_text(_to_plain(results), dest)  # type: ignore[arg-type]
         case OutputFormat.JSON:
-            _write_text(_to_json(results), dest)
+            _write_text(_to_json(results), dest)  # type: ignore[arg-type]
         case OutputFormat.CSV:
-            _write_text(_to_csv(results, show_components), dest)
+            _write_text(_to_csv(results, show_components), dest)  # type: ignore[arg-type]
         case OutputFormat.MARKDOWN:
-            _write_text(_to_markdown(results, show_components), dest)
+            _write_text(_to_markdown(results, show_components), dest)  # type: ignore[arg-type]
         case OutputFormat.CLIPBOARD:
-            _write_clipboard(results)
+            _write_clipboard(results)  # type: ignore[arg-type]
         case OutputFormat.PDF:
-            _write_pdf(results, dest, show_components)
+            _write_pdf(results, dest, show_components)  # type: ignore[arg-type]
+
+
+# ── Character output ──────────────────────────────────────────────────────────
+
+def _write_characters(
+    results: list[CharacterResult],
+    fmt: OutputFormat,
+    dest: Path | None,
+) -> None:
+    match fmt:
+        case OutputFormat.JSON:
+            _write_text(_chars_to_json(results), dest)
+        case OutputFormat.PLAIN:
+            _write_text(_chars_to_plain(results), dest)
+        case OutputFormat.CSV:
+            _write_text(_chars_to_csv(results), dest)
+        case OutputFormat.CLIPBOARD:
+            text = "\n".join(r.full_name for r in results)
+            try:
+                import pyperclip
+                pyperclip.copy(text)
+                console.print(f"[green]✓[/green] {len(results)} Charakter(e) kopiert.")
+            except ImportError:
+                console.print("[red]pyperclip nicht gefunden.[/red]")
+        case _:
+            _write_rich_characters(results)
+
+
+def _write_rich_characters(results: list[CharacterResult]) -> None:
+    from rich.panel import Panel
+    from rich.text import Text
+
+    for r in results:
+        t = r.traits
+        lines = [
+            f"[bold amber]{r.full_name}[/bold amber]",
+            f"[dim]{r.name.region}  ·  {_GENDER_DE[r.gender.value]}  ·  {r.age} Jahre  ·  {r.profession}[/dim]",
+            "",
+            f"[bold]Äußeres:[/bold]  Haare {t.physical.hair}, Augen {t.physical.eyes}, Statur {t.physical.build}",
+            f"[bold]Wesen:[/bold]    {t.personality}",
+            f"[bold]Ziel:[/bold]     {t.motivation}",
+            f"[bold]Eigenart:[/bold] {t.quirk}",
+        ]
+        console.print(Panel("\n".join(lines), border_style="magenta", padding=(0, 1)))
+
+
+def _chars_to_plain(results: list[CharacterResult]) -> str:
+    lines: list[str] = []
+    for r in results:
+        t = r.traits
+        lines += [
+            f"{r.full_name}  ({r.name.region}, {_GENDER_DE[r.gender.value]}, {r.age} J., {r.profession})",
+            f"  Äußeres:  Haare {t.physical.hair}, Augen {t.physical.eyes}, Statur {t.physical.build}",
+            f"  Wesen:    {t.personality}",
+            f"  Ziel:     {t.motivation}",
+            f"  Eigenart: {t.quirk}",
+            "",
+        ]
+    return "\n".join(lines)
+
+
+def _chars_to_json(results: list[CharacterResult]) -> str:
+    def _dump(r: CharacterResult) -> dict:
+        return {
+            "name": r.name.model_dump(mode="json", exclude_none=True),
+            "age": r.age,
+            "profession": r.profession,
+            "traits": {
+                "hair": r.traits.physical.hair,
+                "eyes": r.traits.physical.eyes,
+                "build": r.traits.physical.build,
+                "personality": r.traits.personality,
+                "motivation": r.traits.motivation,
+                "quirk": r.traits.quirk,
+            },
+        }
+    return json.dumps([_dump(r) for r in results], ensure_ascii=False, indent=2) + "\n"
+
+
+def _chars_to_csv(results: list[CharacterResult]) -> str:
+    buf = io.StringIO()
+    fieldnames = ["full_name", "gender", "region", "age", "profession",
+                  "hair", "eyes", "build", "personality", "motivation", "quirk"]
+    writer = csv.DictWriter(buf, fieldnames=fieldnames)
+    writer.writeheader()
+    for r in results:
+        writer.writerow({
+            "full_name":    r.full_name,
+            "gender":       r.gender.value,
+            "region":       r.region,
+            "age":          r.age,
+            "profession":   r.profession,
+            "hair":         r.traits.physical.hair,
+            "eyes":         r.traits.physical.eyes,
+            "build":        r.traits.physical.build,
+            "personality":  r.traits.personality,
+            "motivation":   r.traits.motivation,
+            "quirk":        r.traits.quirk,
+        })
+    return buf.getvalue()
 
 
 # ── Rich (Terminal-Tabelle) ────────────────────────────────────────────────────

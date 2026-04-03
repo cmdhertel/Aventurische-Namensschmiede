@@ -165,3 +165,11 @@ prefix = [
 infix  = []
 suffix = ["i", "o", "a", "ini", "ani", "elli", "elli", "one", "ino",
           "ato", "inck", "ock", "eel", "ard"]
+
+# ── Character data ─────────────────────────────────────────────────────────────
+[character]
+professions = [
+  "Hofschreiber", "Kunstmäzen", "Weinkenner", "Duellant", "Philosophiestudent",
+  "Galeerenoffizier", "Seidenweberin", "Parfümeur", "Rhetoriker", "Jurist",
+  "Stadtpatrizier", "Kirchendiener Bosparans", "Intrigant am Hof",
+]

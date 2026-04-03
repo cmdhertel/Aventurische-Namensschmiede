@@ -108,6 +108,26 @@
             </div>
           </div>
 
+          <!-- Charakterbogen -->
+          <div>
+            <span class="form-label">Modus</span>
+            <label class="flex items-center gap-3 cursor-pointer select-none group">
+              <div class="relative">
+                <input type="checkbox" name="character" id="character-toggle"
+                       value="true" class="sr-only peer" />
+                <div class="w-9 h-5 bg-stone-700 rounded-full
+                            peer-checked:bg-amber-600 transition-colors duration-200"></div>
+                <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow
+                            transition-transform duration-200
+                            peer-checked:translate-x-4"></div>
+              </div>
+              <span class="text-sm text-stone-300">Charakterbogen generieren</span>
+            </label>
+            <p class="text-xs text-stone-600 mt-1">
+              Fügt Beruf, Alter und Eigenschaften hinzu
+            </p>
+          </div>
+
           <!-- Generieren-Button -->
           <button type="submit" class="btn-primary w-full justify-center mt-2">
             <span id="gen-spinner"
