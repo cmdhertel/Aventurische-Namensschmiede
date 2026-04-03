@@ -1,6 +1,7 @@
 [meta]
-region   = "Hoher Norden"
-language = "de"
+region       = "Hoher Norden"
+abbreviation = "HON"
+language     = "de"
 notes    = "Mischung aus Thorwalsch, Nivesisch, Norbardisch und Mittelreichisch. Rauer Menschenschlag. Nachnamen und Beinamen nicht unüblich, folgen verschiedenen Konventionen."
 
 [simple.first]

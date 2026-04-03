@@ -1,6 +1,7 @@
 [meta]
-region   = "Kemi"
-language = "de"
+region       = "Kemi"
+abbreviation = "KEM"
+language     = "de"
 notes    = "Borongläubiges Dschungelkönigreich. Sehr boronfrommer Eigencharakter trotz langer Fremdherrschaft. Familiennamen selten, stattdessen Ni (aus) + Herkunftsort. Einige alte Familien haben eigene Namen."
 
 [simple.first]

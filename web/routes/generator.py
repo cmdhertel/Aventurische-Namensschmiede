@@ -60,13 +60,18 @@ async def generate_names(
     count:  int = Form(5),
 ):
     count = max(1, min(count, 50))
+    region_data = load_region(region)
     results = [
         generate(region=region, mode=GenerationMode(mode), gender=Gender(gender))
         for _ in range(count)
     ]
     return _TEMPLATES.TemplateResponse(
         request, "partials/name_row.html",
-        {"results": results, "gender_de": _GENDER_DE},
+        {
+            "results": results,
+            "gender_de": _GENDER_DE,
+            "region_abbr": region_data.meta.abbreviation,
+        },
     )
 
 

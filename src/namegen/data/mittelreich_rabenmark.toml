@@ -1,6 +1,7 @@
 [meta]
-region   = "Mittelreich: Rabenmark"
-language = "de"
+region       = "Mittelreich: Rabenmark"
+abbreviation = "RAB"
+language     = "de"
 notes    = "Ehemalige Kirchenmark, Boronfrömmigkeit. Neben mittelreichischen Namen besonders solche mit Boron- und Travia-Bezug."
 
 [simple.first]

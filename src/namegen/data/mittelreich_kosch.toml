@@ -1,6 +1,7 @@
 [meta]
-region   = "Kosch"
-language = "de"
+region       = "Kosch"
+abbreviation = "KOS"
+language     = "de"
 notes    = "Nördliche Region mit zwergischem Einfluss. Namen sind kurz und konsonantenreich."
 
 # ── Simple mode ───────────────────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 [meta]
-region   = "Fjarninger"
-language = "de"
+region       = "Fjarninger"
+abbreviation = "FJA"
+language     = "de"
 notes    = "Nördliche Barbaren (Frundegar). Hart und kalt klingende Namen. Keine Familiennamen, aber klangvolle Ehrennamen und Sippennamen. Y = I, R rau und rollend."
 
 [simple.first]
