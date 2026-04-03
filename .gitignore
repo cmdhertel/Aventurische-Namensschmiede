@@ -1,0 +1,58 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── uv / pip ──────────────────────────────────────────────────────────────────
+.venv/
+# uv.lock wird eingecheckt (reproduzierbare Builds)
+
+# ── Hatchling / Build ─────────────────────────────────────────────────────────
+*.dist-info/
+/dist/
+
+# ── Testing & Coverage ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# ── Linting / Type checking ───────────────────────────────────────────────────
+.mypy_cache/
+.ruff_cache/
+
+# ── Tailwind CSS ──────────────────────────────────────────────────────────────
+web/node_modules/
+web/static/app.css
+
+# ── Generierte Ausgabedateien ─────────────────────────────────────────────────
+dsa_namen_*.pdf
+dsa_namen_*.csv
+dsa_namen_*.json
+dsa_namen_*.txt
+dsa_namen_*.md
+dsa_charaktere_*.pdf
+
+# ── IDE / Editor ──────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Lokale Entwicklungsartefakte ──────────────────────────────────────────────
+.env
+.env.local
+*.log
