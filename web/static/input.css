@@ -202,7 +202,7 @@
 
   /* ── Name list entry ──────────────────────────────────────────────────── */
   .name-entry {
-    @apply flex items-center gap-3 px-4 py-3 rounded-lg border
+    @apply flex flex-col px-4 py-3 rounded-lg border
            transition-all duration-150;
     background-color: var(--color-entry-bg);
     border-color: var(--color-divider);

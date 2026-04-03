@@ -7,6 +7,7 @@
      data-region-abbr="{{ region_abbr }}"
      data-mode="{{ r.mode.value }}">
 
+  <div class="flex items-center gap-3 w-full">
   <!-- Name + Region -->
   <div class="flex-1 min-w-0">
     <p class="font-display font-semibold truncate text-sm sm:text-base"
@@ -36,6 +37,7 @@
           onmouseleave="this.style.color='var(--color-text-faint)'; this.style.backgroundColor='transparent'">
     &times;
   </button>
+  </div><!-- /flex row -->
 
-</div>
+</div><!-- /name-entry -->
 {% endfor %}
