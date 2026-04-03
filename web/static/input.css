@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html  { @apply scroll-smooth; }
+  body  { @apply bg-stone-950 text-amber-50 font-body antialiased; }
+  h1, h2, h3 { @apply font-display; }
+
+  select {
+    @apply bg-stone-800 border border-stone-700 rounded-lg px-3 py-2
+           text-amber-50 w-full
+           focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent
+           appearance-none;
+  }
+  input[type="number"] {
+    @apply bg-stone-800 border border-stone-700 rounded-lg px-3 py-2
+           text-amber-50 w-full
+           focus:outline-none focus:ring-2 focus:ring-amber-600;
+  }
+}
+
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center gap-2 font-semibold rounded-lg px-4 py-2
+           transition-all duration-200 cursor-pointer select-none
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-amber-700 hover:bg-amber-600 active:bg-amber-800
+           text-white shadow-lg shadow-amber-900/40;
+  }
+  .btn-secondary {
+    @apply btn bg-stone-800 hover:bg-stone-700 active:bg-stone-900
+           text-amber-200 border border-stone-600;
+  }
+  .btn-danger {
+    @apply btn bg-red-950 hover:bg-red-900 text-red-300 border border-red-900;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-stone-900 border border-stone-800 rounded-xl;
+  }
+  .card-hover {
+    @apply card hover:border-amber-900/60 transition-colors duration-200;
+  }
+
+  /* Form helpers */
+  .form-label {
+    @apply block text-xs font-medium uppercase tracking-wider text-stone-500 mb-1.5;
+  }
+  .radio-group { @apply flex flex-wrap gap-4; }
+  .radio-option { @apply flex items-center gap-2 cursor-pointer; }
+  .radio-option input {
+    @apply accent-amber-600 w-4 h-4 cursor-pointer;
+  }
+
+  /* HTMX loading indicator */
+  .htmx-indicator        { @apply hidden; }
+  .htmx-request .htmx-indicator { @apply flex; }
+  .htmx-request.htmx-indicator  { @apply flex; }
+
+  /* Gender badges */
+  .badge-male    { @apply text-xs px-2 py-0.5 rounded-full bg-blue-900/40 text-blue-300; }
+  .badge-female  { @apply text-xs px-2 py-0.5 rounded-full bg-rose-900/40 text-rose-300; }
+  .badge-neutral { @apply text-xs px-2 py-0.5 rounded-full bg-stone-700 text-stone-400; }
+}

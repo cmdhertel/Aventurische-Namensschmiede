@@ -1,0 +1,7 @@
+{
+  "name": "dsa-namegen-web",
+  "private": true,
+  "devDependencies": {
+    "tailwindcss": "^3.4.15"
+  }
+}

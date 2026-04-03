@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Regionen – DSA Namengenerator{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+  <!-- Header -->
+  <div class="pt-2">
+    <h1 class="font-display text-3xl sm:text-4xl font-semibold tracking-wide
+               bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500
+               bg-clip-text text-transparent">
+      Aventurische Regionen
+    </h1>
+    <p class="mt-2 text-stone-500 text-sm">
+      {{ regions | length }} Region{% if regions | length != 1 %}en{% endif %} verfügbar
+    </p>
+  </div>
+
+  <!-- Regionen-Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for r in regions %}
+    <a href="/?region={{ r.id }}"
+       class="card-hover p-5 group flex flex-col gap-3 cursor-pointer">
+
+      <div class="flex items-start justify-between gap-2">
+        <h3 class="font-display text-amber-300 group-hover:text-amber-200
+                   font-semibold text-base transition-colors leading-tight">
+          {{ r.name }}
+        </h3>
+        <span class="text-xs text-stone-600 bg-stone-800 px-2 py-0.5 rounded-full
+                     font-mono shrink-0 mt-0.5">
+          {{ r.language }}
+        </span>
+      </div>
+
+      {% if r.notes %}
+      <p class="text-stone-500 text-sm leading-relaxed flex-1">{{ r.notes }}</p>
+      {% else %}
+      <p class="text-stone-700 text-sm italic flex-1">Keine Beschreibung.</p>
+      {% endif %}
+
+      <div class="flex items-center gap-1 text-xs text-amber-800
+                  group-hover:text-amber-600 font-medium transition-colors mt-1">
+        <span>Namen generieren</span>
+        <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

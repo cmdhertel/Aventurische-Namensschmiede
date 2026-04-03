@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% block title %}Generator – DSA Namengenerator{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+  <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+  <div class="text-center pt-2 pb-2">
+    <h1 class="font-display text-3xl sm:text-4xl font-semibold tracking-wide
+               bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500
+               bg-clip-text text-transparent">
+      Aventurische Namen
+    </h1>
+    <p class="mt-2 text-stone-500 text-sm">
+      Kulturell passende Namen für Helden und Meisterpersonen des Schwarzen Auges
+    </p>
+  </div>
+
+  <!-- ── Haupt-Layout (Form + Liste nebeneinander auf Desktop) ──────────────── -->
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+
+    <!-- ── Formular ──────────────────────────────────────────────────────── -->
+    <div class="lg:col-span-2">
+      <div class="card p-6 lg:sticky lg:top-20">
+
+        <h2 class="font-display text-base text-amber-400/80 tracking-widest uppercase
+                   mb-5 pb-3 border-b border-stone-800">
+          Einstellungen
+        </h2>
+
+        <form
+          hx-post="/generate"
+          hx-target="#name-list"
+          hx-swap="beforeend"
+          hx-indicator="#gen-spinner"
+          hx-on::after-request="onNamesGenerated(event)"
+          class="space-y-5">
+
+          <!-- Region -->
+          <div>
+            <label for="region" class="form-label">Region</label>
+            <div class="relative">
+              <select name="region" id="region" class="pr-8">
+                {% for r in regions %}
+                <option value="{{ r.id }}"
+                        {% if r.id == selected_region %}selected{% endif %}>
+                  {{ r.name }}
+                </option>
+                {% endfor %}
+              </select>
+              <!-- Pfeil-Icon -->
+              <div class="pointer-events-none absolute inset-y-0 right-2.5 flex items-center">
+                <svg class="w-4 h-4 text-stone-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Geschlecht -->
+          <div>
+            <span class="form-label">Geschlecht</span>
+            <div class="radio-group">
+              {% for val, label in [('any','Beliebig'),('male','Männlich'),('female','Weiblich')] %}
+              <label class="radio-option">
+                <input type="radio" name="gender" value="{{ val }}"
+                       {% if val == 'any' %}checked{% endif %} />
+                <span class="text-sm text-stone-300">{{ label }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Modus -->
+          <div>
+            <span class="form-label">Modus</span>
+            <div class="radio-group">
+              {% for val, label, hint in [
+                ('simple',  'Einfach',      'Aus Namensliste'),
+                ('compose', 'Komposition',  'Aus Silbenbaukasten'),
+              ] %}
+              <label class="radio-option group">
+                <input type="radio" name="mode" value="{{ val }}"
+                       {% if val == 'simple' %}checked{% endif %} />
+                <span class="text-sm text-stone-300">{{ label }}</span>
+                <span class="hidden sm:inline text-xs text-stone-600 group-hover:text-stone-500 transition-colors">
+                  {{ hint }}
+                </span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Anzahl -->
+          <div>
+            <label for="count-range" class="form-label flex justify-between">
+              <span>Anzahl</span>
+              <span id="count-display" class="text-amber-500 font-mono font-semibold normal-case tracking-normal">5</span>
+            </label>
+            <input
+              type="range" name="count" id="count-range"
+              min="1" max="50" value="5"
+              class="w-full accent-amber-600 mt-1 cursor-pointer"
+              oninput="document.getElementById('count-display').textContent = this.value"
+            />
+            <div class="flex justify-between text-xs text-stone-700 mt-0.5 select-none">
+              <span>1</span><span>25</span><span>50</span>
+            </div>
+          </div>
+
+          <!-- Generieren-Button -->
+          <button type="submit" class="btn-primary w-full justify-center mt-2">
+            <span id="gen-spinner"
+                  class="htmx-indicator w-4 h-4 border-2 border-white/30 border-t-white
+                         rounded-full animate-spin"></span>
+            <span>Generieren</span>
+            <svg class="w-4 h-4 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Namensliste ─────────────────────────────────────────────────────── -->
+    <div class="lg:col-span-3">
+      <div class="card p-6 min-h-56" id="name-list-wrapper">
+
+        <!-- Listenheader -->
+        <div class="flex items-center justify-between mb-5 pb-3 border-b border-stone-800">
+          <h2 class="font-display text-base text-amber-400/80 tracking-widest uppercase">
+            Namensliste
+            <span id="name-count"
+                  class="ml-1.5 text-xs text-stone-600 font-body font-normal normal-case tracking-normal">
+              (0)
+            </span>
+          </h2>
+          <div class="flex gap-2">
+            <button type="button" onclick="clearList()" class="btn-secondary text-xs py-1 px-2.5">
+              ✕ Leeren
+            </button>
+            <button type="button" onclick="downloadPdf()" class="btn-primary text-xs py-1 px-2.5">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              </svg>
+              PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Leer-Zustand -->
+        <div id="name-list-empty"
+             class="flex flex-col items-center justify-center py-12 text-stone-700 text-sm">
+          <svg class="w-10 h-10 mb-3 text-stone-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          <p class="italic">Noch keine Namen generiert.</p>
+          <p class="text-xs text-stone-800 mt-1">Wähle links eine Region und klicke auf Generieren.</p>
+        </div>
+
+        <!-- Namen werden hier von HTMX eingefügt -->
+        <div id="name-list" class="space-y-2"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function onNamesGenerated(evt) {
+    if (!evt.detail.successful) return;
+    document.getElementById('name-list-empty').style.display = 'none';
+    updateCount();
+  }
+
+  function updateCount() {
+    const n = document.querySelectorAll('.name-entry').length;
+    document.getElementById('name-count').textContent = `(${n})`;
+    if (n === 0) document.getElementById('name-list-empty').style.display = '';
+  }
+
+  function removeName(btn) {
+    btn.closest('.name-entry').remove();
+    updateCount();
+  }
+
+  function clearList() {
+    document.getElementById('name-list').innerHTML = '';
+    updateCount();
+  }
+
+  function downloadPdf() {
+    const entries = [...document.querySelectorAll('.name-entry')];
+    if (!entries.length) { alert('Keine Namen in der Liste.'); return; }
+
+    const names = entries.map(el => ({
+      full_name: el.dataset.fullName,
+      gender:    el.dataset.gender,
+      region:    el.dataset.region,
+      mode:      el.dataset.mode,
+    }));
+
+    const form  = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/pdf';
+    const inp   = document.createElement('input');
+    inp.type    = 'hidden';
+    inp.name    = 'names';
+    inp.value   = JSON.stringify(names);
+    form.appendChild(inp);
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+  }
+</script>
+{% endblock %}

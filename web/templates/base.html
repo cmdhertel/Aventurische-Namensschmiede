@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}DSA Namengenerator{% endblock %}</title>
+
+  <!-- Fonts: Cinzel (Display/Fantasy) + Inter (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind (kompiliert) -->
+  <link rel="stylesheet" href="/static/app.css" />
+
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+</head>
+
+<body class="min-h-full flex flex-col bg-stone-950">
+
+  <!-- ── Navigationsleiste ────────────────────────────────────────────────── -->
+  <header class="sticky top-0 z-50 border-b border-stone-800/80 bg-stone-950/95 backdrop-blur-sm">
+    <nav class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+
+      <!-- Logo -->
+      <a href="/"
+         class="flex items-center gap-2.5 font-display text-amber-400 hover:text-amber-300
+                font-semibold text-lg tracking-wide transition-colors shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+             class="w-5 h-5 text-dsa-red">
+          <path d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z" />
+        </svg>
+        <span>DSA Namengenerator</span>
+      </a>
+
+      <!-- Navigation links -->
+      <div class="flex items-center gap-1">
+        <a href="/"
+           class="px-3 py-1.5 text-sm rounded-lg transition-colors
+                  {% if request.url.path == '/' %}
+                    text-amber-400 bg-stone-800
+                  {% else %}
+                    text-stone-400 hover:text-amber-300 hover:bg-stone-800/60
+                  {% endif %}">
+          Generator
+        </a>
+        <a href="/regions"
+           class="px-3 py-1.5 text-sm rounded-lg transition-colors
+                  {% if '/regions' in request.url.path %}
+                    text-amber-400 bg-stone-800
+                  {% else %}
+                    text-stone-400 hover:text-amber-300 hover:bg-stone-800/60
+                  {% endif %}">
+          Regionen
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── Seiteninhalt ─────────────────────────────────────────────────────── -->
+  <main class="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────────────────────────── -->
+  <footer class="border-t border-stone-800/60 mt-auto">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 text-center text-xs text-stone-700">
+      Das Schwarze Auge &copy; Ulisses Spiele GmbH &nbsp;·&nbsp; Aventurische Namen
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
