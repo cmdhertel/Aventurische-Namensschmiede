@@ -45,8 +45,7 @@ async def index(
 ):
     regions = _get_regions()
     selected = region or (regions[0]["id"] if regions else "")
-    return _TEMPLATES.TemplateResponse("index.html", {
-        "request":         request,
+    return _TEMPLATES.TemplateResponse(request, "index.html", {
         "regions":         regions,
         "selected_region": selected,
     })
@@ -66,8 +65,8 @@ async def generate_names(
         for _ in range(count)
     ]
     return _TEMPLATES.TemplateResponse(
-        "partials/name_row.html",
-        {"request": request, "results": results, "gender_de": _GENDER_DE},
+        request, "partials/name_row.html",
+        {"results": results, "gender_de": _GENDER_DE},
     )
 
 

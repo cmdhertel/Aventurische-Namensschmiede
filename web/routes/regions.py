@@ -30,7 +30,6 @@ async def regions_page(request: Request):
             })
         except Exception:
             pass
-    return _TEMPLATES.TemplateResponse("regions.html", {
-        "request": request,
+    return _TEMPLATES.TemplateResponse(request, "regions.html", {
         "regions": regions,
     })
