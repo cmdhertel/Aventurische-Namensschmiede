@@ -101,7 +101,7 @@ async def generate_names(
             ]
             template = "partials/character_row.html"
             output_chars = sum(
-                len(f"{c.full_name} {c.profession}")
+                len(f"{c.first} {c.last} {c.profession.value}")
                 for c in results
             )
         else:
@@ -110,7 +110,7 @@ async def generate_names(
                 for _ in range(count)
             ]
             template = "partials/name_row.html"
-            output_chars = sum(len(n.full_name) for n in results)
+            output_chars = sum(len(f"{n.first} {n.last}") for n in results)
 
         input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
 
