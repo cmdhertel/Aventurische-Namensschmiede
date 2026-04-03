@@ -1,6 +1,7 @@
 [meta]
-region   = "Horasreich"
-language = "de"
+region       = "Horasreich"
+abbreviation = "HOR"
+language     = "de"
 notes    = "Kultivierte Eitelkeit bei der Namensgebung. Viele tragen mehr als einen Vornamen. Adelsprädikat ya reserviert für Adel, Gelehrte, Kriegerseminare. Bürgerliche nutzen da/de/di/della. Keine verbindlichen Familienvorgaben."
 
 [simple.first]

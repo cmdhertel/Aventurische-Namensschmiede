@@ -1,6 +1,7 @@
 [meta]
-region   = "Andergast"
-language = "de"
+region       = "Andergast"
+abbreviation = "ADG"
+language     = "de"
 notes    = "Althergebrachte, oft sperrige Namen. Erdmutter Sumu als Namenspatin. Koseformen durch Abkürzung. Frauen übernehmen Familiennamen mit -in-Anhang. Leibeigene ohne Nachnamen nennen sich nach Herkunft."
 
 [simple.first]
