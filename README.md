@@ -73,6 +73,24 @@ web/
 
 ---
 
+## Observability (Logging, Metrics, Traces)
+
+Die Web-App liefert jetzt strukturierte Logs und OpenTelemetry-Metriken/Traces.
+
+- Standardmäßig werden Telemetrie-Daten auf der Konsole ausgegeben (`OTEL_EXPORT_TO_CONSOLE=true`).
+- Für einen OTLP-Collector setze `OTEL_EXPORTER_OTLP_ENDPOINT`, z. B. `http://otel-collector:4318`.
+- Nützliche Metriken:
+  - `http.server.request.count`
+  - `http.server.request.duration` (ms)
+  - `namegen.generate.count`
+  - `namegen.input.chars`
+  - `namegen.output.chars`
+
+Zusätzliche Span-Attribute auf `/generate` enthalten u. a. Region, Modus, Geschlecht,
+Charakter-Modus, Kategorien sowie Input/Output-Zeichenanzahl.
+
+---
+
 ## Neue Region hinzufügen
 
 Eine neue TOML-Datei in `src/namegen/data/` ablegen – fertig.
