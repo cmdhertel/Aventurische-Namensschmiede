@@ -24,7 +24,11 @@ für aventurische Helden und Meisterpersonen, direkt aus dem Browser oder dem Te
 docker compose up --build
 ```
 
-Danach unter **http://localhost:8000** erreichbar.
+Danach verfügbar unter:
+- App: **http://localhost:8000**
+- Grafana: **http://localhost:3000** (Login: `admin` / `admin`)
+- Prometheus: **http://localhost:9090**
+- Tempo API: **http://localhost:3200**
 
 ---
 
@@ -75,10 +79,15 @@ web/
 
 ## Observability (Logging, Metrics, Traces)
 
-Die Web-App liefert jetzt strukturierte Logs und OpenTelemetry-Metriken/Traces.
+Die Web-App liefert strukturierte Logs und OpenTelemetry-Metriken/Traces.
 
-- Standardmäßig werden Telemetrie-Daten auf der Konsole ausgegeben (`OTEL_EXPORT_TO_CONSOLE=true`).
-- Für einen OTLP-Collector setze `OTEL_EXPORTER_OTLP_ENDPOINT`, z. B. `http://otel-collector:4318`.
+Mit `docker compose up --build` startet ein kompletter Grafana-Stack containerbasiert mit:
+- OpenTelemetry Collector (`otel-collector`)
+- Prometheus (Metriken)
+- Tempo (Spans/Traces)
+- Grafana (Visualisierung)
+
+Die Web-App sendet OTLP automatisch an `http://otel-collector:4318`.
 - Nützliche Metriken:
   - `http.server.request.count`
   - `http.server.request.duration` (ms)
