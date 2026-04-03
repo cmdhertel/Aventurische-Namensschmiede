@@ -217,13 +217,29 @@
     const entries = [...document.querySelectorAll('.name-entry')];
     if (!entries.length) { alert('Keine Namen in der Liste.'); return; }
 
-    const names = entries.map(el => ({
-      full_name: el.dataset.fullName,
-      gender:    el.dataset.gender,
-      region:    el.dataset.region,
-      region_abbr: el.dataset.regionAbbr,
-      mode:      el.dataset.mode,
-    }));
+    const isCharacter = entries.some(el => el.dataset.age !== undefined && el.dataset.age !== '');
+    const names = entries.map(el => {
+      const base = {
+        full_name:   el.dataset.fullName,
+        gender:      el.dataset.gender,
+        region:      el.dataset.region,
+        region_abbr: el.dataset.regionAbbr,
+        mode:        el.dataset.mode,
+      };
+      if (isCharacter) {
+        Object.assign(base, {
+          age:         el.dataset.age,
+          profession:  el.dataset.profession,
+          hair:        el.dataset.hair,
+          eyes:        el.dataset.eyes,
+          build:       el.dataset.build,
+          personality: el.dataset.personality,
+          motivation:  el.dataset.motivation,
+          quirk:       el.dataset.quirk,
+        });
+      }
+      return base;
+    });
 
     const form  = document.createElement('form');
     form.method = 'POST';

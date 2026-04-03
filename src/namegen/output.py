@@ -75,6 +75,8 @@ def _write_characters(
             _write_text(_chars_to_plain(results), dest)
         case OutputFormat.CSV:
             _write_text(_chars_to_csv(results), dest)
+        case OutputFormat.PDF:
+            _write_pdf_characters(results, dest)
         case OutputFormat.CLIPBOARD:
             text = "\n".join(r.full_name for r in results)
             try:
@@ -168,7 +170,7 @@ def _write_rich(results: list[NameResult], show_components: bool) -> None:
         console.print(f"[bold]{results[0].full_name}[/bold]")
         return
 
-    cols = ["Name", "Vorname", "Nachname", "Geschlecht"]
+    cols = ["Name", "Geschlecht"]
     if show_components and results[0].mode == GenerationMode.COMPOSE:
         cols.append("Bausteine")
 
@@ -177,8 +179,6 @@ def _write_rich(results: list[NameResult], show_components: bool) -> None:
     for r in results:
         row = [
             f"[bold]{r.full_name}[/bold]",
-            r.first_name,
-            r.last_name or "—",
             _GENDER_DE[r.resolved_gender.value],
         ]
         if show_components and r.mode == GenerationMode.COMPOSE and r.components:
@@ -256,7 +256,7 @@ def _to_markdown(results: list[NameResult], show_components: bool) -> str:
     r0 = results[0]
     mode_label = "Einfach" if r0.mode == GenerationMode.SIMPLE else "Komposition"
 
-    cols = ["Name", "Vorname", "Nachname", "Geschlecht"]
+    cols = ["Name", "Geschlecht"]
     if show_components and r0.mode == GenerationMode.COMPOSE:
         cols.append("Bausteine")
 
@@ -272,7 +272,7 @@ def _to_markdown(results: list[NameResult], show_components: bool) -> str:
         md_row(["---"] * len(cols)),
     ]
     for r in results:
-        row = [r.full_name, r.first_name, r.last_name or "—", _GENDER_DE[r.resolved_gender.value]]
+        row = [r.full_name, _GENDER_DE[r.resolved_gender.value]]
         if show_components and r.mode == GenerationMode.COMPOSE and r.components:
             row.append(_format_components(r))
         lines.append(md_row(row))
@@ -403,6 +403,111 @@ def _write_pdf(results: list[NameResult], dest: Path | None, show_components: bo
 
     story.append(tbl)
     story.append(Spacer(1, 0.5*cm))
+    doc.build(story)
+
+    console.print(f"[green]✓ PDF gespeichert:[/green] {dest}")
+
+
+def _write_pdf_characters(results: list[CharacterResult], dest: Path | None) -> None:
+    try:
+        from reportlab.lib import colors
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+        from reportlab.lib.units import cm
+        from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    except ImportError:
+        console.print("[red]reportlab nicht gefunden.[/red] Installieren mit: uv add reportlab")
+        return
+
+    _GENDER_SHORT = {"male": "M", "female": "W", "any": "–"}
+
+    r0 = results[0]
+    if dest is None:
+        region_slug = r0.region.lower().replace(" ", "_")
+        dest = Path(f"dsa_charaktere_{region_slug}.pdf")
+
+    BORDER    = colors.HexColor("#999999")
+    HEADER_BG = colors.HexColor("#DDDDDD")
+    ROW_ALT   = colors.HexColor("#F5F5F5")
+
+    doc = SimpleDocTemplate(
+        str(dest),
+        pagesize=A4,
+        leftMargin=2*cm, rightMargin=2*cm,
+        topMargin=2.5*cm, bottomMargin=2*cm,
+    )
+
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        "DSATitle", parent=styles["Heading1"],
+        textColor=colors.black, fontSize=16, spaceAfter=4,
+    )
+    subtitle_style = ParagraphStyle(
+        "DSASubtitle", parent=styles["Normal"],
+        textColor=colors.HexColor("#555555"), fontSize=9, spaceAfter=14,
+    )
+    cell_style = ParagraphStyle(
+        "DSACell", parent=styles["Normal"],
+        fontSize=8, leading=10,
+    )
+
+    story = [
+        Paragraph("Das Schwarze Auge – Charakterliste", title_style),
+        Paragraph(
+            f"Region: {r0.region}  ·  {len(results)} Charaktere",
+            subtitle_style,
+        ),
+    ]
+
+    # Columns: Name | G | Alter | Beruf | Eigenschaften
+    name_w   = 3.8 * cm
+    g_w      = 0.6 * cm
+    age_w    = 1.0 * cm
+    job_w    = 3.0 * cm
+    traits_w = 8.6 * cm  # 17cm total - others
+
+    header = ["Name", "G", "Alter", "Beruf", "Eigenschaften"]
+    table_data = [header]
+
+    for r in results:
+        t = r.traits
+        traits_text = (
+            f"Haare {t.physical.hair}, Augen {t.physical.eyes}, {t.physical.build} · "
+            f"{t.personality} · {t.motivation} · {t.quirk}"
+        )
+        table_data.append([
+            Paragraph(f"<b>{r.full_name}</b>", cell_style),
+            _GENDER_SHORT.get(r.gender.value, "–"),
+            str(r.age),
+            Paragraph(r.profession, cell_style),
+            Paragraph(traits_text, cell_style),
+        ])
+
+    tbl = Table(
+        table_data,
+        colWidths=[name_w, g_w, age_w, job_w, traits_w],
+        repeatRows=1,
+    )
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND",    (0, 0), (-1, 0),  HEADER_BG),
+        ("FONTNAME",      (0, 0), (-1, 0),  "Helvetica-Bold"),
+        ("FONTSIZE",      (0, 0), (-1, 0),  9),
+        ("TOPPADDING",    (0, 0), (-1, 0),  6),
+        ("BOTTOMPADDING", (0, 0), (-1, 0),  6),
+        ("FONTNAME",      (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE",      (0, 1), (-1, -1), 8),
+        ("TOPPADDING",    (0, 1), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
+        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [colors.white, ROW_ALT]),
+        ("BOX",           (0, 0), (-1, -1), 0.75, BORDER),
+        ("INNERGRID",     (0, 0), (-1, -1), 0.25, BORDER),
+        ("VALIGN",        (0, 0), (-1, -1), "TOP"),
+        ("ALIGN",         (1, 0), (1, -1),  "CENTER"),
+        ("ALIGN",         (2, 0), (2, -1),  "CENTER"),
+    ]))
+
+    story.append(tbl)
+    story.append(Spacer(1, 0.5 * cm))
     doc.build(story)
 
     console.print(f"[green]✓ PDF gespeichert:[/green] {dest}")
