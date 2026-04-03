@@ -8,6 +8,7 @@ from collections.abc import Callable
 from contextlib import suppress
 from dataclasses import dataclass
 from time import perf_counter
+from uuid import uuid4
 
 from fastapi import Request, Response
 from opentelemetry import metrics, trace
@@ -20,6 +21,7 @@ from opentelemetry.sdk.metrics.export import ConsoleMetricExporter, PeriodicExpo
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+from opentelemetry.trace import Status, StatusCode
 from rich.logging import RichHandler
 
 
@@ -32,9 +34,16 @@ class AppMetrics:
 
     request_count: Counter
     request_duration_ms: Histogram
+    app_errors: Counter
     generate_calls: Counter
     input_chars: Counter
     output_chars: Counter
+    load_region_duration_ms: Histogram
+    generate_loop_duration_ms: Histogram
+    template_render_duration_ms: Histogram
+    pdf_duration_ms: Histogram
+    empty_results: Counter
+    name_length: Histogram
 
 
 def _bool_from_env(name: str, default: bool) -> bool:
@@ -42,6 +51,40 @@ def _bool_from_env(name: str, default: bool) -> bool:
     if val is None:
         return default
     return val.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _status_class(status_code: int) -> str:
+    return f"{status_code // 100}xx"
+
+
+def _route_template(path: str) -> str:
+    if path == "/":
+        return "/"
+
+    known_prefixes = ("/generate", "/pdf", "/regions", "/health", "/static")
+    for prefix in known_prefixes:
+        if path.startswith(prefix):
+            return prefix
+
+    return "unknown"
+
+
+def _trace_context() -> tuple[str, str]:
+    span = trace.get_current_span()
+    context = span.get_span_context()
+    if not context.is_valid:
+        return "", ""
+    return f"{context.trace_id:032x}", f"{context.span_id:016x}"
+
+
+class TraceContextFilter(logging.Filter):
+    """Hängt Trace/Span-ID an LogRecord an, wenn vorhanden."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        trace_id, span_id = _trace_context()
+        record.trace_id = trace_id
+        record.span_id = span_id
+        return True
 
 
 def setup_logging() -> logging.Logger:
@@ -56,7 +99,8 @@ def setup_logging() -> logging.Logger:
         rich_tracebacks=True,
         markup=False,
     )
-    handler.setFormatter(logging.Formatter("%(message)s"))
+    handler.addFilter(TraceContextFilter())
+    handler.setFormatter(logging.Formatter("%(message)s trace_id=%(trace_id)s span_id=%(span_id)s"))
 
     root.addHandler(handler)
     logger = logging.getLogger(_LOGGER_NAME)
@@ -117,6 +161,11 @@ def setup_telemetry() -> tuple[trace.Tracer, AppMetrics]:
             description="Request-Latenz in Millisekunden",
             unit="ms",
         ),
+        app_errors=meter.create_counter(
+            "app.errors.count",
+            description="Anzahl Fehler in HTTP Requests",
+            unit="1",
+        ),
         generate_calls=meter.create_counter(
             "namegen.generate.count",
             description="Anzahl Aufrufe der /generate Route",
@@ -130,6 +179,36 @@ def setup_telemetry() -> tuple[trace.Tracer, AppMetrics]:
         output_chars=meter.create_counter(
             "namegen.output.chars",
             description="Anzahl Zeichen in generierten Namen",
+            unit="chars",
+        ),
+        load_region_duration_ms=meter.create_histogram(
+            "namegen.load_region.duration_ms",
+            description="Latenz für load_region in Millisekunden",
+            unit="ms",
+        ),
+        generate_loop_duration_ms=meter.create_histogram(
+            "namegen.generate_loop.duration_ms",
+            description="Latenz der Generierungsschleife in Millisekunden",
+            unit="ms",
+        ),
+        template_render_duration_ms=meter.create_histogram(
+            "namegen.template_render.duration_ms",
+            description="Latenz des Template-Renderings in Millisekunden",
+            unit="ms",
+        ),
+        pdf_duration_ms=meter.create_histogram(
+            "namegen.pdf.duration_ms",
+            description="Latenz der PDF-Erstellung in Millisekunden",
+            unit="ms",
+        ),
+        empty_results=meter.create_counter(
+            "namegen.empty_results.count",
+            description="Anzahl leerer Ergebnisse in Generierungsergebnissen",
+            unit="1",
+        ),
+        name_length=meter.create_histogram(
+            "namegen.name_length",
+            description="Länge erzeugter Namen",
             unit="chars",
         ),
     )
@@ -154,22 +233,69 @@ def create_metrics_middleware(
         start = perf_counter()
         path = request.url.path
         method = request.method
+        route_template = _route_template(path)
+        request_id = request.headers.get("x-request-id", str(uuid4()))
 
-        response = await call_next(request)
+        try:
+            response = await call_next(request)
+        except Exception as exc:
+            elapsed_ms = (perf_counter() - start) * 1000
+            attrs = {
+                "http.method": method,
+                "http.route": route_template,
+                "http.status_class": "5xx",
+                "error.type": type(exc).__name__,
+            }
+            app_metrics.request_count.add(1, attrs)
+            app_metrics.request_duration_ms.record(elapsed_ms, attrs)
+            app_metrics.app_errors.add(1, attrs)
+
+            span = trace.get_current_span()
+            if span and span.is_recording():
+                span.set_attribute("http.route", route_template)
+                span.record_exception(exc)
+                span.set_status(Status(StatusCode.ERROR, str(exc)))
+
+            logger.exception(
+                "event=http.request.error request_id=%s method=%s path=%s route=%s duration_ms=%.2f error_type=%s",
+                request_id,
+                method,
+                path,
+                route_template,
+                elapsed_ms,
+                type(exc).__name__,
+            )
+            raise
 
         elapsed_ms = (perf_counter() - start) * 1000
         attrs = {
             "http.method": method,
-            "http.route": path,
+            "http.route": route_template,
             "http.status_code": response.status_code,
+            "http.status_class": _status_class(response.status_code),
         }
         app_metrics.request_count.add(1, attrs)
         app_metrics.request_duration_ms.record(elapsed_ms, attrs)
 
+        if response.status_code >= 500:
+            app_metrics.app_errors.add(
+                1,
+                {
+                    "http.method": method,
+                    "http.route": route_template,
+                    "http.status_class": _status_class(response.status_code),
+                    "error.type": "HTTPServerError",
+                },
+            )
+
+        response.headers["X-Request-ID"] = request_id
+
         logger.info(
-            "event=http.request method=%s path=%s status=%s duration_ms=%.2f",
+            "event=http.request request_id=%s method=%s path=%s route=%s status=%s duration_ms=%.2f",
+            request_id,
             method,
             path,
+            route_template,
             response.status_code,
             elapsed_ms,
         )
