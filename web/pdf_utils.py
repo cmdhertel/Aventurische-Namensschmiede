@@ -102,9 +102,9 @@ def build_pdf_bytes(name_data: list[dict]) -> bytes:
             ])
 
     if has_multiple_regions:
-        name_w = 7.0 * cm
+        name_w = 6.5 * cm
         g_w = 0.8 * cm
-        region_w = 0.7 * cm
+        region_w = 1.2 * cm
         col_widths = [name_w, g_w, region_w, name_w, g_w, region_w]
         center_columns = (1, 4)
         separator_columns = (2,)
@@ -135,6 +135,10 @@ def build_pdf_bytes(name_data: list[dict]) -> bytes:
     for col in center_columns:
         styles.append(("ALIGN", (col, 0), (col, -1), "CENTER"))
     if has_multiple_regions:
+        styles.append(("ALIGN", (2, 0), (2, -1), "CENTER"))
+        styles.append(("ALIGN", (5, 0), (5, -1), "CENTER"))
+        styles.append(("FONTSIZE", (2, 0), (2, 0), 8))
+        styles.append(("FONTSIZE", (5, 0), (5, 0), 8))
         styles.append(("FONTSIZE", (2, 1), (2, -1), 8))
         styles.append(("FONTSIZE", (5, 1), (5, -1), 8))
     for col in separator_columns:
