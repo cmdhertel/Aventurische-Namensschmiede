@@ -1,0 +1,82 @@
+[meta]
+region   = "Mittelreich: Tobrien"
+language = "de"
+notes    = "Wolf- und Eber-Präfixe sehr häufig. Peraine, Rondra, Firun als Namenspaten. Alhanisches Erbe. Familiennamen oft auf -ing, -sen oder -sin endend."
+
+[simple.first]
+male    = [
+  "Argon", "Bernfried", "Bernhelm", "Delo", "Eberhardt", "Eberhelm",
+  "Eberrecht", "Eberwulf", "Fergold", "Firnwulf", "Firunjef", "Firutin",
+  "Frankwart", "Grimmwulf", "Hagen", "Jarlak", "Jost", "Kunibald",
+  "Kunibrand", "Kunjo", "Litprand", "Nibelwulf", "Rondrajev", "Ronwulf",
+  "Rude", "Rudjew", "Silbahardt", "Sildroyan", "Thiomar", "Wolfbrandt",
+  "Wolfhardt", "Wolfhelm", "Wulf", "Yerodin", "Zordan"
+]
+female  = [
+  "Arnwulfe", "Dalkeshja", "Dela", "Eberliebe", "Endilia", "Faduhenne",
+  "Fianna", "Firunie", "Firunja", "Grimwulfe", "Gundel", "Ifirnja",
+  "Ilsebra", "Maila", "Merishja", "Morlenja", "Perainje", "Perjascha",
+  "Renja", "Rondrianje", "Xindra", "Winfirune", "Wulfriede", "Wulfe",
+  "Yppolita", "Ysilie", "Zylva"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Adersin", "Alstersen", "Altdorfer", "Auensen", "Bauernschäfer",
+  "Birkenhain", "Birkenoff", "Donnersin", "Ebelsen", "Ebering", "Egelsen",
+  "Erlbach", "Erlenseer", "Fuchsen", "Gorbensen", "Henningsen", "Ilsürer",
+  "Jelling", "Karensen", "Knochenhacker", "Kolding", "Lammersen",
+  "Meiling", "Neustädter", "Okenheld", "Pering", "Protzinger",
+  "Rauerding", "Riedenschäfer", "Rundling", "Schäfchenbauer", "Schafensen",
+  "Werthag", "Wollmacher", "Wulfsen", "Ysilier",
+  # Adelsnamen
+  "von Alst", "von Bocksweiler", "von Darbonia", "von Dogulsfurt",
+  "von Drachenwehr", "von Dunkelstein", "von Ehrenstein", "von Eisenrath",
+  "von Erlbrück", "von Finstertann", "von Fischbach", "von Firunsschilfen",
+  "von Gabelweyhe", "von Gerdenwald", "von Gernotsborn", "von Grünauen",
+  "von Isenborn", "von Korswandt", "von Nordweide", "von Ogerbusch",
+  "von Radrombrücken", "von Schafweide", "von Schilfsend",
+  "von Schnattermoor", "von Tirandur", "von Treublatt", "von Ulmenburg",
+  "von Wolfsruf", "von Wulfenforst", "von Wulfenthurm"
+]
+
+[compose.first]
+infix_probability = 0.35
+
+[compose.first.male]
+prefix = [
+  "Arg", "Bernfr", "Bernh", "Del", "Eberh", "Eberm", "Eberr", "Eberw",
+  "Ferg", "Firnw", "Firunj", "Firut", "Frankw", "Grimmw", "Hag",
+  "Jarl", "Kun", "Litp", "Nibelw", "Rondr", "Ronw", "Rud", "Silb",
+  "Sildr", "Thim", "Wolfbr", "Wolfh", "Wolfhm", "Wulf", "Yerd"
+]
+infix  = ["wald", "en", "ul", "ib", "ar", "er"]
+suffix = ["fried", "helm", "recht", "wulf", "gold", "ard", "jev",
+          "jef", "ardt", "an", "band", "oyan", "mar", "din"]
+
+[compose.first.female]
+prefix = [
+  "Arnw", "Dalkeshj", "Del", "Eberl", "Endl", "Faduh", "Fi", "Firun",
+  "Grimw", "Gund", "Ifirn", "Ilsebr", "Mail", "Merishj", "Morlen",
+  "Perain", "Perjascha", "Ren", "Rondrij", "Xind", "Winfir", "Wulfr",
+  "Wulf", "Yppol", "Ysili", "Zylv"
+]
+infix  = ["ul", "wul", "al", "ir"]
+suffix = ["fe", "ja", "a", "ia", "inje", "inje", "une", "riede",
+          "ede", "ita", "ie", "va"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Eber", "Wolf", "Wulf", "Birken", "Firns"]
+infix  = []
+suffix = ["sing", "ersen", "sen", "sin", "ing", "hain", "off",
+          "ach", "ing", "eld"]

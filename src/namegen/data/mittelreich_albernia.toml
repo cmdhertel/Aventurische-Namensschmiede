@@ -1,0 +1,121 @@
+[meta]
+region   = "Mittelreich: Albernia"
+language = "de"
+notes    = "Alberned: Dialekt des Garethi mit Thorwal-Einflüssen. Efferd-Bezüge beliebt, Boron gemieden. Nachnamen in Städten. Adel und Flussleute: ni (Tochter des Hauses) / ui (Sohn des Hauses) + Ahnenfamilienname."
+
+[simple.first]
+male    = [
+  "Aedan", "Aedin", "Aelfwin", "Aneirin", "Annlir", "Ardach", "Aedis",
+  "Banthoch", "Belfionn", "Bennwir", "Berynn", "Branwin", "Brendan",
+  "Callan", "Cathal", "Caye", "Cethem", "Cian", "Cidris", "Conlai",
+  "Connar", "Coran", "Cormac", "Cuanu", "Cuil", "Cuilyn", "Cynwal",
+  "Daerec", "Dhuachall", "Diarmait", "Ealgar", "Effardeon", "Efferdwin",
+  "Effraen", "Effwyn", "Elfwin", "Eochaid", "Faedred", "Faerwyn",
+  "Falkris", "Fergal", "Finnian", "Firunwin", "Galvin", "Gheam", "Gial",
+  "Gileach", "Glarik", "Glennir", "Gun", "Gwyn", "Gwyndan", "Halman",
+  "Hjalbin", "Iain", "Illaen", "Innion", "Ioric", "Jaemesh", "Jendar",
+  "Lanval", "Larric", "Liam", "Lidhwaen", "Lienn", "Lomoch", "Lorcan",
+  "Lothur", "Melkom", "Meredin", "Morgan", "Muir", "Niall", "Niamad",
+  "Oisin", "Ordhan", "Peranwyn", "Praioiden", "Raidri", "Reochaid",
+  "Rhonwian", "Rhys", "Roryc", "Rondric", "Ruadh", "Senach", "Shien",
+  "Sidhric", "Sileach", "Stewain", "Targuin", "Tibraid", "Travien",
+  "Toras", "Tsael", "Uachdan", "Uallach", "Yann", "Ywain", "Yurris"
+]
+female  = [
+  "Aedha", "Aedith", "Aedre", "Aife", "Ailill", "Albhe", "Angwen",
+  "Baerwen", "Betir", "Branwen", "Brianna", "Cailin", "Caillinnis",
+  "Cell", "Ciana", "Ceridwen", "Cordaella", "Cuanna", "Cuib", "Daene",
+  "Daire", "Danu", "Deirdre", "Diarwen", "Earwen", "Efferlill",
+  "Efferys", "Effraine", "Eillyn", "Emer", "Enid", "Eswen", "Ewaine",
+  "Faelinn", "Fiall", "Fianna", "Finnabir", "Finnla", "Finris", "Geala",
+  "Gennofaer", "Geselwen", "Gilia", "Gladys", "Glenna", "Gwen", "Gwynna",
+  "Hesindana", "Hylgwen", "Idra", "Igraine", "Illail", "Ildha", "Invher",
+  "Ioraine", "Isora", "Jarwen", "Keira", "Kendra", "Kerry", "Kladdis",
+  "Laille", "Larinu", "Linai", "Lleanne", "Lynn", "Macha", "Maerthe",
+  "Maeve", "Maire", "Margoris", "Naena", "Neowen", "Niamh", "Nurinai",
+  "Oarwen", "Olwen", "Padraigin", "Praiodain", "Praiolynna", "Phecalynn",
+  "Raike", "Rahjalyn", "Rianod", "Riganna", "Rondirai", "Rondraine",
+  "Ruada", "Rudraighe", "Ruthe", "Saingla", "Saendren", "Shaewen",
+  "Scanlail", "Seola", "Sinjer", "Siona", "Swafne", "Tibraide",
+  "Traviynla", "Tsaine", "Tuadh", "Uinin", "Vearne", "Yanna", "Ynlais",
+  "Ysilt"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Aendruw", "Aranol", "Arberdan", "Baernhold", "Braelghan", "Bruadhir",
+  "Caelman", "Collen", "Cuifinn", "Engstrand", "Faic", "Fidian", "Gaere",
+  "Gathris", "Gorbas", "Gwenlian", "Hollbeerer", "Inveric", "Kerkill",
+  "Kevendoch", "Kurstan", "Machalich", "Ongswin", "Quent", "Rastburger",
+  "Rothair", "Sandström", "Sardubh", "Schladromir", "Seehoff", "Stewir",
+  "Vialigh", "Wolter",
+  # Alte Adelshäuser
+  "ni Arodon", "ui Arodon", "ni Crumold", "ui Crumold", "ni Fenwasian",
+  "ui Fenwasian", "ni Herlogan", "ui Herlogan", "ni Niriansee", "ui Niriansee",
+  "ni Sanin", "ui Sanin", "ni Stepahan", "ui Stepahan", "ni Taladan", "ui Taladan",
+  # Flussleute
+  "ni Bennain", "ui Bennain", "ni Conchobair", "ui Conchobair",
+  "ni Llud", "ui Llud", "ni Niamad", "ui Niamad",
+  # Jüngere Adelsfamilien
+  "von Albenbluth", "von Aldewen", "von Eryn", "von Farnwart",
+  "von Fingorn", "von Galahan", "von Helman"
+]
+
+[compose.first]
+infix_probability = 0.2
+
+[compose.first.male]
+prefix = [
+  "Aed", "Aelf", "Anei", "Bant", "Belf", "Benn", "Beryn", "Branw",
+  "Brend", "Call", "Cath", "Cay", "Ci", "Cidr", "Conl", "Conn", "Cor",
+  "Corm", "Cuan", "Cuil", "Cynw", "Daer", "Dhual", "Diarm", "Ealg",
+  "Effard", "Efferw", "Effr", "Elfw", "Faed", "Faerw", "Falk", "Ferg",
+  "Finn", "Firunw", "Galv", "Gial", "Gil", "Glar", "Glenn", "Gwyn",
+  "Gwyndan", "Halm", "Hjalb", "Ill", "Inn", "Lanal", "Larr", "Liam",
+  "Lidhw", "Lien", "Lom", "Lorc", "Loth", "Melk", "Mered", "Morg",
+  "Niall", "Niamad", "Ois", "Ordh", "Peranw", "Raid", "Reoch",
+  "Rhonw", "Rhys", "Rorj", "Rondr", "Ruadh", "Sen", "Shi", "Sidhr",
+  "Sil", "Stew", "Targ", "Tibr", "Travi", "Uachd", "Uall", "Yann",
+  "Ywain"
+]
+infix  = ["al", "an", "in", "el", "ac", "wyn"]
+suffix = ["an", "al", "och", "ach", "ac", "ich", "win", "dan", "yn",
+          "esh", "mesh", "dar", "ric", "wyn"]
+
+[compose.first.female]
+prefix = [
+  "Aedh", "Aedr", "Aif", "Alb", "Angw", "Baerw", "Bet", "Branw", "Bri",
+  "Cail", "Cell", "Cian", "Ceridw", "Cord", "Cuan", "Daen", "Dair",
+  "Dan", "Deidr", "Diarw", "Earw", "Effrl", "Effrain", "Eill", "Em",
+  "Enid", "Esw", "Faelin", "Fial", "Fi", "Finnab", "Finnl", "Finr",
+  "Geal", "Gennof", "Geselw", "Gilj", "Glad", "Glenn", "Gw", "Gwynn",
+  "Hesindan", "Hylgw", "Idr", "Igr", "Invh", "Ior", "Is", "Jarw",
+  "Keir", "Kend", "Kerr", "Kladd", "Lail", "Larin", "Lin", "Lle",
+  "Mach", "Maerth", "Maev", "Mair", "Marg", "Naen", "Neow", "Niamh",
+  "Nuri", "Oarw", "Olw", "Padraig", "Praiol", "Raik", "Rahj", "Rianod",
+  "Rigann", "Rondir", "Rondr", "Ruad", "Rudrigh", "Ruth", "Sain", "Saend",
+  "Shaew", "Scanl", "Seol", "Sinj", "Si", "Swafn", "Tibr", "Traviy",
+  "Tsain", "Tuadh", "Vear", "Yann", "Ynl", "Ys"
+]
+infix  = ["al", "an", "in", "el", "wyn", "ail"]
+suffix = ["a", "wen", "ine", "ynn", "ais", "ain", "dre", "rail",
+          "aen", "le", "is", "ur", "aig"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = [
+  "ni ", "ui ", "von "
+]
+infix  = []
+suffix = ["arodon", "crumold", "fenwasian", "herlogan", "sanin", "stepahan",
+          "bennain", "conchobair", "llud", "niamad", "hold", "wirt",
+          "strand", "seehoff"]

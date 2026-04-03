@@ -1,0 +1,79 @@
+[meta]
+region   = "Mittelreich: Greifenfurt"
+language = "de"
+notes    = "Praios-Glaube prägt die Namensgebung stark. Kampf gegen die Orks. Namen mit Greif-, Praio-, Gold-, Ucuri- häufig."
+
+[simple.first]
+male    = [
+  "Aldec", "Angold", "Answin", "Branabas", "Branibart", "Emmeran",
+  "Fürchtepraios", "Garamold", "Gerbald", "Golbur", "Goldwart",
+  "Greiffried", "Greifwin", "Güldman", "Huldrich", "Lancorian",
+  "Marcian", "Philopraios", "Praiobert", "Praiodan", "Praiodor",
+  "Praiogriff", "Praioslob", "Praioward", "Raulwin", "Sonnward",
+  "Ucurian", "Ulfried", "Uriens", "Wahrfried", "Wulfram"
+]
+female  = [
+  "Argoldia", "Belgrifa", "Branigolde", "Branike", "Daradia",
+  "Gertraudis", "Goldane", "Goldara", "Greifwina", "Griffane",
+  "Griffberga", "Heiltraudis", "Hergriffa", "Irmenella", "Irmfriede",
+  "Misira", "Praiadne", "Praiosholde", "Prainike", "Praiodane",
+  "Praiogolde", "Praiosliebe", "Praosmin", "Sonnentraud", "Trautlinde",
+  "Treugunde", "Ucurieke", "Yadwiga", "Ygolde", "Wiltrud"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Altenauer", "Auerbach", "Auermund", "Breitenauer", "Breitner",
+  "Dergeler", "Eslamsrodener", "Gnitzenspleiß", "Goldenbacher",
+  "Greifenfurter", "Greifentreu", "Kohlbauer", "Lichthagen",
+  "Pausbäcker", "Praiosberger", "Orkschläger", "Sonnenschauer",
+  "Steinschläger", "Webner", "Weißbleichner",
+  # Adelsnamen
+  "von Ährenstein", "von Altnardesfeld", "von Angenforst", "von Auerfelde",
+  "von Beldenhag", "von Bugenbühl", "von Dergelstein", "von Dunkelsfarn",
+  "von Eisslingern", "von Feldharsch", "von Finsterforst", "von Finsterkamm",
+  "von Finsterrode", "von Gantenstein", "von Greifenberg", "von Greifenhorst",
+  "von Hasenfeld", "von Hexenhain", "von Keilholtz", "von Kieselburg",
+  "von Krähenklamm", "von Nebelstein", "von Orkenwall", "von Reichsweg",
+  "von Reiffenberg", "von Schattenstein", "von Schroffenstein",
+  "von Schwarzforst", "von Wertlingen", "von Wolfenhain"
+]
+
+[compose.first]
+infix_probability = 0.25
+
+[compose.first.male]
+prefix = [
+  "Ald", "Ang", "Ans", "Bran", "Emm", "Für", "Gar", "Gerb", "Golb",
+  "Goldw", "Greiff", "Greifw", "Güldm", "Huld", "Marc", "Phil", "Praio",
+  "Raul", "Sonn", "Ucur", "Ulfried", "Ur", "Wahrfr", "Wulfr"
+]
+infix  = ["cht", "io", "ald", "old", "ard"]
+suffix = ["praios", "bert", "dan", "dor", "griff", "lob", "ward",
+          "win", "fried", "ian", "ens", "ram"]
+
+[compose.first.female]
+prefix = [
+  "Arg", "Belgr", "Brani", "Darad", "Gertr", "Gold", "Greif", "Griffan",
+  "Griffb", "Heiltaud", "Hergr", "Irmen", "Irmfr", "Misr", "Praiad",
+  "Praiosg", "Praion", "Praio", "Sonnent", "Trautl", "Treug", "Ucur",
+  "Yadw", "Ygold", "Wiltr"
+]
+infix  = ["iol", "ol", "os", "ai"]
+suffix = ["da", "golde", "nike", "berga", "ne", "gard", "liebe",
+          "iene", "min", "traud", "linde", "gunde", "ieke"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Greif", "Sonnen", "Gold", "Praios", "Ork"]
+infix  = []
+suffix = ["enfurter", "entreu", "schauer", "berger", "schläger", "bacher"]

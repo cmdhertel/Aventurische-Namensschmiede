@@ -1,0 +1,61 @@
+[meta]
+region   = "Kemi"
+language = "de"
+notes    = "Borongläubiges Dschungelkönigreich. Sehr boronfrommer Eigencharakter trotz langer Fremdherrschaft. Familiennamen selten, stattdessen Ni (aus) + Herkunftsort. Einige alte Familien haben eigene Namen."
+
+[simple.first]
+male    = [
+  "Abet-ut'yar", "Djer'kem", "Hati'hesa", "Henem'iwen", "Kemet'nechet",
+  "Nebib", "Pet'nehem", "Sekem'kutary", "Sekem'veser", "Setepen",
+  "Shepses'ka", "Veser'htep"
+]
+female  = [
+  "Ä'meset", "Ankhsa", "Djer'kem", "Mar'bonefer", "Men'kare", "Merit'ka",
+  "Merut'sat", "Me'wehem", "Neferi", "Quenadya", "Ta'meri", "Uneb'nemes"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Herkunfts-Nachname (mit Ni ...)
+  "Ni Djaset", "Ni Ireth", "Ni Jem'ka", "Ni Khefu", "Ni Naareb",
+  "Ni Qinsay", "Ni Setepen", "Ni Yleha", "Ni Biazzan",
+  # Alte Familien
+  "al'Plane", "Chesal'ret", "Me'kath", "Mehyem'ka", "Mes'kha-re",
+  "Nebmes", "Paestumai", "Sa'kurat", "Sekemat", "Setepen",
+  "Tem'kat", "Ze'emkha"
+]
+
+[compose.first]
+infix_probability = 0.4
+
+[compose.first.male]
+prefix = [
+  "Abet", "Djer", "Hati", "Henem", "Kemet", "Nebib", "Pet", "Sekem",
+  "Setep", "Shepses", "Veser"
+]
+infix  = ["'", "ut", "ne", "kem", "iwen", "neche", "kut"]
+suffix = ["yar", "hesa", "iwen", "chet", "nehem", "kutary", "veser",
+          "en", "ka", "htep"]
+
+[compose.first.female]
+prefix = [
+  "Ä'me", "Ankhs", "Djer", "Mar'bone", "Men'k", "Merit", "Merut",
+  "Me'weh", "Nef", "Quenad", "Ta'mer", "Uneb'nem"
+]
+infix  = ["'", "ka", "sa", "ri", "at"]
+suffix = ["set", "a", "kem", "fer", "are", "ka", "sat", "em", "eri",
+          "ya", "i", "es"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Me'", "Mes'kha", "Tem'", "Ze'em", "Sa'", "Seke"]
+infix  = []
+suffix = ["kath", "re", "kat", "kha", "kurat", "mat"]

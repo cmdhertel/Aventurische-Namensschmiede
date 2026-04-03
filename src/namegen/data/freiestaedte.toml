@@ -1,0 +1,83 @@
+[meta]
+region   = "Freie Städte des Nordens & Dominium Donnerbach"
+language = "de"
+notes    = "Mischung aus Garethi, Nivesisch, Norbardisch und Bornisch. Familiennamen außerhalb der Städte selten. Im Dominium Donnerbach starker Rondrakia-Einfluss."
+
+[simple.first]
+male    = [
+  "Adhelm", "Adoran", "Aeldereth", "Albuin", "Anshag", "Baerjan", "Bosjew",
+  "Branwyn", "Curathan", "Dietrad", "Dunarth", "Ealdawin", "Elfert", "Elko",
+  "Enolf", "Farnion", "Firunjan", "Firutin", "Gerlin", "Gerwulf", "Grimjan",
+  "Hanko", "Heleon", "Herodan", "Ifirnion", "Imion", "Isenbard", "Jorinen",
+  "Lanthir", "Leoderich", "Lorion", "Marnion", "Mew", "Nurian", "Olean",
+  "Orschin", "Ortwin", "Oswin", "Patril", "Pettar", "Rodegar", "Rondril",
+  "Thalion", "Thorolf", "Tuljew", "Waidhart", "Wolforn"
+]
+female  = [
+  "Adilgunde", "Adlanga", "Aldare", "Alfianna", "Baerhild", "Baernja",
+  "Bilhildis", "Carissima", "Damaris", "Dorell", "Elftraute", "Elfwyn",
+  "Elkwine", "Elslin", "Farnlieb", "Fianna", "Firnwild", "Gerlin",
+  "Griseldis", "Heleona", "Heronda", "Holdtraude", "Ifirnja", "Ila",
+  "Jascham", "Kajani", "Leleth", "Lidwina", "Linnea", "Lyncordia",
+  "Madagund", "Mandlin", "Minnegard", "Nadjescha", "Nanna", "Nirka",
+  "Norgard", "Olja", "Riana", "Rodegard", "Rondrine", "Rowena", "Saari",
+  "Sibille", "Svea", "Swangard", "Thalia", "Tjeika", "Ulfhild", "Valariel",
+  "Valborga", "Vanjescha", "Waidgunde", "Widogard", "Wisgard", "Wulfhild",
+  "Yrme"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen/Nachnamen
+  "Arlin", "Bergwacht", "Bogner", "Frantischek", "Gerstenschröter",
+  "Grünfelde", "Kolenbrander", "Mandelaug", "Rohtkop", "Schmied",
+  "Sewerin", "Stiewick", "Waldner", "Waidmann", "Wangelwilder", "Wolfhein",
+  # Adelsnamen
+  "von Amselsprung", "von Ahorning", "von Birkenbach", "von Bjaldorn",
+  "von Bruchau", "von Donnerbach", "von Lewenstein", "von Rennetal",
+  "von Rüsterbach", "von Starkenfall", "von Waldeck", "von Wehrlau"
+]
+
+[compose.first]
+infix_probability = 0.3
+
+[compose.first.male]
+prefix = [
+  "Adh", "Ador", "Ael", "Alb", "Ans", "Baerj", "Bosj", "Branw", "Cur",
+  "Dietr", "Dun", "Eald", "Elf", "Elk", "Enolf", "Farn", "Firunj", "Firut",
+  "Gerlin", "Gerw", "Grimj", "Hank", "Hel", "Her", "Ifirn", "Im",
+  "Isenb", "Jor", "Lanth", "Leod", "Lor", "Marn", "Nur", "Ole",
+  "Orsch", "Ortw", "Osw", "Patr", "Pett", "Rod", "Rondr", "Thal",
+  "Thor", "Tulj", "Waidh", "Wolforn"
+]
+infix  = ["an", "in", "el", "ion", "ar", "ew"]
+suffix = ["ion", "ard", "olf", "win", "hart", "jew", "orn", "rik",
+          "dan", "ath", "rich", "erich"]
+
+[compose.first.female]
+prefix = [
+  "Adilg", "Adl", "Ald", "Alfi", "Baerh", "Baern", "Bilh", "Car", "Dam",
+  "Dor", "Elft", "Elfw", "Elkw", "Elsl", "Farnl", "Fi", "Firnw", "Gerlin",
+  "Grisel", "Hel", "Her", "Hold", "Ifirn", "Jascham", "Kaj", "Lel",
+  "Lidw", "Linn", "Lync", "Mad", "Mandl", "Minne", "Nadj", "Nann",
+  "Nirk", "Norg", "Olj", "Ri", "Rod", "Rondr", "Row", "Saar", "Sibill",
+  "Sve", "Swan", "Thal", "Tjeik", "Ulfh", "Val", "Vanjesch", "Waidg",
+  "Widog", "Wisg", "Wulfh"
+]
+infix  = ["an", "il", "el", "in", "ar"]
+suffix = ["a", "nja", "hild", "gard", "gunde", "ine", "aude", "wyn",
+          "ria", "iel", "borg", "scha", "ea"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Berg", "Wald", "Waid", "Wolf", "Grün", "Rohn"]
+infix  = []
+suffix = ["wacht", "ner", "mann", "schmied", "schröter", "felde", "brander"]

@@ -1,0 +1,152 @@
+[meta]
+region   = "Mittelreich: Garetien"
+language = "de"
+notes    = "Weitest verbreitete Namen des Mittelreichs. Einfaches Volk: Vorname + Herkunftsort oder Beruf. Adel: Klangvolle Namen, gern Doppelnamen, Zweit-/Drittnamen aus Bosparano."
+
+[simple.first]
+male    = [
+  "Adran", "Alrik", "Angrond", "Anjun", "Answin", "Angildbert", "Ardor",
+  "Baltram", "Bardo", "Berman", "Bernhelm", "Bogumil", "Bomil", "Boronian",
+  "Bosper", "Bredo", "Brin", "Burgol", "Burian", "Colgan", "Connar",
+  "Cordovan", "Curthan", "Cyberian", "Danos", "Darian", "Dirion", "Drego",
+  "Eberhelm", "Edo", "Edorian", "Efferdan", "Elbrecht", "Elgor", "Emmeran",
+  "Eran", "Erlan", "Erzian", "Falk", "Felian", "Fingorn", "Firunian",
+  "Geppert", "Gerding", "Gerion", "Gernot", "Geron", "Gerrik", "Gishelm",
+  "Groben", "Grordan", "Grorthin", "Gumbald", "Hal", "Haldan", "Halman",
+  "Helmar", "Helmbrecht", "Helme", "Hesindian", "Hilbert", "Hilgert",
+  "Igalf", "Igan", "Irian", "Jobdan", "Jost", "Kalman", "Karon", "Lares",
+  "Lechdan", "Leomar", "Linnert", "Losan", "Luidor", "Melcher", "Moribert",
+  "Movert", "Odilbert", "Odilon", "Ogdan", "Olger", "Orelan", "Pagol",
+  "Parainor", "Parinor", "Peradan", "Perainian", "Perainor", "Perval",
+  "Pisidian", "Praiodan", "Praiodar", "Praioslob", "Praiosmar", "Quanion",
+  "Quendan", "Quin", "Radulf", "Rahjadan", "Rahjan", "Rank", "Rauert",
+  "Raul", "Raulbrin", "Reo", "Reto", "Roban", "Rondred", "Rondrian",
+  "Rukus", "Rumpo", "Salix", "Savertin", "Seffel", "Sequin", "Sigerain",
+  "Sigman", "Sindar", "Stordan", "Thallian", "Thisdan", "Timshal", "Torm",
+  "Travin", "Travidan", "Tsafried", "Tsadan", "Udalf", "Udildor", "Ugalf",
+  "Ugdalf", "Ugdan", "Ugo", "Ulfried", "Ungolf", "Valman", "Valpo",
+  "Viburn", "Vitus", "Voltan", "Xindan", "Xeppert", "Xerber", "Yann",
+  "Yantur", "Yendan", "Yendar", "Yendor", "Zondan", "Zolthan", "Zordan"
+]
+female  = [
+  "Adaque", "Alda", "Aldare", "Alena", "Alinde", "Alrike", "Alruna",
+  "Alvide", "Alwene", "Arba", "Ardare", "Belona", "Binya", "Birsel",
+  "Boriane", "Caya", "Celissa", "Cella", "Charine", "Coris", "Coruna",
+  "Daria", "Dela", "Derya", "Dhana", "Dilga", "Dimiona", "Dirione",
+  "Doride", "Dralina", "Dramina", "Duridanya", "Dythlinde", "Edala",
+  "Efferdane", "Elene", "Elida", "Elwene", "Emer", "Fiana", "Firisa",
+  "Firuna", "Gala", "Gilia", "Ginaya", "Girte", "Glenna", "Gunelde",
+  "Gurnhild", "Hannafrid", "Heiltrud", "Heike", "Hesindiane", "Hesine",
+  "Hitta", "Ifirnia", "Ilke", "Ingrimma", "Ingrimiane", "Isida",
+  "Jadwiga", "Josmine", "Junivera", "Karima", "Khorena", "Kysira",
+  "Lana", "Larona", "Leonore", "Lidda", "Losiane", "Ludilla", "Lutisana",
+  "Moreria", "Neila", "Oleana", "Olorande", "Ondwina", "Palinai",
+  "Perdia", "Phexla", "Perainiane", "Praiadine", "Praiodane", "Prajosmin",
+  "Quenia", "Quelina", "Quisira", "Rahjalieb", "Rahjane", "Rhodena",
+  "Roana", "Rohaja", "Rondirai", "Rondriane", "Rovena", "Rudane",
+  "Saginta", "Selinde", "Sumudai", "Sylvette", "Thalionmel", "Thornia",
+  "Titina", "Tsaja", "Turike", "Ulinai", "Ulmia", "Uthjane", "Utsinde",
+  "Vana", "Viridia", "Vistella", "Wina", "Wilimai", "Xaida", "Xaviera",
+  "Xerane", "Xinda", "Yasinthe", "Yasmina", "Yassia", "Yola", "Yolande",
+  "Yolde", "Yosmina", "Yppolita", "Ysilda", "Zelda", "Zidane", "Zita",
+  "Zylva"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen (Gemeine)
+  "Adersin", "Algerein", "Anjuhal", "Arberdan", "Arres", "Arsteener",
+  "Babek", "Bachental", "Bellentor", "Berlind", "Bodiak", "Bruchklinger",
+  "Burkherdall", "Damotil", "Darben", "Dargel", "Darpater", "Daske",
+  "Dinckel", "Dorcken", "Durenald", "Ehrwald", "Eisinger", "Engstrand",
+  "Eslebon", "Fassmacher", "Femel", "Fidian", "Fleischhauer", "Fredor",
+  "Fuxfell", "Galdifei", "Garether", "Gemiol", "Gerdenwald", "Gerrholt",
+  "Gerrich", "Gerstenbauer", "Gesse", "Glimmerdiek", "Gorbas", "Grabensalb",
+  "Groterian", "Grunder", "Hainsate", "Harnischmacher", "Hartsteener",
+  "Helmisch", "Hiligon", "Honorald", "Horger", "Horigan", "Huisdorn",
+  "Hullheimer", "Inken", "Jochmeier", "Jolen", "Karolus", "Keres",
+  "Korber", "Kornis", "Korniger", "Lassan", "Lindenbauer", "Linnenschneider",
+  "Lonnert", "Marnion", "Maurenbrecher", "Meeltheuer", "Musker", "Nattel",
+  "Neuwirth", "Obernhofer", "Okenheld", "Olben", "Oldenport", "Orkenhau",
+  "Ottresker", "Perainsloben", "Peresen", "Plötzbogen", "Praiostreu",
+  "Pulether", "Quarzen", "Rastburger", "Rogel", "Rodiak", "Rundarek",
+  "Ruttel", "Schlunder", "Sculptor", "Seehoff", "Silkwies", "Sonnfelder",
+  "Spichbrecher", "Steinhauer", "Stellmacher", "Stoerrebrandt", "Tannhaus",
+  "Toberen", "Trallo", "Travinger", "Treublatt", "Trifon", "Tucher",
+  "Tulop", "Ulfaren", "Unterbauer", "Winkelhauser", "Winterkalt",
+  "Wollweber", "Zornbold", "Zandor", "Zeel", "Zerte", "Zweischwert",
+  # Adelsnamen
+  "von Aarburg", "von Bärenau", "vom Berg", "von Brachental",
+  "von Dornensee", "von Dunkelschlund", "von Ehrenstein", "von Eisensteyn",
+  "von Erlenstamm", "von Falkenstein", "von Fronforst", "von Gareth",
+  "von Goldweiler", "von Greyfenstein", "von Hartsteen", "von Hirschfurten",
+  "von Hohenholz", "von Leuenberg", "von Leuenfeld", "von Lichtenberg",
+  "von Löwenthal", "von Luring", "von Orkenschild", "von Rabenmund",
+  "von Schilfweih", "von Schreyenfels", "von Schwarztannen", "von Streitzigj",
+  "von Sturmfels", "von Sturzbach", "von Tannwirk", "von Ulmenhain",
+  "von Zweifelfels"
+]
+
+[compose.first]
+infix_probability = 0.3
+
+[compose.first.male]
+prefix = [
+  "Adr", "Alr", "Ang", "Ans", "Ang", "Balt", "Bard", "Berm", "Bernh",
+  "Bom", "Bor", "Bred", "Brin", "Burg", "Bur", "Colg", "Cord", "Curth",
+  "Dan", "Dar", "Dir", "Dreg", "Eberh", "Edori", "Efferd", "Elbr",
+  "Elg", "Emmer", "Erl", "Erz", "Falk", "Fel", "Fing", "Firun",
+  "Gepp", "Gerd", "Geri", "Gern", "Gerr", "Gish", "Gumb", "Hald",
+  "Halm", "Helm", "Hes", "Hilb", "Hilg", "Irian", "Job", "Kalm",
+  "Kar", "Lar", "Lech", "Leo", "Linn", "Los", "Meli", "Mor", "Movert",
+  "Odilb", "Odil", "Olg", "Pag", "Paraino", "Parin", "Pera", "Perv",
+  "Praio", "Queni", "Quend", "Radf", "Rahj", "Rank", "Rauer", "Raul",
+  "Reo", "Ret", "Rob", "Rondr", "Ruk", "Rump", "Salix", "Savert",
+  "Seff", "Sequ", "Sigr", "Sigm", "Sind", "Stord", "Thall", "Thisd",
+  "Tims", "Torm", "Trav", "Traviid", "Tsafr", "Tsad", "Ugalf", "Ugdan",
+  "Ulfried", "Ungolf", "Valm", "Valp", "Vibr", "Vit", "Volt", "Xind",
+  "Xepp", "Xerb", "Yann", "Yant", "Yend", "Zond", "Zolth", "Zord"
+]
+infix  = ["ard", "an", "el", "al", "er", "or"]
+suffix = ["fried", "hold", "bert", "man", "wald", "hard", "dan", "dor",
+          "nor", "rian", "lob", "mar", "helm", "mund", "wig", "rich",
+          "olf", "ulf"]
+
+[compose.first.female]
+prefix = [
+  "Ad", "Ald", "Alen", "Alind", "Alrik", "Alrun", "Alv", "Alw", "Arb",
+  "Ard", "Bel", "Bin", "Birs", "Bori", "Cay", "Celis", "Charinne", "Coris",
+  "Cor", "Dar", "Del", "Deraj", "Dhan", "Dilg", "Dim", "Dir", "Dorid",
+  "Dral", "Duram", "Dythlin", "Efferd", "Elen", "Elid", "Elw", "Fian",
+  "Firis", "Firun", "Gal", "Gil", "Gin", "Girt", "Glenn", "Gun", "Gurnhild",
+  "Hannafr", "Heilt", "Heik", "Hesind", "Hesin", "Hit", "Ifirn", "Ilk",
+  "Ingrm", "Ingrim", "Isid", "Jadw", "Josmin", "Juniv", "Karim",
+  "Khor", "Lanan", "Lar", "Leon", "Lidd", "Losian", "Ludill", "Lutis",
+  "Moer", "Neil", "Olenan", "Olor", "Ondw", "Palinai", "Phexl", "Perain",
+  "Praio", "Quen", "Rahj", "Rhod", "Roan", "Rohaj", "Rondir", "Rondr",
+  "Rov", "Sagint", "Selin", "Sumud", "Thalionm", "Thorn", "Tsaj", "Turik",
+  "Ulm", "Uthjan", "Utsin", "Van", "Virid", "Wilinai", "Wina", "Xaid",
+  "Xav", "Yasinth", "Yasm", "Yass", "Yol", "Yppolit", "Zelda", "Zit",
+  "Zylv"
+]
+infix  = ["an", "in", "el", "al", "ar", "ia"]
+suffix = ["a", "hild", "gard", "traud", "trud", "ine", "ane", "nai",
+          "lieb", "linde", "wina", "mard", "da", "ne", "iane"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.2
+
+[compose.last.neutral]
+prefix = [
+  "Acker", "Bach", "Eich", "Erls", "Gersten", "Holz", "Linden",
+  "Moosen", "Orkens", "Stein", "Tann", "Woll"
+]
+infix  = []
+suffix = ["bauer", "brecht", "hauer", "haupt", "wald", "heimer",
+          "wirt", "weber", "meier", "knecht", "macher", "schmied"]

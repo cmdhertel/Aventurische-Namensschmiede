@@ -1,0 +1,78 @@
+[meta]
+region   = "Hoher Norden"
+language = "de"
+notes    = "Mischung aus Thorwalsch, Nivesisch, Norbardisch und Mittelreichisch. Rauer Menschenschlag. Nachnamen und Beinamen nicht unüblich, folgen verschiedenen Konventionen."
+
+[simple.first]
+male    = [
+  "Arnbold", "Asgrimmjef", "Coljew", "Däbbart", "Degold", "Dostmann",
+  "Foggman", "Friedjew", "Gerbald", "Gerbaljew", "Grimmjost", "Hanko",
+  "Hänno", "Heimuk", "Hokku", "Jaakon", "Jakkonush", "Januk", "Jasper",
+  "Jeesko", "Jöstov", "Juchoi", "Kalkuk", "Keinjo", "Kervö", "Pannek",
+  "Peltje", "Praiofried", "Simjok", "Starre", "Swaffnach", "Thorwolf",
+  "Torbanjeff", "Ulfried", "Uribert", "Valjok", "Wolfgärdoff", "Wolfgrimm",
+  "Woltan", "Wulfen", "Yagu", "Yngvar", "Yorrajew", "Zurbaran"
+]
+female  = [
+  "Alrika", "Dascha", "Durinja", "Elwinja", "Erdgerda", "Fennja", "Frenja",
+  "Galande", "Geldana", "Gunbritt", "Hauka", "Hedjascha", "Hitta", "Hjalda",
+  "Immentraud", "Jädra", "Joraja", "Juminke", "Kattlinka", "Kela",
+  "Leivka", "Letta", "Minka", "Norhild", "Olja", "Selinja", "Solva",
+  "Svänna", "Swafgard", "Swandje", "Talja", "Tatjascha", "Thorfinnja",
+  "Torgritt", "Vatjascha", "Vedaju", "Vlada", "Wolfgarda", "Wolfhild",
+  "Wolflinde", "Yasmara"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  "Arnboldsson", "Arnbolddottir", "Bernsteinfinder", "Brecheisnер",
+  "Doltjeff", "Durjolew", "Einauge", "Eisläufer", "Elkski", "Firnläufer",
+  "Goldnase", "Irgjeloff", "Janukson", "Janukdottir", "Karenski",
+  "Leivkasson", "Leivkadottir", "Mogoljeff", "Neunfinger", "Orkentoht",
+  "Reusenholer", "Robbenschlächter", "Schneehaar", "Yngvarsson",
+  "Yngvardottir"
+]
+
+[compose.first]
+infix_probability = 0.3
+
+[compose.first.male]
+prefix = [
+  "Arnb", "Asgrimmj", "Colj", "Däbb", "Deg", "Dost", "Fogg", "Friedj",
+  "Gerb", "Grimmj", "Hank", "Hänn", "Heimuk", "Hokk", "Jaak", "Jakkon",
+  "Jan", "Jasp", "Jeesk", "Jöst", "Juch", "Kalk", "Keinj", "Kerv",
+  "Pann", "Peltj", "Praiofried", "Simj", "Starr", "Swaffn", "Thorw",
+  "Torb", "Ulfried", "Urib", "Valj", "Wolfg", "Wolfgr", "Wolt",
+  "Wulf", "Yag", "Yngv", "Yorrj", "Zurb"
+]
+infix  = ["an", "im", "ard", "jef", "ew"]
+suffix = ["jef", "jow", "ew", "jok", "ok", "nush", "uk", "wulf", "grimm",
+          "wolf", "fried", "an", "bert", "tan"]
+
+[compose.first.female]
+prefix = [
+  "Alrik", "Dasch", "Dur", "Elw", "Erdg", "Fenn", "Fren", "Gal",
+  "Geld", "Gunbr", "Hauk", "Hedjascha", "Hitt", "Hjal", "Imment",
+  "Jädr", "Jor", "Jumin", "Kattl", "Kel", "Leivk", "Lett", "Mink",
+  "Norh", "Olj", "Selin", "Solv", "Svän", "Swafg", "Swandj", "Talj",
+  "Tatjascha", "Thorfinn", "Torgr", "Vatjascha", "Vedaj", "Vlad",
+  "Wolfg", "Wolfh", "Wolflin", "Yasmar"
+]
+infix  = ["an", "in", "ard", "ja", "scha"]
+suffix = ["a", "nja", "scha", "inja", "gard", "hild", "linde", "ja",
+          "ka", "ju", "nna", "brit", "da"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Brecheis", "Firn", "Gold", "Schnee", "Reusen", "Robben"]
+infix  = []
+suffix = ["läufer", "nase", "haar", "holer", "schlächter", "toht", "finger",
+          "auge", "son", "dottir", "jef", "ew", "ski"]

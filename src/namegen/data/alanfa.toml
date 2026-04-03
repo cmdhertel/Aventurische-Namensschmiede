@@ -1,0 +1,103 @@
+[meta]
+region   = "Al'Anfa & Tiefer Süden"
+language = "de"
+notes    = "Blumige, klangvolle Namen. Frauen: Endungen auf -e oder -is vornehm. Koseformen: -ela/-ita (w), -elo/-ito (m). Nachnamen mit -ez/-uez/-es/-os/-z bildbar. Kein klassischer Adel, stattdessen Grandenfamilien."
+
+[simple.first]
+male    = [
+  "Adario", "Agusto", "Alondro", "Alriego", "Alveron", "Amato", "Amir", "Amirato",
+  "Apreno", "Armado", "Assanto", "Boromeo", "Cascador", "Calmano", "Coragon", "Corvo",
+  "Damiano", "Deredan", "Desiderio", "Diago", "Diamantes", "Dirial", "Domingo", "Dorio",
+  "Efferdito", "Egiliano", "Ellio", "Emano", "Emiglio", "Enrisco", "Fiorenzo",
+  "Firunando", "Flaminio", "Gaiomo", "Ghonzo", "Ghorio", "Gordo", "Hesindiego",
+  "Iago", "Imaculo", "Imperioso", "Ingarin", "Irato", "Irschan", "Jesidoro",
+  "Kalman", "Kamillio", "Khalid", "Lirobal", "Losian", "Lucan", "Lucio", "Luiz",
+  "Mandolo", "Marbido", "Marboso", "Marlo", "Marno", "Massino", "Micirio",
+  "Moralo", "Morisys", "Nestario", "Nostromo", "Nuncio", "Orelio", "Panfilo",
+  "Pedresco", "Praiopio", "Quintilian", "Rahiano", "Rahjadan", "Ramin", "Ramon",
+  "Rayo", "Romero", "Rondrigan", "Rondrigo", "Salpico", "Sandro", "Simodo",
+  "Superbo", "Tarquinio", "Thiago", "Tirato", "Trienco", "Tito", "Ulan", "Unnio",
+  "Vareno", "Vessario", "Vitario", "Vito", "Vittorio", "Wilciano", "Xenofero",
+  "Yorge", "Yuan", "Zurbaran"
+]
+female  = [
+  "Adaque", "Alara", "Amira", "Avessandra", "Balatravis", "Baniatella", "Blanca",
+  "Boronaya", "Calmora", "Carimina", "Cessandra", "Cessaria", "Consuela", "Cortessa",
+  "Corvinida", "Desiderya", "Desmonda", "Diantha", "Dolorita", "Dominga", "Doriana",
+  "Duridanya", "Elodia", "Emerencia", "Emiglia", "Esmeralda", "Estrella", "Fiara",
+  "Fiona", "Fiorella", "Folsina", "Galindia", "Gerlita", "Gilia", "Heliantha",
+  "Hevane", "Imelde", "Imperia", "Inares", "Iunivera", "Ivarena", "Jesabela",
+  "Jessande", "Joseda", "Karianna", "Katalinya", "Korrasson", "Leona", "Levita",
+  "Luisina", "Marchesca", "Maryarita", "Mercara", "Merida", "Morisca", "Neva",
+  "Nicolasina", "Olea", "Orelia", "Phelicitas", "Phelippa", "Phranya", "Praiociose",
+  "Querinia", "Rahjades", "Ramira", "Rayades", "Rimiona", "Rosinia", "Sabela",
+  "Salina", "Santilia", "Saranya", "Simiona", "Tomassina", "Ugolines", "Ulembina",
+  "Ursania", "Vadoria", "Valeria", "Varinella", "Velvenya", "Vida", "Violanda",
+  "Xantilia", "Ximena", "Yvonya", "Zalines", "Zephirina", "Zeradia"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Acostez", "Albahir", "Almanzar", "Alvarez", "Anthos", "Arragenos", "Barrera",
+  "Belafloros", "Beratas", "Boronez", "Botero", "Brabaker", "Casarez", "Charazzar",
+  "Comitez", "Cornio", "Delazar", "Dominguez", "Erabenas", "Fontanez", "Fontanoya",
+  "Fiovarez", "Golgarez", "Gorodez", "Gorralas", "Gredo", "Gutmund", "Hammerfaust",
+  "Immenstatt", "Inezano", "Jacobella", "Kalando", "Klippstein", "Koriguez",
+  "Lanistos", "Lupinez", "Madarez", "Malagro", "Marquez", "Meridiana", "Monterey",
+  "Montez", "Morales", "Nirrano", "Oldenport", "Olibantin", "Phelipez", "Piriones",
+  "Queseda", "Quintone", "Ramirez", "Rivitoz", "Rondriguez", "Salmorantes",
+  "Sandoz", "Santana", "Schönredner", "Sylvaron", "Tannspitz", "Tiamartin",
+  "Treufreund", "Uludaz", "Zaldahan",
+  # Grandenfamilien (Adelsäquivalent)
+  "Bonareth", "Florios", "Honak", "Karinor", "Kugres", "Paligan", "Ulfhart",
+  "Wilmaan", "Zornbrecht"
+]
+
+[compose.first]
+infix_probability = 0.15
+
+[compose.first.male]
+prefix = [
+  "Ad", "Ag", "Al", "Am", "Apr", "Ar", "Ass", "Bor", "Cal", "Casc", "Cor",
+  "Dam", "Des", "Di", "Dom", "Dor", "Efferd", "Egil", "Em", "En", "Fior",
+  "Firun", "Flam", "Gai", "Ghor", "Gord", "Im", "Ing", "Ir", "Jes", "Kal",
+  "Kam", "Khal", "Lir", "Los", "Luc", "Man", "Marb", "Mass", "Mor", "Nest",
+  "Nun", "Or", "Pan", "Pedr", "Praio", "Quint", "Rahj", "Ram", "Ray", "Rom",
+  "Rondr", "Salp", "Sand", "Sim", "Super", "Tarq", "Thi", "Tir", "Ul", "Var",
+  "Vess", "Vit", "Wil", "Xen", "Yor", "Zur"
+]
+infix  = ["an", "im", "or", "ar", "er", "in"]
+suffix = ["io", "o", "ario", "ano", "ino", "eo", "ero", "esco", "ado", "ando", "iero"]
+
+[compose.first.female]
+prefix = [
+  "Ad", "Al", "Am", "Av", "Bal", "Ban", "Blanc", "Boron", "Calm", "Car",
+  "Cess", "Cons", "Cort", "Corv", "Des", "Desm", "Di", "Dolor", "Dom", "Dor",
+  "El", "Emer", "Em", "Es", "Estr", "Fi", "Fiol", "Fols", "Gal", "Ger", "Gil",
+  "Heli", "Im", "In", "Jun", "Ivar", "Jes", "Kar", "Katal", "Leon", "Lev",
+  "Luis", "March", "Mary", "Merc", "Mer", "Mor", "Nev", "Nicol", "Or", "Phel",
+  "Phr", "Praio", "Quer", "Rahj", "Ram", "Ray", "Rim", "Ros", "Sab", "Sal",
+  "Sant", "Sar", "Sim", "Tom", "Urs", "Vad", "Val", "Var", "Velv", "Vid",
+  "Viol", "Xant", "Xim", "Yv", "Zal", "Zeph", "Zer"
+]
+infix  = ["an", "in", "al", "el", "or", "ar"]
+suffix = ["a", "ya", "ia", "da", "na", "ra", "lla", "sa", "nda", "etta", "ita", "ela"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = [
+  "Al", "Ant", "Bar", "Ber", "Bor", "Cal", "Cas", "Cor", "Del", "Dom",
+  "Fon", "Gol", "Gor", "Lup", "Mad", "Mar", "Mor", "Mont", "Ram", "Rond",
+  "Salm", "Sand", "Sant", "Sylv", "Tann", "Ul", "Zal"
+]
+infix  = []
+suffix = ["ez", "uez", "es", "os", "z", "ares", "anes", "eros"]

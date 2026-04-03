@@ -1,0 +1,80 @@
+[meta]
+region   = "Mittelreich: Sonnenmark"
+language = "de"
+notes    = "Um Beilunk, Bollwerk gegen die Schattenlande. Praios-Bezüge sehr häufig. Auch tobri-scher und alhanischer Einfluss."
+
+[simple.first]
+male    = [
+  "Alatheion", "Aldec", "Anselm", "Anselmo", "Anselt", "Ardor", "Arras",
+  "Bardo", "Claridor", "Dignatius", "Emmeran", "Gilborn", "Gorbal",
+  "Griffan", "Gryffor", "Gurvan", "Hal", "Helborn", "Helus", "Hilberian",
+  "Holdec", "Jariel", "Jobdan", "Justo", "Kathay", "Lechdan", "Losan",
+  "Lumino", "Malzan", "Noralec", "Owilmar", "Praiobur", "Praiodan",
+  "Praiofold", "Praiogalm", "Praiogriff", "Praiohilm", "Praiolan",
+  "Praiopold", "Praiotin", "Praiowar", "Quanion", "Sildor", "Silem",
+  "Solrik", "Stipen", "Yarum", "Yeto"
+]
+female  = [
+  "Alatheia", "Alda", "Algrid", "Amelthona", "Aureliana", "Branibora",
+  "Clarita", "Dimione", "Glenna", "Gryphonia", "Gurva", "Gusella",
+  "Gwiduhenna", "Gwynna", "Helia", "Ilumina", "Iusterna", "Jalinde",
+  "Lechmin", "Linai", "Luitperga", "Lumina", "Mirya", "Obarana",
+  "Pomona", "Praiadne", "Praiobura", "Praioida", "Praiodana",
+  "Praiogund", "Praiolieb", "Praiolil", "Praiosmin", "Praiotina",
+  "Praiowara", "Usvine", "Vilmja", "Yasinth"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Bedofeld", "Beilbergen", "Beilunker", "Bernigandh", "Eschberg",
+  "Lichtblick", "Radromsauer", "Radromtaler", "Starkentrutz", "Tuchner",
+  "Vildromtaler", "Waltich",
+  # Adelsnamen
+  "von Bergenhang", "von Braken", "von Faldahon", "von Föhrenkuppe",
+  "von Gral", "von Greifenau", "von Greifenfeldt", "von Grünau",
+  "von Güldenhang", "von Lichtenfelde", "von Radromfelde", "von Rauleu",
+  "von Saldersand", "von Streitzigj", "von Waldereck", "von Zweiseen"
+]
+
+[compose.first]
+infix_probability = 0.35
+
+[compose.first.male]
+prefix = [
+  "Alath", "Ald", "Anselm", "Ans", "Ard", "Bard", "Clar", "Dign",
+  "Emm", "Gilb", "Gorb", "Griffan", "Gryffor", "Gurv", "Helb", "Helus",
+  "Hilber", "Hold", "Jarl", "Job", "Just", "Kath", "Lech", "Los",
+  "Lumin", "Malz", "Noral", "Owilm", "Praio", "Quan", "Sild",
+  "Silem", "Solr", "Stip", "Yar", "Yet"
+]
+infix  = ["io", "al", "an", "ald", "or", "burg"]
+suffix = ["ion", "ec", "mo", "elt", "or", "idor", "atius", "an",
+          "born", "us", "ec", "lec", "mar", "griff", "hilm", "lan",
+          "pold", "tin", "war", "on", "ik", "en"]
+
+[compose.first.female]
+prefix = [
+  "Alath", "Ald", "Algr", "Amelt", "Aurel", "Branib", "Clar", "Dim",
+  "Glenn", "Gryph", "Gurv", "Gusell", "Gwiduh", "Gwynn", "Heli",
+  "Ilumin", "Iustern", "Jalind", "Lechmn", "Lin", "Luitp", "Lumin",
+  "Mirj", "Obar", "Pom", "Praiad", "Praio", "Usvin", "Vilmj", "Yas"
+]
+infix  = ["on", "al", "ar", "io", "or"]
+suffix = ["eia", "a", "id", "ona", "iana", "ita", "ne", "rga",
+          "ina", "na", "onia", "bura", "dana", "gund", "lieb",
+          "lil", "min", "tina", "wara", "ine", "ja", "inth"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Greif", "Licht", "Radrom", "Starkent", "Beil"]
+infix  = []
+suffix = ["au", "enfelde", "fenfeld", "sauer", "taler", "rutzer", "unker"]

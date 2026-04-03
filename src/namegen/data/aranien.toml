@@ -1,0 +1,94 @@
+[meta]
+region   = "Aranien"
+language = "de"
+notes    = "Mischung aus mittelreichischen und tulamidischen Einflüssen (Baburinisches Sprachgewirr). Matriarchat: Männer führen Vaternamen mit ibn, Frauen Mutternamen mit saba/-sunni/-sunya. Adelsnamen mit von oder ay/ai."
+
+[simple.first]
+male    = [
+  "Abdulon", "Abdulrik", "Abubrecht", "Aliban", "Amaryd", "Amirwolf", "Arkos",
+  "Arras", "Assaban", "Beyhelm", "Djafardeon", "Djemilassar", "Dschadirfried",
+  "Dscheridan", "Farukol", "Hamarbald", "Harunian", "Hassanfried", "Jashan",
+  "Jikhbald", "Kashban", "Korwan", "Leomar", "Leuhalla", "Machmud", "Marwamir",
+  "Melekhelm", "Merkan", "Muhalla", "Mukarribald", "Nabur", "Narebold",
+  "Nezahet", "Omjaralf", "Peranjador", "Rahjabert", "Rahjadan", "Rashdan",
+  "Rassan", "Rasulan", "Retoban", "Rohaldor", "Rondrador", "Rondramir",
+  "Selimdor", "Selimwar", "Shabobert", "Shafirio", "Shamar", "Sharondrio",
+  "Sulhamid", "Sultanor", "Taref", "Tariq", "Tuleffried", "Wulftan", "Yadail",
+  "Yassirman", "Yorlak", "Yussufried"
+]
+female  = [
+  "Aischanka", "Alisanya", "Arjunna", "Ashina", "Asleika", "Aylalind",
+  "Ayshira", "Ayshulianne", "Azizelis", "Banazira", "Belizath", "Damara",
+  "Dassareth", "Dilhabeth", "Dunjanild", "Elaisha", "Eleonora", "Emerbeth",
+  "Farissa", "Fayrike", "Feruja", "Feqzlinde", "Gazalinde", "Halimyanis",
+  "Hamide", "Hildebeth", "Iphemia", "Ishannah", "Jashild", "Jasina",
+  "Jushberta", "Kalashra", "Khedrine", "Khelbara", "Khorena", "Lailalinde",
+  "Leudira", "Leushanya", "Manjula", "Merishja", "Nedimsira", "Neraidane",
+  "Perainibith", "Peranshaya", "Rahjadane", "Rahjana", "Rashpatane",
+  "Rhayadaque", "Rondirai", "Rondrayla", "Shanya", "Sherizeth", "Shilaldara",
+  "Shulamunde", "Shulinai", "Sulajmaid", "Sulamin", "Sybia", "Tsabine",
+  "Yathilda", "Yullabethild", "Zulhaminai"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Aimaristani", "ak'Shahbra", "Alahjan", "al'Akhdar", "al'Awan", "al'Barad",
+  "Alhazir", "al'Keshal'Kharash", "al'Kitab", "as'Ahlan", "as'Najaras",
+  "as'Sarjabaran", "as'Sherchem", "as'Tahan", "Bishar", "Elburumi",
+  "Elyeshinnah", "Kahraman", "Terekandi", "Tiltenbrugger", "Turshem", "Zorgahani",
+  # Adelsnamen
+  "al'Nabab", "von Ankrabad", "von Awallakand", "von Bakrachal", "von Barbrück",
+  "von Farukand", "von Nasiradbad", "von Ras Abris", "von Ras Surya",
+  "von Revennis", "von Tasilimpfort", "von Tebahan", "von Tebanfurt",
+  "von Terchabbrück", "von Untersternheim", "von Veharis", "von Yakshabar",
+  "von Yasirabad", "von Yerkesh"
+]
+
+[compose.first]
+infix_probability = 0.4
+
+[compose.first.male]
+prefix = [
+  "Abd", "Abu", "Al", "Amir", "Ark", "Arr", "Ass", "Bey", "Djaf", "Djemil",
+  "Dschad", "Dscheri", "Far", "Ham", "Har", "Hassan", "Jash", "Jikh", "Kash",
+  "Korw", "Leo", "Leu", "Mach", "Marw", "Melek", "Mer", "Muh", "Mukarr",
+  "Nab", "Nar", "Nezah", "Omj", "Peran", "Rahj", "Rash", "Rass", "Rasul",
+  "Ret", "Rohal", "Rondr", "Selim", "Shab", "Shaf", "Sham", "Sharons",
+  "Sulh", "Sult", "Tar", "Tul", "Wulf", "Yas", "Yor", "Yussuf"
+]
+infix  = ["ar", "an", "al", "ir", "er", "im"]
+suffix = ["fried", "bald", "helm", "bold", "mir", "rik", "dan", "dor", "ban",
+          "jador", "nor", "tan", "war", "rio", "lak", "man"]
+
+[compose.first.female]
+prefix = [
+  "Aisch", "Alis", "Arj", "Ash", "Asle", "Ayl", "Aysh", "Ayshul", "Azize",
+  "Bana", "Beliz", "Dam", "Dass", "Dilh", "Dunj", "Elai", "Eleo", "Emer",
+  "Far", "Fayr", "Fer", "Feqz", "Gazal", "Halim", "Ham", "Hilde", "Iphemi",
+  "Ishan", "Jash", "Jas", "Juship", "Kalas", "Khedr", "Khelb", "Khor",
+  "Laila", "Leud", "Leush", "Manj", "Mer", "Nedim", "Ner", "Perain",
+  "Peran", "Rahj", "Rash", "Rhayd", "Rondr", "Shan", "Sher", "Shilal",
+  "Shulam", "Shul", "Sulaj", "Sulam", "Syb", "Tsab", "Yath", "Yull",
+  "Zulham"
+]
+infix  = ["il", "in", "al", "an", "ya", "ei"]
+suffix = ["linde", "anya", "beth", "ith", "hild", "nai", "dane", "yana",
+          "shaya", "rika", "ara", "lis", "maid", "ane", "dra"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = [
+  "al'", "as'", "ak'", "el'", "ay "
+]
+infix  = []
+suffix = ["ristani", "jan", "dar", "hjan", "hazir", "kitab", "tahan", "bumi",
+          "nah", "man", "andi", "brugger", "shem", "hani"]

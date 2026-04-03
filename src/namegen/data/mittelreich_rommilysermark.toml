@@ -1,0 +1,79 @@
+[meta]
+region   = "Mittelreich: Rommilyser Mark"
+language = "de"
+notes    = "Ehemaliges Darpatien. Starke Traviafrömmigkeit. Namensbestandteile: Buch-, Gans-/Gäns-, Fried-(-friede), Herd-(-herde/-herda), -linde, Traut-(-traud/-traute) häufig."
+
+[simple.first]
+male    = [
+  "Answin", "Barnhelm", "Buchlieb", "Cordovan", "Egilmar", "Friedbert",
+  "Friedebald", "Friedebrecht", "Friedeman", "Friedensreich", "Frieder",
+  "Gansbert", "Gänsebald", "Gänsebrecht", "Gansefred", "Gansel",
+  "Gansrik", "Geldor", "Gerindor", "Hagen", "Herdfried", "Herdin",
+  "Herdmann", "Isegrein", "Lindebrecht", "Ludeger", "Oldewin", "Randolph",
+  "Redenhardt", "Siegmann", "Traudemar", "Trautmann", "Trautmund",
+  "Traviahold", "Travidan", "Travinor", "Treubert"
+]
+female  = [
+  "Darpatia", "Diethlinde", "Friedegard", "Friedegunde", "Friedhilde",
+  "Friedrieke", "Frohmute", "Gänsegard", "Gansela", "Ganselda",
+  "Gänselinde", "Gansje", "Herda", "Herdgard", "Herdtraut", "Herdfrieda",
+  "Herdfriede", "Herdine", "Herdlinde", "Herdwiga", "Herdwinja",
+  "Herzlinde", "Hildegund", "Hildelind", "Ismena", "Lindegard",
+  "Svelinya", "Swantje", "Traviata", "Travide", "Trautgunde",
+  "Treuleude", "Waldtraute"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Armiger", "Darpater", "Daubenmacher", "Dergelbauer", "Finsterbinge",
+  "Grobbinder", "Heisinger", "Hufener", "Landsknecht", "Ochsenherder",
+  "Rattel", "Silbergießer", "Tannhaus", "Trutzbacher", "Tuchschneider",
+  "Viehtreiber", "Werckenfels", "Zwerchinger",
+  # Adelsnamen
+  "von Baernfarn", "von Bregelsaum", "von Darpatstrom", "von Dergelbrück",
+  "von Erlenfang", "von Firunslicht", "von Gernatfurten", "von Mersingen",
+  "von Natternfurt", "von Natterwacht", "von Ochs", "von Ochsenwasser",
+  "von Ockenheld", "von Oppstein", "von Rabenmund", "von Rosshagen",
+  "von Sturmfels"
+]
+
+[compose.first]
+infix_probability = 0.35
+
+[compose.first.male]
+prefix = [
+  "Ans", "Barnh", "Buchl", "Cord", "Egilm", "Fried", "Gansb", "Gänseb",
+  "Gansfr", "Gansel", "Gansr", "Geld", "Gerind", "Hag", "Herdfr",
+  "Herd", "Isegr", "Lindebr", "Ludeg", "Oldew", "Randolph", "Redh",
+  "Siegm", "Traud", "Trautm", "Trautm", "Trav", "Travinh", "Trevb"
+]
+infix  = ["en", "al", "an", "el", "in"]
+suffix = ["lieb", "bald", "brecht", "man", "reich", "er", "dan",
+          "man", "mund", "hold", "inor", "bert", "din", "hardt"]
+
+[compose.first.female]
+prefix = [
+  "Darpa", "Diethl", "Friedeg", "Friedeh", "Friedr", "Frohmut",
+  "Gänseg", "Gansel", "Gänsel", "Gansj", "Herd", "Herzl", "Hildeg",
+  "Hildel", "Ism", "Lindeg", "Svelin", "Swantj", "Travi", "Trautg",
+  "Treuleud", "Waldt"
+]
+infix  = ["ar", "al", "in", "eg"]
+suffix = ["a", "gard", "gunde", "hilde", "rieke", "mute", "linde",
+          "da", "traut", "friede", "frieda", "inja", "wiga", "raute"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Gäns", "Herd", "Darp", "Tuch", "Vieh", "Silb", "Ochsen"]
+infix  = []
+suffix = ["egard", "fried", "ater", "schneider", "treiber", "ergießer",
+          "herder"]

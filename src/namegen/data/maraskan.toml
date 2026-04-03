@@ -1,0 +1,98 @@
+[meta]
+region   = "Maraskan"
+language = "de"
+notes    = "Maraskani-Namen: Aus Garethi/Tulamidisch abgeleitet + typische Endungen. Herkunftsort statt Familienname. Beinamen wechseln mit dem Leben. Typische Endungen (w): -jid/-jida/-sab/-yscha. (m): -eran/-jian/-jin/-mold/-ziber/-rech."
+
+[simple.first]
+male    = [
+  "Achmedziber", "Adrejin", "Aldifriedjian", "Alrech", "Alrechziber",
+  "Alrijian", "Bardojian", "Brindjian", "Cuiljin", "Darjin", "Denderan",
+  "Djurmold", "Djurjin", "Dschindziber", "Elgoran", "Endijian", "Ephrajin",
+  "Etzelmold", "Feliziber", "Feruziber", "Frumojai", "Frumold", "Ganrijian",
+  "Garalor", "Garamold", "Gerbaldjian", "Gormold", "Hadijian", "Halijian",
+  "Hanjomold", "Iberan", "Jemeljian", "Jeskojin", "Jostziber", "Kasparbadjian",
+  "Keideran", "Korrasmold", "Lirobaljin", "Littjewziber", "Loziber",
+  "Madajin", "Marajian", "Marechziber", "Marjiamold", "Maurech", "Mujiajian",
+  "Mulziber", "Murakziber", "Ornibijian", "Perjin", "Praiosziber",
+  "Quinziber", "Rurech", "Scheideran", "Thorbaldjian", "Ugoziber",
+  "Ulrechziber", "Ungolfziber", "Vegsziber", "Welfmold", "Xanderan",
+  "Zendijin", "Zifermold"
+]
+female  = [
+  "Achtevsabu", "Alrikjida", "Alryscha", "Aylajida", "Birseljida",
+  "Boronjida", "Brinjida", "Cassimasab", "Debrasab", "Delilahsab",
+  "Denderajida", "Duchenijida", "Elgojida", "Emirasab", "Endijida",
+  "Erisabu", "Esmeraldjida", "Firrejida", "Frijida", "Garasab",
+  "Glennajida", "Haranisab", "Hesindasab", "Hjelgirasab", "Idrajid",
+  "Ishajid", "Jamilhajida", "Karhimasab", "Madahajida", "Milhibethjida",
+  "Minkajida", "Mirasab", "Mylenjida", "Nandurijida", "Nedimajida",
+  "Olgajida", "Perizelasab", "Phelicijida", "Prajyscha", "Rahjajida",
+  "Ramelusab", "Reijida", "Renajida", "Rondrasab", "Ruhallajida",
+  "Rurasab", "Rurijida", "Ruryscha", "Sefirajida", "Shilajida",
+  "Sulabethjida", "Sumujida", "Trusneljida", "Tsabinajida", "Umrajida",
+  "Viderajida", "Wladyscha", "Xanjida", "Yasindajida", "Yezeminerasab",
+  "Zadisab", "Zajida", "Zaradjida", "Zitajida"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # von + Herkunftsort (typisch)
+  "von Astuzak", "von Boran", "von Sinoda", "von Khunchom",
+  "von Andalkan", "von Tuzak", "von Neu-Jergan",
+  # Beinamen
+  "die Bösartige", "die Freundliche", "die Geschwätzige", "die Gründliche",
+  "die Haarspalterin", "die Haimamutter", "die Hartnäckige", "die Heisere",
+  "die Hirtin", "die Leichtgläubige", "die Misstrauische",
+  "die Nachdenkliche", "die Scharfzüngige", "die Starke",
+  "die Unentschlossene", "die Weise", "die Widerborstige",
+  "der Ausgefuchste", "der Feige", "der Hartnäckige", "der Meister",
+  "der Philosoph", "der Schamlose", "der Stille", "der Tapfere",
+  "der Wüterich", "der Zögerliche"
+]
+
+[compose.first]
+infix_probability = 0.1
+
+[compose.first.male]
+prefix = [
+  "Achmed", "Adrej", "Aldifried", "Alr", "Aldo", "Bardo", "Brind",
+  "Cuil", "Dar", "Dender", "Djur", "Dschind", "Elgor", "Endi", "Ephr",
+  "Etzel", "Feliz", "Feruz", "Frumo", "Frum", "Ganr", "Garal", "Garam",
+  "Gerbald", "Gorm", "Hadi", "Hali", "Hanjo", "Iber", "Jemel", "Jesko",
+  "Jost", "Kasparbad", "Keider", "Korras", "Lirobal", "Littjew", "Loz",
+  "Mada", "Mara", "Marech", "Marjia", "Maur", "Mujia", "Mul", "Murak",
+  "Ornibi", "Per", "Praios", "Quin", "Rur", "Scheid", "Thorbald",
+  "Ugo", "Ulrech", "Ungolf", "Vegs", "Welf", "Xander", "Zendi", "Zifer"
+]
+infix  = ["a", "ji", "la", "mos"]
+suffix = ["ziber", "jian", "jin", "mold", "eran", "oran", "rech", "jai",
+          "lor", "mol"]
+
+[compose.first.female]
+prefix = [
+  "Achtev", "Alrik", "Alr", "Ayla", "Birsel", "Boron", "Brin",
+  "Cassim", "Debra", "Delilah", "Dendera", "Ducheni", "Elgo", "Emira",
+  "Endi", "Erisab", "Esmerald", "Firre", "Fri", "Gar", "Glenna",
+  "Harani", "Hesinda", "Hjelgira", "Idra", "Isha", "Jamilha", "Karhima",
+  "Madaha", "Milhibeth", "Minka", "Mir", "Mylen", "Nanduri", "Nedima",
+  "Olga", "Perizel", "Phelici", "Praj", "Rahja", "Ramelu", "Rei",
+  "Rena", "Rondra", "Ruhalla", "Rura", "Ruri", "Rur", "Sefira", "Shila",
+  "Sulabeth", "Sumu", "Trusnel", "Tsabina", "Umra", "Videra",
+  "Wlad", "Xan", "Yasinda", "Yezeminera", "Zadi", "Za", "Zarad", "Zita"
+]
+infix  = ["ha", "ji", "ma", "al"]
+suffix = ["jida", "sab", "sabu", "yscha", "jid"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["von "]
+infix  = []
+suffix = ["astuzak", "boran", "sinoda", "khunchom", "andalkan", "tuzak"]

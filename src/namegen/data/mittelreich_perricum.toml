@@ -1,0 +1,67 @@
+[meta]
+region   = "Mittelreich: Perricum"
+language = "de"
+notes    = "Typisch mittelreichische Namen, oft mit Rondra/Praios-Bezug. Im Süden tulamidische Einflüsse (ehem. Sultanat Nebachot). Mischformen und retulamidisierte Namen mit Apostrophierung."
+
+[simple.first]
+male    = [
+  "Al'irik", "Al'irikh", "Al'khor", "Arve", "Ash'ivin", "Aslan", "Chadim",
+  "Dalman", "Eslam", "Hal", "Hamir", "Koradin", "Kordan", "Kor'hamid",
+  "Korobar", "Korresh", "Leomar", "Makil", "Mu'ammar", "Muk'hadin",
+  "Okam", "Rahul", "Reto", "Rondrigan", "Ronwulf", "Sanin", "Simold",
+  "Yakorban"
+]
+female  = [
+  "Alhina", "Al'khora", "Ayla", "Chal'andra", "Dassareth", "Emer",
+  "Koraline", "Korianna", "Lah'eila", "Leudane", "Mir'bane", "Nurhan",
+  "Rondara", "Svelinya", "Yezhabel"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Belgor", "Darpater", "Dengler", "Ehrwalden", "Felswegen", "Leinfahrer",
+  "Leuentreu", "Netzfischer", "Rebenlieb", "Rosstreiber", "Trollzack",
+  "Turmen", "Weihenwacht", "Weinacker", "Wintherlich",
+  # Adelsnamen
+  "von Bergthann", "von Brendiltal", "von Darpatbrück", "von Dergelmund",
+  "von Firunslicht", "von Gluckenhang", "von Gnitzenkuhl", "von Haselhain",
+  "von Leuentreu", "von Paligan", "von Pfiffenstock", "von Sturmfels",
+  "von Trollforst", "von Wasserburg", "von Weidenhang"
+]
+
+[compose.first]
+infix_probability = 0.3
+
+[compose.first.male]
+prefix = [
+  "Al'", "Arv", "Ash'", "Asl", "Chad", "Dalm", "Esl", "Ham", "Kor",
+  "Leo", "Mak", "Mu'amm", "Muk'had", "Ok", "Rahu", "Ret", "Rondr",
+  "Ronw", "San", "Sim", "Yakrb"
+]
+infix  = ["ir", "an", "ad", "or", "im"]
+suffix = ["an", "ikh", "khor", "ivin", "lan", "im", "in", "dan",
+          "lam", "hamid", "obar", "resh", "mar", "til", "old", "ban"]
+
+[compose.first.female]
+prefix = [
+  "Alh", "Al'kh", "Ayl", "Chal'andr", "Dass", "Em", "Kor", "Lah'eil",
+  "Leud", "Mir'ban", "Nurh", "Rondar", "Svelinj", "Yezh"
+]
+infix  = ["al", "an", "or", "ir"]
+suffix = ["ina", "ora", "habel", "ane", "eline", "anna", "han", "eila", "da"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Berg", "Darp", "Ehr", "Leuen", "Netz", "Ross", "Wein"]
+infix  = []
+suffix = ["thann", "ater", "ler", "walden", "wegen", "fahrer",
+          "treu", "fischer", "lieb", "treiber"]

@@ -1,0 +1,58 @@
+[meta]
+region   = "Mittelreich: Almada"
+language = "de"
+notes    = "Schmelztiegel: Bosparanisch + Tulamidisch. Viele führen Zweitnamen. Lokalpatriotismus (Punina/Ragathia). Nachnamen ohne Zusatz oder mit d'/de/di/da/von/vom/zu. Al' direkt im Familiennamen."
+
+[simple.first]
+male    = [
+  "Almadeo", "Almanzo", "Almanzor", "Alonso", "Alricio", "Alriego",
+  "Amando", "Assavo", "Azulejo", "Balbiano", "Bardojoz", "Batholo",
+  "Biscarat", "Bodar", "Boromeo", "Boronathan", "Borondino", "Cahusac",
+  "Caldaios", "Cambados", "Cazorlenyo", "Danilo", "Eglamor", "Erresto",
+  "Escalio", "Eslamo", "Espejo", "Farugo", "Federigo", "Gaftaro",
+  "Gerion", "Girolamo", "Gonzalo", "Gualdo", "Gujadal", "Hazanyo",
+  "Hernando", "Hesindio", "Hillero", "Ianaro", "Igeno", "Iglorio",
+  "Ingrimo", "Ippolito", "Isonzo", "Jacopo", "Joselito", "Kazanyo",
+  "Lanvolo", "Laurenzio", "Lerico", "Lessandero", "Lodovico", "Ludovigo",
+  "Luciano", "Lucio", "Lumino", "Madrano", "Maquedar", "Marboriano",
+  "Moritatio", "Nazir", "Obidos", "Ordonyo", "Pelayo", "Perinyo",
+  "Peziano", "Punino", "Rafik", "Rafim", "Rahjiano", "Raulo", "Rondrigo",
+  "Rustamo", "Salvestro", "Sansovino", "Selindiano", "Selindio",
+  "Servando", "Talfan", "Tassilo", "Tennetto", "Tessano", "Tolak",
+  "Tsayano", "Urrito", "Valdemoro", "Valpo", "Vencelao", "Viento",
+  "Volapio", "Yaberto", "Yalach", "Yanturio", "Yelador", "Zahir",
+  "Zayano", "Zelonso"
+]
+female  = [
+  "Ahumeda", "Aldea", "Aldonaza", "Almadea", "Amaria", "Antara", "Azila",
+  "Baraya", "Bellameria", "Boronya", "Caldaya", "Caldja", "Caneya",
+  "Concabella", "Corvara", "Daroca", "Debona", "Doloresa", "Dunyaca",
+  "Elea", "Emiglia", "Escalada", "Esfera", "Eshilya", "Eslamida",
+  "Eslamidia", "Esribeda", "Farfanya", "Fhadime", "Firella", "Ghazalita",
+  "Gonzaga", "Gujadanya", "Ilmicea", "Imeria", "Ismeralda", "Jazemina",
+  "Luciana", "Madalena", "Maqueda", "Mirandola", "Mirhaneba", "Morena",
+  "Noiona", "Novara", "Olenga", "Olivenaca", "Pasqua", "Peliria",
+  "Rabena", "Rahjada", "Rahjania", "Rhajineza", "Richeza", "Rifada",
+  "Rinaya", "Rondrala", "Rondralia", "Shahane", "Sefira", "Siguenza",
+  "Simanca", "Solivai", "Solsona", "Travanca", "Tsaia", "Tsaya",
+  "Ulzedona", "Unata", "Usanza", "Unicornia", "Valposella", "Vanoza",
+  "Vibora", "Viminyoza", "Vinyaza", "Yanis", "Yaquiria", "Yedra",
+  "Yegua", "Yesabella", "Zafira", "Zalamea", "Zarpa", "Zaya", "Zefira",
+  "Zorilla"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Adelbuhler", "Assiref", "Ballurat", "Brannofend", "Brannthagen",
+  "Blaemendal", "Bolongaro", "Castanyeda", "Cavazaro", "Contador",
+  "Cronbiegler", "Dallenstein", "Degenhardt", "Dschadirez", "Fetthennen",
+  "Frostwein", "Furlani", "Galandi", "Küferhilf", "Lamperez",
+  "Lautenschläger", "Maltichio", "Manzanares", "Mirador", "Monzon",
+  "Mudejar", "Muwallar", "Ossentani", "Pichelstein", "Pitanza", "Pipote",
+  "Ragather", "Ragaza", "Rüdwein", "Schlehwein", "Sensendengler",
+  "Sfalia", "Sfandini", "Sfapano", "Sforigan", "Sgirra", "Taubentanz",
+  "Tefoso", "Trapani", "Valdepenya", "Vascagni", "Zulhamidez", "Zurriaga",
+  # Adelsnamen
+  "d'Artesa", "da Vanya", "di Lacara", "di Madjani", "von Abundil"

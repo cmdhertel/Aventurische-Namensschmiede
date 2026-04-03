@@ -1,0 +1,112 @@
+[meta]
+region   = "Bornland"
+language = "de"
+notes    = "Garethi mit fremden Einflüssen (nivesisch, norbardisch). Koseformen auf -ja, -ka, -scha. Leibeigene ohne Familiennamen. Adelsnamen oft hochtrabend bis lächerlich."
+
+[simple.first]
+male    = [
+  "Albin", "Anshag", "Arvid", "Baerjan", "Baerow", "Berschin", "Birjew",
+  "Bornjeff", "Bosjew", "Boutsen", "Daanje", "Dabbert", "Damian", "Danow",
+  "Duchjo", "Dulgjew", "Dunjew", "Dunjoscha", "Elkjow", "Elko", "Elkwin",
+  "Ertzel", "Firnjan", "Firunjew", "Fredo", "Galjan", "Goljew", "Grimjan",
+  "Hane", "Helmjew", "Hurdo", "Iber", "Ilmin", "Irjan", "Ischtan", "Jaakon",
+  "Jarlow", "Jasper", "Joost", "Joschin", "Jucho", "Kolkja", "Larjan",
+  "Leomar", "Linjan", "Littjew", "Ljasew", "Ljubow", "Maris", "Matajew",
+  "Meljow", "Mew", "Miljan", "Mjesko", "Nasjan", "Neerjan", "Neesdan",
+  "Olko", "Orschin", "Oswin", "Panek", "Pedder", "Peraenjow", "Pettar",
+  "Pitjow", "Pjerow", "Rowin", "Rudjew", "Semkin", "Stane", "Suschin",
+  "Tannjew", "Thezmar", "Tirulf", "Torjin", "Travin", "Ugo", "Ulmjan",
+  "Urmjew", "Uriel", "Urnislaw", "Vigo", "Vito", "Wassjew", "Wolpje",
+  "Wulfen", "Wulfjew", "Xebbert"
+]
+female  = [
+  "Alinja", "Alwinje", "Baernja", "Bernischa", "Danja", "Dorlin", "Duna",
+  "Dunjascha", "Eljascha", "Elkwine", "Elmjescha", "Firunja", "Frinja",
+  "Gari", "Geertja", "Grimje", "Gritten", "Gudwinja", "Helvja", "Hesinja",
+  "Ifirnja", "Ilmjescha", "Irinja", "Isidra", "Jadvige", "Janne", "Jassia",
+  "Jedwinja", "Jella", "Karinja", "Kundra", "Leudara", "Libussa", "Luta",
+  "Lysminja", "Maline", "Marissja", "Marja", "Moschane", "Nadjescha",
+  "Nadschenka", "Nessa", "Nuschinja", "Olja", "Paale", "Peraenja",
+  "Peranka", "Rabescha", "Rassia", "Rihinja", "Rowena", "Rowinja",
+  "Rudwischa", "Selwine", "Sewjescha", "Sulja", "Tesbinja", "Thesia",
+  "Thila", "Tineke", "Tjeika", "Travjescha", "Turiken", "Ulmjescha",
+  "Urjelke", "Vanjescha", "Verisja", "Vestissja", "Warja", "Winja",
+  "Wolpjane", "Wulfjascha", "Xinja", "Yadwinja", "Yasinde", "Zidonje"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Alatzer", "Alwinnen", "Arauken", "Baerensen", "Baerow", "Bornski",
+  "Brinnske", "Dappersjen", "Dobelsteen", "Donsemkin", "Drulgosch",
+  "Ebersen", "Eelkinnen", "Elkensen", "Elmsjen", "Firnske", "Firunkis",
+  "Gartimpski", "Gerbensen", "Gerberow", "Grumpen", "Hinske", "Hollerow",
+  "Ilmensen", "Ilumkis", "Jannerloff", "Jannske", "Juchski", "Karenkis",
+  "Karjensen", "Kruschin", "Kunzke", "Laikis", "Larinow", "Luminoff",
+  "Meskinske", "Miljes", "Muselken", "Nagragski", "Notjes", "Ouvensen",
+  "Parenkis", "Peddersen", "Peddersjepen", "Perschoff", "Puschinske",
+  "Puspersen", "Rodensen", "Ruderow", "Salderken", "Schorkin", "Sewerski",
+  "Surjeloff", "Siveling", "Sjepensen", "Stipkow", "Stoerrebrandt",
+  "Timpski", "Tuljow", "Turjeleff", "Ulmensen", "Ulmski", "Walroder",
+  "Walsareff", "Walsjakow", "Wolpjes", "Wulfski",
+  # Adelsnamen
+  "von Aringen", "von Blütenfeld", "von Brinbaum", "von Dotzen",
+  "von Elkauen", "von Erbarmen", "von Eschenfurt", "von Gradnochsjepengurken",
+  "von Hinzk", "von Ilmenstein", "von Kirschhausen", "von Krempelow",
+  "von Larsach", "von Notmark", "von Plötzingen", "von Quelldunkel",
+  "von Salderkeim", "von Schossko", "von Sjepengurken", "von Treie",
+  "von Wosna"
+]
+
+[compose.first]
+infix_probability = 0.3
+
+[compose.first.male]
+prefix = [
+  "Alb", "Ans", "Arv", "Baer", "Bers", "Birj", "Born", "Bosj", "Daan",
+  "Dabb", "Dam", "Dan", "Duch", "Dulg", "Dunj", "Elk", "Ert", "Firn",
+  "Fred", "Galj", "Golj", "Grimj", "Han", "Helmj", "Hurd", "Ib", "Ilm",
+  "Irj", "Isch", "Jaak", "Jarl", "Jasp", "Joost", "Josch", "Juch",
+  "Kolkj", "Larj", "Leo", "Linj", "Littj", "Ljas", "Ljub", "Mar",
+  "Mataj", "Melj", "Milj", "Mjesk", "Nasj", "Neerj", "Nesd", "Orch",
+  "Osw", "Pan", "Pedd", "Peraenj", "Pett", "Pitj", "Pjer", "Row",
+  "Rudj", "Semk", "Stan", "Susch", "Tannj", "Tirulf", "Torj",
+  "Trav", "Ulm", "Urm", "Uris", "Urniss", "Vass", "Wolpj", "Wulf"
+]
+infix  = ["ja", "je", "scha", "ka", "nje", "jo"]
+suffix = ["w", "jow", "jew", "jan", "jef", "dan", "win", "kin", "schin",
+          "laus", "ulf", "mar", "tin", "rin", "bert"]
+
+[compose.first.female]
+prefix = [
+  "Al", "Baern", "Bern", "Dan", "Dorl", "Dun", "Dunj", "Elj", "Elkw",
+  "Elmj", "Firun", "Frin", "Gar", "Geert", "Grim", "Grit", "Gudw",
+  "Helv", "Hesin", "Ifirn", "Ilmj", "Irin", "Isid", "Jadv", "Jan",
+  "Jass", "Jedw", "Karin", "Kund", "Leud", "Libu", "Lut", "Lysm",
+  "Malin", "Mariss", "Mar", "Mosch", "Nadj", "Ness", "Nusch", "Olj",
+  "Paal", "Peraen", "Rabesch", "Rass", "Rih", "Row", "Rudw", "Selw",
+  "Sewj", "Sulj", "Tesb", "Thes", "Thil", "Tinek", "Tjei", "Travj",
+  "Turik", "Ulmj", "Urjelk", "Vanj", "Veris", "Vestiss", "War",
+  "Win", "Wolpj", "Wulfjascha", "Xin", "Yadw", "Yasin", "Zidon"
+]
+infix  = ["in", "ja", "scha", "ka", "je", "nje", "winja"]
+suffix = ["ja", "ka", "scha", "nja", "winja", "jescha", "inje", "ke",
+          "ine", "ara", "ra", "ne", "je"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = [
+  "Born", "Firn", "Gart", "Gerb", "Larin", "Pedd", "Rod", "Saldr",
+  "Sjepen", "Ulmens", "Walrod", "Wulf"
+]
+infix  = []
+suffix = ["ski", "ske", "sen", "ssen", "ken", "kow", "off", "eff", "row",
+          "ow", "is", "nin", "kis"]

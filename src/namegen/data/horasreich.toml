@@ -1,0 +1,166 @@
+[meta]
+region   = "Horasreich"
+language = "de"
+notes    = "Kultivierte Eitelkeit bei der Namensgebung. Viele tragen mehr als einen Vornamen. Adelsprädikat ya reserviert für Adel, Gelehrte, Kriegerseminare. Bürgerliche nutzen da/de/di/della. Keine verbindlichen Familienvorgaben."
+
+[simple.first]
+male    = [
+  "Abelmir", "Adaon", "Alborn", "Aldo", "Alessandro", "Alricilian", "Alricio",
+  "Alverigo", "Alvin", "Amaldo", "Anselmo", "Arbas", "Argelione", "Ariano",
+  "Ariosto", "Arno", "Ascanio", "Aurentian", "Avessandro", "Barjed",
+  "Basilius", "Bembo", "Benvenuto", "Beppo", "Boldrino", "Bonnaro",
+  "Boromeo", "Borso", "Bosper", "Brano", "Brigon", "Burian", "Cadron",
+  "Caldor", "Cangrande", "Carolan", "Chiranor", "Cornaro", "Cordovan",
+  "Croenar", "Curon", "Curthan", "Cusimo", "Damion", "Darian", "Dartan",
+  "Delgado", "Dettmar", "Dorgando", "Draco", "Drugon", "Edorian", "Efferdo",
+  "Eolan", "Erlan", "Ezzelino", "Faldor", "Fardenin", "Festo", "Folnor",
+  "Gabrino", "Gardelan", "Gareno", "Geron", "Gilmon", "Gismondo", "Grifone",
+  "Hakaan", "Haldan", "Haldur", "Hesindiego", "Hesindior", "Hexander",
+  "Horasio", "Horathio", "Imaculo", "Irian", "Irion", "Jaltek", "Kaiman",
+  "Kedor", "Khadan", "Khorennio", "Landor", "Leomar", "Leonello",
+  "Lessandero", "Lorion", "Lucano", "Luciano", "Ludolfo", "Lysander",
+  "Malvolio", "Marbio", "Masaniello", "Midor", "Mondino", "Muracio",
+  "Nepolemo", "Nestario", "Nitor", "Orsino", "Ostilio", "Pandolfo",
+  "Pasquino", "Perainio", "Phederino", "Phedro", "Pirtho", "Polinaro",
+  "Praias", "Praionor", "Pulpio", "Quendan", "Rahjacomo", "Rahyodan",
+  "Ralhion", "Ralman", "Rassuan", "Refardeon", "Reon", "Rimaldo", "Romin",
+  "Romualdo", "Rondraman", "Rondravio", "Rondrigo", "Salarino", "Salquirio",
+  "Sarastro", "Selinan", "Silem", "Sindarion", "Stordian", "Sumudan",
+  "Sulvodan", "Talor", "Tanglan", "Tassilo", "Terdin", "Thalion", "Thisdan",
+  "Thuan", "Timor", "Tolman", "Torvon", "Ugo", "Umbario", "Urras", "Usim",
+  "Varsinian", "Vascal", "Vermis", "Vicino", "Vitale", "Xeranion", "Yarum",
+  "Yerno", "Yulio", "Zadalon", "Zandor", "Zordan"
+]
+female  = [
+  "Adamante", "Adaque", "Aifingla", "Aldare", "Alessandra", "Alrike",
+  "Alvene", "Amaziella", "Amene", "Ardare", "Arissa", "Arvedua",
+  "Asmodena", "Aurelia", "Avelia", "Avessa", "Avessandra", "Belena",
+  "Bellarahja", "Bellarita", "Bellatrix", "Bonaventa", "Boromee",
+  "Cavarya", "Celissa", "Cirina", "Clarizia", "Coruna", "Dalida",
+  "Daria", "Desaya", "Dragontina", "Dulcinea", "Duridanya", "Efferdia",
+  "Elanor", "Elissa", "Elvene", "Erlgard", "Elysia", "Eronia",
+  "Feodora", "Fiagarete", "Fiammetta", "Findualia", "Gerone", "Ghislaine",
+  "Gorrada", "Gylduria", "Gylvana", "Haldana", "Haricia", "Harika",
+  "Hela", "Hesine", "Hesindiaga", "Hesindiane", "Hesindora", "Hexandra",
+  "Horanthe", "Horasianne", "Horathia", "Imacula", "Imperia",
+  "Ingrimmanda", "Irionya", "Isida", "Jatane", "Kusmara", "Lamea",
+  "Larona", "Lavinia", "Lelia", "Leomara", "Logistilla", "Lorietta",
+  "Lovisa", "Lucara", "Lucietta", "Lutisana", "Lyssandra", "Madalea",
+  "Maline", "Marbis", "Maryan", "Melisande", "Modesta", "Morena",
+  "Myriana", "Mythraela", "Nanda", "Nandine", "Nandora", "Nevinia",
+  "Niam", "Niothia", "Nissara", "Nita", "Odina", "Oleana", "Oloranthe",
+  "Pamina", "Perainella", "Phedre", "Phedora", "Phelicitas", "Phrosina",
+  "Polissena", "Praiadne", "Premodia", "Prishya", "Rahjalina",
+  "Rahjamande", "Rahjane", "Rahjanes", "Remira", "Rinaya", "Rondravia",
+  "Rondriga", "Sabetta", "Salkya", "Sariya", "Savinya", "Silvana",
+  "Simiona", "Svelinya", "Sylvette", "Synella", "Thalionmel", "Therisa",
+  "Thespia", "Tilliane", "Travienne", "Travietta", "Tsabella", "Tsaida",
+  "Udora", "Usvina", "Valiana", "Vanossa", "Viviona", "Xaviera", "Yalma",
+  "Yasinthe", "Yesaria", "Yolande", "Zarya", "Zerline", "Zyrasia"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Agricola", "Aldubhor", "Altrovis", "Anguissola", "Anzani", "Arbalista",
+  "Arsago", "Ballurat", "Barberigo", "Berylli", "Bibbiena", "Boccalino",
+  "Bomarzo", "Bosvani", "Botta", "Bresefinck", "Bronzino", "Broock",
+  "Buffarsis", "Cairano", "Calavanti", "Calmo", "Caranda", "Casella",
+  "Castellani", "Castracane", "Cavalcanti", "Cerrano", "Cornamusa",
+  "Corsini", "Cosentino", "Crassac", "Darneel", "Damotil", "Dolvarn",
+  "Droste", "Durazzo", "Durenald", "Eslebon", "Esthenar", "Falconieri",
+  "Farfara", "Femell", "Fiammingo", "Floridan", "Folango", "Fondolo",
+  "Forca", "Foscani", "Furbesca", "Gabbura", "Galletta", "Ghislieri",
+  "Gilindor", "Gozzi", "Gravura", "Graziani", "Grangorer", "Greven",
+  "Grimani", "Horrad", "Hortulani", "Ilsand", "Issefura", "Kalamal",
+  "Kureon", "Lafierei", "Lasca", "Lorvai", "Malagreia", "Matarazzo",
+  "Marmotte", "Marnion", "Mazarin", "Melior", "Menderath", "Mercator",
+  "Merzari", "Monesta", "Montazzi", "Monte", "Morcalino", "Muratori",
+  "Narveer", "Neethling", "Nestefan", "Novara", "Offantas", "Olhantur",
+  "Pamphili", "Pelargon", "Peruzzi", "Pheligonde", "Piccinino", "Pontre",
+  "Ponziani", "Prefudi", "Prosperi", "Quendillion", "Rabrunati",
+  "Radostai", "Raffacani", "Regalado", "Regotis", "Rijssen", "Rocambole",
+  "Rochas", "Rubini", "Ruffo", "Rutella", "Salvian", "Samudo", "Sandoval",
+  "Sarostes", "Sbasiti", "Scacabarozzi", "Scala", "Scardeoni",
+  "Scossavalli", "Scribani", "Serpoleth", "Sismondi", "Soranzo", "Spada",
+  "Spillatori", "Stipenbrink", "Tebaldeo", "Terumaris", "Tharedion",
+  "Torese", "Torre", "Tortona", "Trabbacantes", "Trequona", "Tripalda",
+  "Ulfaran", "Vansanti", "Vardeen", "Villani", "Westerfolden", "Willant",
+  "Zampante", "Zoppino", "Zubertin",
+  # Adelsnamen
+  "ya Costermana", "von Hussbek-Galahan", "von Malur", "von Radoleth",
+  "von Thegun", "von Veliris", "da Malagreia", "della Camerano",
+  "della Pena", "della Tegalliani", "della Trezzi", "della Turani",
+  "di Balligur", "di Bellafoldi", "di Camaro", "di Matienna",
+  "Firdayon", "Galahan", "Garlischgrötz", "Marvinko", "Oikaldiki",
+  "Salingor", "Sirensteen", "Tarcallo", "Thirindar"
+]
+
+[compose.first]
+infix_probability = 0.2
+
+[compose.first.male]
+prefix = [
+  "Ab", "Ad", "Al", "Am", "An", "Arb", "Arg", "Ari", "Asc", "Aur",
+  "Av", "Bar", "Bas", "Bem", "Benv", "Bep", "Bold", "Bonn", "Bor", "Brig",
+  "Bur", "Cad", "Cal", "Cang", "Car", "Chir", "Corn", "Cord", "Croe",
+  "Cur", "Curt", "Cus", "Dam", "Dar", "Delg", "Det", "Dorg", "Drac",
+  "Drug", "Edor", "Effers", "Eol", "Erl", "Ezz", "Fald", "Farden",
+  "Fest", "Folno", "Gabr", "Gardel", "Garen", "Ger", "Gilm", "Gism",
+  "Griffon", "Hak", "Hald", "Hesin", "Hex", "Hora", "Imac", "Iri",
+  "Jalt", "Kaim", "Kedor", "Khad", "Khor", "Land", "Leo", "Leon",
+  "Less", "Lor", "Luc", "Ludol", "Lys", "Malv", "Marb", "Mas", "Midor",
+  "Mond", "Mur", "Nepol", "Nest", "Nitor", "Orsin", "Ostil", "Pandol",
+  "Pasqu", "Perain", "Pheder", "Phedr", "Pirth", "Polin", "Praio",
+  "Pulp", "Quend", "Rahj", "Ralh", "Ralm", "Rass", "Refar", "Rimald",
+  "Romual", "Rondr", "Salar", "Salq", "Sarastr", "Selin", "Silm",
+  "Sindar", "Stord", "Sumudan", "Sulv", "Talor", "Tangl", "Tass",
+  "Terd", "Thal", "Thisd", "Thu", "Timor", "Tolm", "Torv", "Umbr",
+  "Urr", "Us", "Vars", "Vasc", "Vermis", "Vicin", "Vit", "Xer",
+  "Yar", "Yern", "Yul", "Zad", "Zand", "Zord"
+]
+infix  = ["an", "in", "el", "al", "or", "ar", "io"]
+suffix = ["o", "io", "lio", "rio", "ario", "ino", "ano", "eo", "on",
+          "ion", "don", "lor", "tor", "dan", "tan"]
+
+[compose.first.female]
+prefix = [
+  "Ad", "Aif", "Ald", "Ales", "Alr", "Alv", "Amaz", "Am", "Ard",
+  "Aris", "Arved", "Asmo", "Aur", "Av", "Bel", "Bella", "Bon", "Boro",
+  "Cav", "Celis", "Cir", "Clar", "Cor", "Dal", "Dar", "Des", "Drag",
+  "Dulc", "Dur", "Efferd", "El", "Elv", "Erlg", "Elys", "Er",
+  "Feod", "Fiamm", "Find", "Ger", "Ghisl", "Gorr", "Gyld", "Gylv",
+  "Hald", "Har", "Hel", "Hesin", "Hex", "Hora", "Imac", "Imper",
+  "Ingr", "Iri", "Is", "Jat", "Kusm", "Lam", "Lar", "Lav", "Lel",
+  "Leo", "Log", "Lor", "Lov", "Luc", "Lut", "Lyss", "Mad", "Malin",
+  "Marb", "Mary", "Melis", "Mod", "Mor", "Myri", "Myth", "Nand",
+  "Nev", "Ni", "Niss", "Nit", "Od", "Ole", "Olor", "Pam", "Perain",
+  "Phedd", "Phel", "Phros", "Polis", "Praiad", "Prem", "Prish",
+  "Rahj", "Rem", "Rin", "Rondr", "Sab", "Salk", "Sari", "Sav",
+  "Silv", "Simio", "Svel", "Sylv", "Syn", "Thal", "Ther", "Thesp",
+  "Till", "Travi", "Tsab", "Udor", "Usv", "Vali", "Van", "Vivi",
+  "Xav", "Yalm", "Yasin", "Yes", "Yol", "Zary", "Zerl", "Zyr"
+]
+infix  = ["an", "in", "al", "el", "or", "ia", "ra"]
+suffix = ["a", "ia", "ya", "ela", "ita", "etta", "ine", "ane", "ianne",
+          "elle", "alia", "onia", "ora", "anda", "ina"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = [
+  "Al", "Ang", "Ars", "Ball", "Barb", "Beryl", "Bosc", "Caval",
+  "Cors", "Falc", "Fiamm", "Gilind", "Grav", "Grimani", "Marat",
+  "Merc", "Murat", "Peruzz", "Pont", "Pros", "Regal", "Rubini",
+  "Scalc", "Soranzo", "Stipenb", "Torre", "Zampant"
+]
+infix  = []
+suffix = ["i", "o", "a", "ini", "ani", "elli", "elli", "one", "ino",
+          "ato", "inck", "ock", "eel", "ard"]

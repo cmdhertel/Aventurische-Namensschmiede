@@ -1,0 +1,87 @@
+[meta]
+region   = "Fjarninger"
+language = "de"
+notes    = "Nördliche Barbaren (Frundegar). Hart und kalt klingende Namen. Keine Familiennamen, aber klangvolle Ehrennamen und Sippennamen. Y = I, R rau und rollend."
+
+[simple.first]
+male    = [
+  "Angardur", "Asgold", "Askleivir", "Balkur", "Banibeorn", "Bardagimur",
+  "Baskir", "Blotgrim", "Blotulfur", "Bodvar", "Darnlaugr", "Darkir",
+  "Engur", "Felldur", "Fenrissir", "Fjallgart", "Frungrim", "Frunibrandt",
+  "Frunobar", "Frunwulf", "Gjallur", "Greimdrur", "Harsthor", "Havgrimur",
+  "Heffnard", "Herfnir", "Hjanir", "Hjant", "Hjort", "Hjorvard", "Ilkjart",
+  "Ilvnir", "Isgrinur", "Jölmi", "Kargrim", "Kladogant", "Mjösgur",
+  "Pandur", "Raluf", "Sigrindur", "Skarbeorn", "Skjoldur", "Snallnard",
+  "Snarkir", "Songrimur", "Steinthor", "Surthor", "Svartbanir", "Tjuntart",
+  "Torgrim", "Tronthor", "Valbrandar", "Waleif"
+]
+female  = [
+  "Angveig", "Arnthrudir", "Asgora", "Baska", "Björga", "Blotsaxa",
+  "Dandagard", "Draumirga", "Fenrissa", "Frunvirga", "Funudara", "Fyrveig",
+  "Gimmahalra", "Gunnlaug", "Halfga", "Halstakkara", "Hellgard", "Hildur",
+  "Hoelgjirda", "Ifnirga", "Irngrid", "Isjarda", "Jaldrud", "Karherga",
+  "Lotgara", "Lykvuda", "Lyrveig", "Ordruna", "Rangra", "Rannveig",
+  "Sigrundra", "Sirngrid", "Sisnaveld", "Skarda", "Skirngard", "Snorja",
+  "Svallveig", "Svannlaug", "Svellgra", "Ulfgard", "Varrag", "Walgrid",
+  "Walgrimdra", "Wyrmtrud", "Ylwa", "Yngheldur"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Ehrennamen (als Beiname)
+  "der Allesesser", "Bärenzwinger", "Bluträcher", "die Blutsäuferin",
+  "Donnerschrei", "Eisenswingerin", "Eisläufer", "Fellreißerin",
+  "Feuerbringer", "Frostherz", "Frostzunge", "die Furchtlose",
+  "Grimmauge", "Keulenbrecher", "Schneeschleicher", "Stoßzahnbrecherin",
+  "Todesaxt", "Todesklinge", "Todespfeil", "Todesfaust",
+  "der Unbezwingbare", "Vollstreckerin", "der Wächter", "Wildherz",
+  # Stammesnamen
+  "von Bluttrinker-Leute", "von Doppelaxt-Leute", "von Eisbrecher-Leute",
+  "von Eisfuchs-Leute", "von Firnklippen-Leute", "von Frostfeuer-Leute",
+  "von Funkenglut-Leute", "von Grimmfrost-Leute",
+  "von Schreiende-Schwerter-Leute", "von Sturmbrüller-Leute"
+]
+
+[compose.first]
+infix_probability = 0.3
+
+[compose.first.male]
+prefix = [
+  "Ang", "Asg", "Askl", "Balk", "Banib", "Bard", "Bask", "Blot", "Bodv",
+  "Darnl", "Dark", "Eng", "Fell", "Fenr", "Fjall", "Frun", "Gjall",
+  "Greimd", "Harst", "Havgr", "Heffn", "Herfn", "Hjan", "Hjort", "Hj",
+  "Ilkj", "Ilvn", "Isgr", "Karg", "Kladog", "Mjösg", "Pand", "Ral",
+  "Sigr", "Skarb", "Skjold", "Snall", "Snark", "Songr", "Stein", "Surt",
+  "Svartb", "Tjunt", "Torg", "Tront", "Valb", "Wal"
+]
+infix  = ["ag", "im", "and", "ing", "ar", "alf"]
+suffix = ["ur", "ir", "dur", "grimm", "gar", "nard", "ulfur", "beorn",
+          "thor", "gur", "jölmi", "art", "eif", "wulf", "brand"]
+
+[compose.first.female]
+prefix = [
+  "Angv", "Arnth", "Asg", "Bask", "Björg", "Blots", "Dand", "Draumirg",
+  "Fenr", "Frunv", "Funud", "Fyrv", "Gimm", "Gunnl", "Halfg", "Halstak",
+  "Hellg", "Hild", "Hoelgj", "Ifnirg", "Irng", "Isjard", "Jaldru",
+  "Karherg", "Lotg", "Lykvud", "Lyrv", "Ordr", "Rang", "Rannv",
+  "Sigr", "Sirng", "Sisnav", "Skard", "Skirng", "Snorj", "Svallv",
+  "Svannl", "Svellg", "Ulfg", "Varr", "Walgr", "Wyrmt", "Ylw", "Yngh"
+]
+infix  = ["alg", "irg", "und", "ang", "ard"]
+suffix = ["a", "ga", "ra", "ira", "dra", "veig", "laug", "grim", "eld",
+          "ard", "trud", "runa", "veld"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Blut", "Eis", "Firn", "Frost", "Grimm", "Sturm", "Wild"]
+infix  = []
+suffix = ["herz", "läufer", "zunge", "auge", "faust", "schwinger", "reißer",
+          "bringer", "schrei", "zwinger"]

@@ -1,0 +1,77 @@
+[meta]
+region   = "Ferkina"
+language = "de"
+notes    = "Urtulamidisch geprägt, rau und hart. Männer und unverheiratete Frauen: Vaternamen mit iban/sabu. Verheiratete Frauen: Ehemann-Name mit zawshi-. Stammesnamen mit Bdn/Ulad/Bern."
+
+[simple.first]
+male    = [
+  "Abtuul", "Ardavan", "Ardesh", "Azad", "Bashur", "Burshuk", "Chosraw",
+  "Devlekh", "Djershar", "Dschafur", "Dschalf", "Durjin", "Faruch", "Farzand",
+  "Feridun", "Fervez", "Gulbad", "Hafiz", "Harnar", "Haydar", "Jikhab",
+  "Kaszan", "Kazh", "Kazum", "Kherim", "Khordad", "Madawan", "Mharbal",
+  "Mirlam", "Muyanshir", "Nashrath", "Rachwan", "Rashni", "Rashuul",
+  "Rustam", "Sharkhan", "Tsharik", "Tugril", "Tulsani", "Uchrab", "Umar",
+  "Waqran", "Yabman", "Yistarrech", "Zakhaban", "Zhandur"
+]
+female  = [
+  "Ashu", "Azrubat", "Begum", "Belkhara", "Chanum", "Chatun", "Chizuran",
+  "Chorjan", "Chorshilan", "Dscheridocht", "Duncha", "Farah", "Faroshte",
+  "Farsha", "Farzandeh", "Golbanu", "Golsban", "Harshan", "Hulya",
+  "Jeleyin", "Khalila", "Khullat", "Laal", "Lahileh", "Massudeh",
+  "Mehrshan", "Mirhay", "Nadam", "Nazrin", "Nuraya", "Nurjahan",
+  "Peribanu", "Rashadocht", "Rohila", "Rushan", "Shiringol", "Shmahba",
+  "Sulefin", "Tamra", "Tarshabet", "Tebay", "Tulamin", "Zarbanu",
+  "Zuleycha"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  "Ban Anghrachan", "Ban Awallakh", "Ban Farkash", "Ban Gassarah",
+  "Ban Hadarri", "Ban Khalil", "Ban Kherash", "Ban Malya", "Ban Mhadjaduri",
+  "Ban Sharida", "Ban Tirghüfa", "Ban Uludh", "Bern Chalif", "Bern Yashkar",
+  "Shai'Aian", "Ulad Asuban", "Ulad Barshirn", "Ulad Yerkash"
+]
+
+[compose.first]
+infix_probability = 0.25
+
+[compose.first.male]
+prefix = [
+  "Abt", "Ard", "Azad", "Bash", "Bursh", "Chosr", "Dev", "Djers", "Dschaf",
+  "Durj", "Far", "Ferz", "Ferv", "Gulb", "Haf", "Harn", "Hayd", "Jikh",
+  "Kasz", "Kazh", "Kazum", "Kher", "Khord", "Madaw", "Mharb", "Mirl",
+  "Muyans", "Nashr", "Rachw", "Rashn", "Rashuul", "Rust", "Sharkh",
+  "Tshar", "Tugr", "Tulsan", "Uchr", "Um", "Waqr", "Yabm",
+  "Yistarr", "Zakhab", "Zhand"
+]
+infix  = ["ar", "an", "al", "ir", "ur", "im"]
+suffix = ["an", "av", "esh", "ud", "in", "ul", "am", "ir", "adh", "id",
+          "ach", "khab", "hab"]
+
+[compose.first.female]
+prefix = [
+  "Ash", "Azrub", "Beg", "Belkh", "Chan", "Chat", "Chizur", "Chorj",
+  "Chorsh", "Dscherid", "Dunch", "Far", "Farosh", "Farsh", "Farzand",
+  "Golb", "Golsb", "Harsh", "Hulj", "Jeley", "Khalil", "Khull", "Laal",
+  "Lahil", "Massud", "Mehrsh", "Mirh", "Nadm", "Nazr", "Nuraj", "Nurj",
+  "Perib", "Rashadoch", "Rohil", "Rush", "Shiringo", "Shm", "Sulef",
+  "Tamr", "Tarshab", "Teb", "Tulam", "Zarb", "Zuley"
+]
+infix  = ["an", "ar", "al", "uh", "ay"]
+suffix = ["a", "eh", "anu", "shan", "ban", "cha", "in", "et", "jan",
+          "leh", "ay", "deh"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Ban ", "Ulad ", "Bern "]
+infix  = []
+suffix = ["akh", "ash", "aduri", "arri", "alya", "harida", "üfa", "uban",
+          "shirn", "erkash", "halif", "yashkar"]

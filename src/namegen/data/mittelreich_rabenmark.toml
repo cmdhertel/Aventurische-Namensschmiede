@@ -1,0 +1,69 @@
+[meta]
+region   = "Mittelreich: Rabenmark"
+language = "de"
+notes    = "Ehemalige Kirchenmark, Boronfrömmigkeit. Neben mittelreichischen Namen besonders solche mit Boron- und Travia-Bezug."
+
+[simple.first]
+male    = [
+  "Alboron", "Boretheon", "Bodariel", "Borotin", "Brondan", "Bronfried",
+  "Corvin", "Corvinius", "Firnmar", "Gernot", "Golgarik", "Golgarion",
+  "Golgoran", "Schweigfried", "Silentius", "Travidan", "Travidor",
+  "Uthariel", "Welfert", "Wendehold"
+]
+female  = [
+  "Alwen", "Balatravie", "Bishdalia", "Borondria", "Boronlinde",
+  "Bronhilda", "Dorlena", "Etilie", "Golgrita", "Heilbrun", "Karneola",
+  "Leuhild", "Marbirga", "Marbogard", "Marbolene", "Marlinde", "Noina",
+  "Norike", "Oleana", "Travide", "Travienliebe", "Travileah",
+  "Valdara", "Wendeholde"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Familiennamen
+  "Ahlert", "Altzoller", "Dunkelfähr", "Gerber", "Gutheis", "Fellner",
+  "Flegelschinder", "Firnberger", "Ostlander", "Riswulf", "Schildmacher",
+  "Sensendengler", "Trollzacker", "Vargurd", "Wulfenried", "Xerber",
+  # Adelsnamen
+  "von Ackerer", "von Ährengatter", "von Aschenfeld", "von Baernfarn",
+  "von Beschleger", "von Binsböckel", "von Blutfelden", "von Boronsruh",
+  "von Mersingen", "von Niederauen", "von Praiosau", "von Rabenfeld",
+  "von Rabenthal", "von Rabentreu", "von Rechthag", "von Sensenhöh",
+  "von Sichelgrab", "von Trollsburg", "von Trollstädt"
+]
+
+[compose.first]
+infix_probability = 0.3
+
+[compose.first.male]
+prefix = [
+  "Alb", "Bor", "Bod", "Bront", "Corv", "Firnm", "Gern", "Golg",
+  "Schweigfr", "Silent", "Trav", "Uthar", "Welf", "Wendeh"
+]
+infix  = ["on", "ar", "an", "or", "id"]
+suffix = ["on", "etheon", "ariel", "otin", "dan", "fried", "ius",
+          "nik", "ion", "ran", "dor", "iel", "ert", "old"]
+
+[compose.first.female]
+prefix = [
+  "Alw", "Balatr", "Bishdal", "Borondr", "Boronl", "Bronhil", "Dorl",
+  "Etil", "Golg", "Heilbr", "Karneol", "Leuhild", "Marb", "Marlind",
+  "Noin", "Nor", "Olenan", "Trav", "Valdar", "Wendehol"
+]
+infix  = ["on", "ar", "id", "al"]
+suffix = ["a", "ie", "ia", "inda", "ilde", "rga", "gard", "ene",
+          "linde", "un", "ike", "eah", "liebe", "hold"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Raben", "Bor", "Troll", "Sensendengl"]
+infix  = []
+suffix = ["feld", "thal", "treu", "acker", "zacker", "er"]

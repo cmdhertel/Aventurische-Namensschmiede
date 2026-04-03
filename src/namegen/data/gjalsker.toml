@@ -1,0 +1,92 @@
+[meta]
+region   = "Gjalsker"
+language = "de"
+notes    = "Gjalskisch: aus Hjaldingschem und Ur-Tulamidya. Keltisch anmutend. Männer: Vaternamen mit bren, Frauen: Mutternamen mit brai. Schamanen: dur statt Elternteil. Ehrentitel Gon für Sieger der Kraftspiele."
+
+[simple.first]
+male    = [
+  "Anargh", "Anchas", "Artach", "Balfoch", "Bartakh", "Barwad", "Bearach",
+  "Bradruch", "Braighdan", "Branchan", "Branduch", "Breac", "Brein",
+  "Caerfynh", "Cainnoch", "Cammrur", "Cianu", "Cormach", "Daragh",
+  "Derwech", "Druan", "Donnachadh", "Dundoch", "Etzel", "Firnwär",
+  "Friedur", "Gabran", "Gaschnig", "Gedwed", "Hagwar", "Haru", "Harveg",
+  "Hjalldur", "Ifrunndoch", "Islogh", "Kazan", "Lannach", "Lurasch",
+  "Madadhskoth", "Madhru", "Marzagh", "Meku", "Mjesgold", "Morghinach",
+  "Morro", "Morved", "Murchad", "Murdoch", "Ohdru", "Orunu", "Partach",
+  "Rastar", "Roslagh", "Siegmoch", "Struan", "Strunlogh", "Tormud",
+  "Turdoch", "Tsharbak", "Ulf", "Ulraigh", "Wartech", "Wladuch", "Wuran",
+  "Yahrrad", "Yarrodh", "Yorged", "Yuchdan", "Yurrgold"
+]
+female  = [
+  "Aesa", "Andraga", "Aruleyd", "Bebann", "Blotulind", "Borrgach", "Brona",
+  "Brucha", "Caltha", "Cirnach", "Corrja", "Dairdra", "Dundana", "Dunyabra",
+  "Durrcha", "Eirnird", "Frunira", "Froya", "Gardrha", "Gharya", "Gjayka",
+  "Grainne", "Griadhra", "Grimheyd", "Griwer", "Hachwa", "Hagwa", "Harawa",
+  "Iasdar", "Hiltli", "Hjalbeth", "Hjurrgat", "Hulgä", "Ifnar", "Ifrunna",
+  "Irdath", "Irfraid", "Keirnath", "Lurga", "Madhreth", "Margraidh",
+  "Marthai", "Marrwen", "Marzagh", "Megrim", "Milbeth", "Miharra",
+  "Moirya", "Mordag", "Morrga", "Murraya", "Oighred", "Rachnaid", "Saryja",
+  "Savai", "Sidheag", "Shindarr", "Shinnath", "Skrayana", "Sorcha",
+  "Thorhalla", "Thorra", "Throna", "Uthra", "Yrrwa", "Yuchgard",
+  "Yurrgira", "Ywen", "Zurakka"
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  # Sippennamen (mit "vom Haerad der ...")
+  "vom Haerad der Alrudh", "vom Haerad der Dhartaech", "vom Haerad der Lyrgach",
+  "vom Haerad der Mortakh", "vom Haerad der Niellyn", "vom Haerad der Rayyadh",
+  "vom Haerad der Arryach Mur", "vom Haerad der Benbhälur",
+  "vom Haerad der Benskoth", "vom Haerad der Cregg-Yolir",
+  "vom Haerad der Ishtar-Barr", "vom Haerad der Oshthar-Sloch"
+]
+
+[compose.first]
+infix_probability = 0.2
+
+[compose.first.male]
+prefix = [
+  "An", "Art", "Balf", "Bart", "Barw", "Bear", "Bradr", "Braigh", "Branch",
+  "Brand", "Breac", "Caer", "Cainn", "Cammr", "Ci", "Corm", "Dar", "Derw",
+  "Dru", "Don", "Dund", "Gabrn", "Gaschn", "Gedw", "Hagw", "Har", "Harv",
+  "Hjall", "Ifrunn", "Isl", "Kaz", "Lann", "Lur", "Madadhsk", "Madhr",
+  "Marz", "Mek", "Mjesg", "Morgh", "Morr", "Morv", "Murch", "Murd",
+  "Ohdr", "Or", "Part", "Rast", "Rosl", "Sieg", "Stru", "Strn", "Torm",
+  "Turd", "Tsharb", "Ulr", "Wart", "Wlad", "Wur", "Yahr", "Yarr",
+  "Yorg", "Yuchd", "Yurr"
+]
+infix  = ["an", "ach", "och", "uch", "ag", "adh"]
+suffix = ["ach", "och", "uch", "adh", "an", "dan", "och", "dur", "rad",
+          "tech", "wad", "wech", "gold", "moch"]
+
+[compose.first.female]
+prefix = [
+  "Aes", "Andr", "Aruley", "Beb", "Blotul", "Borrg", "Bron", "Bruch",
+  "Calth", "Cirn", "Corrj", "Daird", "Dund", "Dunyabr", "Durrch",
+  "Eirnir", "Frun", "Froy", "Gardr", "Ghar", "Gjay", "Grain", "Griadhr",
+  "Grimhey", "Griw", "Hachw", "Hagw", "Haraw", "Hiltl", "Hjalb",
+  "Hjurrg", "Hulg", "Ifn", "Ifrunn", "Irdat", "Irfrai", "Keirn",
+  "Lurg", "Madhr", "Margrai", "Martha", "Marw", "Marz", "Megr",
+  "Milb", "Miharr", "Moiry", "Mord", "Morrg", "Murray", "Oighr",
+  "Rachn", "Sary", "Sav", "Sidhe", "Shind", "Shinn", "Skray",
+  "Sorch", "Thorh", "Thorr", "Thron", "Uthr", "Yrrw", "Yuchg",
+  "Yurrg", "Ywen", "Zurakk"
+]
+infix  = ["al", "ai", "ar", "an", "et"]
+suffix = ["a", "ja", "ga", "dra", "tha", "ra", "wa", "idh", "eth",
+          "gat", "beth", "naith", "aya", "ard"]
+
+[compose.first.neutral]
+prefix = []
+infix  = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["vom Haerad der "]
+infix  = []
+suffix = ["rudh", "taech", "gach", "takh", "llyn", "yadh", "mur", "hälur",
+          "skoth", "yolir", "barr", "sloch"]
