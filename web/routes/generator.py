@@ -6,6 +6,7 @@ import io
 import json
 import logging
 from pathlib import Path
+from time import perf_counter
 
 from fastapi import APIRouter, Form, Query, Request
 from fastapi.responses import StreamingResponse
@@ -17,8 +18,7 @@ from namegen.generator import generate
 from namegen.loader import list_regions, load_region
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 from observability import AppMetrics
-from observability_utils import safe_full_name
-from observability_utils import safe_full_name
+from observability_utils import count_empty_names, name_length, safe_full_name
 
 router = APIRouter()
 
@@ -35,6 +35,7 @@ _GENDER_DE = {
 _logger = logging.getLogger("namenschmiede.observability")
 _tracer: Tracer = get_tracer("namenschmiede.web")
 _metrics: AppMetrics | None = None
+
 
 def configure_observability(
     *,
@@ -85,11 +86,36 @@ async def generate_names(
 ):
     with _tracer.start_as_current_span("namegen.generate") as span:
         count = max(1, min(count, 50))
-        region_data = load_region(region)
-        gmode = GenerationMode(mode)
-        gend = Gender(gender)
-        category = ProfessionCategory(profession_category)
 
+        attrs = {
+            "namegen.region": region,
+            "namegen.mode": mode,
+            "namegen.gender": gender,
+            "namegen.character": character,
+            "namegen.profession_category": profession_category,
+        }
+
+        load_start = perf_counter()
+        try:
+            region_data = load_region(region)
+            gmode = GenerationMode(mode)
+            gend = Gender(gender)
+            category = ProfessionCategory(profession_category)
+        except ValueError as exc:
+            span.set_attribute("error.kind", "validation")
+            span.set_attribute("validation.phase", "input")
+            span.record_exception(exc)
+            raise
+        except Exception as exc:
+            span.set_attribute("error.kind", "load_region")
+            span.set_attribute("validation.phase", "region")
+            span.record_exception(exc)
+            raise
+        finally:
+            if _metrics:
+                _metrics.load_region_duration_ms.record((perf_counter() - load_start) * 1000, attrs)
+
+        generate_start = perf_counter()
         if character:
             results = [
                 generate_character(
@@ -102,7 +128,6 @@ async def generate_names(
             ]
             template = "partials/character_row.html"
             output_chars = sum(len(f"{safe_full_name(c)} {c.profession}".strip()) for c in results)
-            output_chars = sum(len(f"{safe_full_name(c)} {c.profession}".strip()) for c in results)
         else:
             results = [
                 generate(region=region, mode=gmode, gender=gend)
@@ -110,9 +135,11 @@ async def generate_names(
             ]
             template = "partials/name_row.html"
             output_chars = sum(len(safe_full_name(n)) for n in results)
-            output_chars = sum(len(safe_full_name(n)) for n in results)
+
+        generate_elapsed_ms = (perf_counter() - generate_start) * 1000
 
         input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
+        empty_results = count_empty_names(results)
 
         span.set_attribute("namegen.region", region)
         span.set_attribute("namegen.mode", mode)
@@ -122,21 +149,28 @@ async def generate_names(
         span.set_attribute("namegen.requested_count", count)
         span.set_attribute("namegen.input_chars", input_chars)
         span.set_attribute("namegen.output_chars", output_chars)
+        span.set_attribute("namegen.empty_results", empty_results)
 
         if _metrics:
-            attrs = {
-                "namegen.region": region,
-                "namegen.mode": mode,
-                "namegen.gender": gender,
-                "namegen.character": character,
-                "namegen.profession_category": profession_category,
-            }
             _metrics.generate_calls.add(1, attrs)
             _metrics.input_chars.add(input_chars, attrs)
             _metrics.output_chars.add(output_chars, attrs)
+            _metrics.generate_loop_duration_ms.record(generate_elapsed_ms, attrs)
+            _metrics.empty_results.add(empty_results, attrs)
+            for entry in results:
+                _metrics.name_length.record(name_length(entry), attrs)
+
+        if count > 0 and (empty_results / count) > 0.1:
+            _logger.warning(
+                "event=namegen.data_quality.warning region=%s mode=%s character=%s empty_ratio=%.2f",
+                region,
+                mode,
+                character,
+                empty_results / count,
+            )
 
         _logger.info(
-            "event=namegen.generate region=%s mode=%s gender=%s character=%s profession_category=%s count=%s input_chars=%s output_chars=%s",
+            "event=namegen.generate region=%s mode=%s gender=%s character=%s profession_category=%s count=%s input_chars=%s output_chars=%s empty_results=%s",
             region,
             mode,
             gender,
@@ -145,9 +179,11 @@ async def generate_names(
             count,
             input_chars,
             output_chars,
+            empty_results,
         )
 
-        return _TEMPLATES.TemplateResponse(
+        render_start = perf_counter()
+        response = _TEMPLATES.TemplateResponse(
             request,
             template,
             {
@@ -157,16 +193,29 @@ async def generate_names(
             },
         )
 
+        if _metrics:
+            _metrics.template_render_duration_ms.record((perf_counter() - render_start) * 1000, attrs)
+
+        return response
+
 
 @router.post("/pdf")
 async def download_pdf(names: str = Form(...)):
     from pdf_utils import build_pdf_bytes  # noqa: PLC0415
 
-    name_data: list[dict] = json.loads(names)
-    pdf_bytes = build_pdf_bytes(name_data)
+    with _tracer.start_as_current_span("namegen.pdf.build") as span:
+        name_data: list[dict] = json.loads(names)
+        span.set_attribute("namegen.pdf.names_count", len(name_data))
 
-    return StreamingResponse(
-        io.BytesIO(pdf_bytes),
-        media_type="application/pdf",
-        headers={"Content-Disposition": 'attachment; filename="dsa_namen.pdf"'},
-    )
+        start = perf_counter()
+        pdf_bytes = build_pdf_bytes(name_data)
+        elapsed_ms = (perf_counter() - start) * 1000
+
+        if _metrics:
+            _metrics.pdf_duration_ms.record(elapsed_ms, {"route": "/pdf"})
+
+        return StreamingResponse(
+            io.BytesIO(pdf_bytes),
+            media_type="application/pdf",
+            headers={"Content-Disposition": 'attachment; filename="dsa_namen.pdf"'},
+        )
