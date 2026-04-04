@@ -29,6 +29,13 @@ class ProfessionCategory(StrEnum):
     PROFAN   = "profan"     # weltliche.profane
 
 
+class ExperienceLevel(StrEnum):
+    LEHRLING = "lehrling"
+    GESELLE  = "geselle"
+    MEISTER  = "meister"
+    VETERAN  = "veteran"
+
+
 # ── Region TOML sub-models ────────────────────────────────────────────────────
 
 class GenderedStringPool(BaseModel):
@@ -111,6 +118,7 @@ class CharacterTraits(BaseModel):
 class CharacterResult(BaseModel):
     """Full fluff character sheet wrapping a NameResult."""
     name:       "NameResult"
+    experience: ExperienceLevel
     age:        int
     profession: str
     traits:     CharacterTraits

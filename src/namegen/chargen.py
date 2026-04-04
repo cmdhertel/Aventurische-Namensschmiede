@@ -12,6 +12,7 @@ from .loader import load_region
 from .models import (
     CharacterResult,
     CharacterTraits,
+    ExperienceLevel,
     Gender,
     GenerationMode,
     PhysicalTraits,
@@ -57,20 +58,29 @@ def _load_professions_by_category(category: ProfessionCategory) -> list[str]:
             )
 
 
+def get_profession_groups() -> list[tuple[str, list[str]]]:
+    """Return professions grouped for CLI display and user-facing filtering."""
+    return [
+        ("Geweihte", _load_professions_by_category(ProfessionCategory.GEWEIHTE)),
+        ("Zauberer", _load_professions_by_category(ProfessionCategory.ZAUBERER)),
+        ("Kämpfer & Ordensleute", _load_professions_by_category(ProfessionCategory.KAEMPFER)),
+        ("Profane", _load_professions_by_category(ProfessionCategory.PROFAN)),
+    ]
+
+
 # ── Age distribution ───────────────────────────────────────────────────────────
 
-def _generate_age(rng: random.Random) -> int:
-    """
-    Ages 18–80 for humans. Ages 70+ become progressively less likely:
-    probability drops linearly from 1.0 at age 70 to ~0.1 at age 80.
-    """
-    while True:
-        age = rng.randint(18, 80)
-        if age <= 70:
-            return age
-        threshold = 1.0 - (age - 70) * 0.09
-        if rng.random() < threshold:
-            return age
+def _generate_age(rng: random.Random, experience: ExperienceLevel) -> int:
+    """Generate an age within the configured experience bracket."""
+    match experience:
+        case ExperienceLevel.LEHRLING:
+            return rng.randint(10, 16)
+        case ExperienceLevel.GESELLE:
+            return rng.randint(17, 25)
+        case ExperienceLevel.MEISTER:
+            return rng.randint(26, 45)
+        case ExperienceLevel.VETERAN:
+            return rng.randint(46, 80)
 
 
 # ── Profession selection ───────────────────────────────────────────────────────
@@ -119,18 +129,27 @@ def generate_character(
     mode: GenerationMode = GenerationMode.SIMPLE,
     gender: Gender = Gender.ANY,
     profession_category: ProfessionCategory = ProfessionCategory.ALL,
+    experience: ExperienceLevel = ExperienceLevel.GESELLE,
+    infix_probability_override: float | None = None,
     rng: random.Random | None = None,
 ) -> CharacterResult:
     """Generate a full fluff character (name + age + profession + traits)."""
     _rng = rng if rng is not None else random
 
-    name = generate(region=region, mode=mode, gender=gender, rng=_rng)
-    age = _generate_age(_rng)
+    name = generate(
+        region=region,
+        mode=mode,
+        gender=gender,
+        rng=_rng,
+        infix_probability_override=infix_probability_override,
+    )
+    age = _generate_age(_rng, experience)
     profession = _pick_profession(region, profession_category, _rng)
     traits = _generate_traits(_rng)
 
     return CharacterResult(
         name=name,
+        experience=experience,
         age=age,
         profession=profession,
         traits=traits,

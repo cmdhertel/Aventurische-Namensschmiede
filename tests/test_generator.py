@@ -132,18 +132,29 @@ def test_full_name_with_last_name() -> None:
 # ── Compose-Modus: Infixe ─────────────────────────────────────────────────────
 
 def test_compose_infix_probability_zero_never_uses_infix() -> None:
-    """Mit infix_probability=0 darf kein Infix im Vornamen auftauchen."""
-    from namegen.loader import load_region
-    data = load_region("mittelreich_kosch")
-    orig_prob = data.compose.first.infix_probability
-    data.compose.first.__dict__["infix_probability"] = 0.0
-    try:
-        for i in range(20):
-            r = generate("mittelreich_kosch", mode=GenerationMode.COMPOSE, rng=random.Random(i))
-            if r.components:
-                assert r.components.first_infix is None
-    finally:
-        data.compose.first.__dict__["infix_probability"] = orig_prob
+    """Mit Override 0 darf kein Infix im Vornamen oder Nachnamen auftauchen."""
+    for i in range(20):
+        r = generate(
+            "mittelreich_kosch",
+            mode=GenerationMode.COMPOSE,
+            rng=random.Random(i),
+            infix_probability_override=0.0,
+        )
+        assert r.components is not None
+        assert r.components.first_infix is None
+        assert r.components.last_infix is None
+
+
+def test_compose_infix_probability_one_uses_infix_when_pools_exist() -> None:
+    r = generate(
+        "mittelreich_kosch",
+        mode=GenerationMode.COMPOSE,
+        rng=random.Random(1),
+        infix_probability_override=1.0,
+    )
+    assert r.components is not None
+    assert r.components.first_infix is not None
+    assert r.components.last_infix is not None
 
 
 def test_compose_components_reconstruct_name() -> None:

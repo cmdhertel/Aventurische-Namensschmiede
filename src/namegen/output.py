@@ -97,7 +97,7 @@ def _write_rich_characters(results: list[CharacterResult]) -> None:
         t = r.traits
         lines = [
             f"[bold amber]{r.full_name}[/bold amber]",
-            f"[dim]{r.name.region}  ·  {_GENDER_DE[r.gender.value]}  ·  {r.age} Jahre  ·  {r.profession}[/dim]",
+            f"[dim]{r.name.region}  ·  {_GENDER_DE[r.gender.value]}  ·  {r.experience.value}  ·  {r.age} Jahre  ·  {r.profession}[/dim]",
             "",
             f"[bold]Äußeres:[/bold]  Haare {t.physical.hair}, Augen {t.physical.eyes}, Statur {t.physical.build}",
             f"[bold]Wesen:[/bold]    {t.personality}",
@@ -112,7 +112,7 @@ def _chars_to_plain(results: list[CharacterResult]) -> str:
     for r in results:
         t = r.traits
         lines += [
-            f"{r.full_name}  ({r.name.region}, {_GENDER_DE[r.gender.value]}, {r.age} J., {r.profession})",
+            f"{r.full_name}  ({r.name.region}, {_GENDER_DE[r.gender.value]}, {r.experience.value}, {r.age} J., {r.profession})",
             f"  Äußeres:  Haare {t.physical.hair}, Augen {t.physical.eyes}, Statur {t.physical.build}",
             f"  Wesen:    {t.personality}",
             f"  Ziel:     {t.motivation}",
@@ -126,6 +126,7 @@ def _chars_to_json(results: list[CharacterResult]) -> str:
     def _dump(r: CharacterResult) -> dict:
         return {
             "name": r.name.model_dump(mode="json", exclude_none=True),
+            "experience": r.experience.value,
             "age": r.age,
             "profession": r.profession,
             "traits": {
@@ -142,7 +143,7 @@ def _chars_to_json(results: list[CharacterResult]) -> str:
 
 def _chars_to_csv(results: list[CharacterResult]) -> str:
     buf = io.StringIO()
-    fieldnames = ["full_name", "gender", "region", "age", "profession",
+    fieldnames = ["full_name", "gender", "region", "experience", "age", "profession",
                   "hair", "eyes", "build", "personality", "motivation", "quirk"]
     writer = csv.DictWriter(buf, fieldnames=fieldnames)
     writer.writeheader()
@@ -151,6 +152,7 @@ def _chars_to_csv(results: list[CharacterResult]) -> str:
             "full_name":    r.full_name,
             "gender":       r.gender.value,
             "region":       r.region,
+            "experience":   r.experience.value,
             "age":          r.age,
             "profession":   r.profession,
             "hair":         r.traits.physical.hair,

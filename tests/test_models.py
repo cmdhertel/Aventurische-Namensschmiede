@@ -8,6 +8,7 @@ from namegen.models import (
     CharacterConfig,
     CharacterResult,
     CharacterTraits,
+    ExperienceLevel,
     Gender,
     GenerationMode,
     NameComponents,
@@ -39,6 +40,13 @@ def test_profession_category_values() -> None:
     assert ProfessionCategory.KAEMPFER == "kaempfer"
     assert ProfessionCategory.PROFAN   == "profan"
     assert len(ProfessionCategory) == 5
+
+
+def test_experience_level_values() -> None:
+    assert ExperienceLevel.LEHRLING == "lehrling"
+    assert ExperienceLevel.GESELLE == "geselle"
+    assert ExperienceLevel.MEISTER == "meister"
+    assert ExperienceLevel.VETERAN == "veteran"
 
 
 def test_enums_are_string_comparable() -> None:
@@ -123,6 +131,7 @@ def _make_character_result() -> CharacterResult:
     )
     return CharacterResult(
         name=name,
+        experience=ExperienceLevel.MEISTER,
         age=35,
         profession="Söldner",
         traits=CharacterTraits(
@@ -151,6 +160,7 @@ def test_character_result_region_property() -> None:
 
 def test_character_result_age_and_profession() -> None:
     cr = _make_character_result()
+    assert cr.experience == ExperienceLevel.MEISTER
     assert cr.age == 35
     assert cr.profession == "Söldner"
 

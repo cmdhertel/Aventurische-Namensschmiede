@@ -12,6 +12,7 @@ from .chargen import generate_character
 from .generator import GeneratorError, generate
 from .loader import LoaderError, list_regions, load_region
 from .models import CharacterResult, Gender, GenerationMode, NameResult, ProfessionCategory
+from .models import ExperienceLevel
 from .output import OutputFormat, default_filename, write as output_write
 
 console = Console()
@@ -41,8 +42,8 @@ def run() -> None:
         if config is None:
             break
 
-        mode, region, gender, count, show_components, character, profession_category, fmt, dest = config
-        _generate_and_output(mode, region, gender, count, show_components, character, profession_category, fmt, dest)
+        mode, region, gender, count, show_components, character, profession_category, experience, fmt, dest = config
+        _generate_and_output(mode, region, gender, count, show_components, character, profession_category, experience, fmt, dest)
 
         console.print()
         again = questionary.confirm(
@@ -58,7 +59,7 @@ def run() -> None:
     console.print("[dim]Auf Wiedersehen![/dim]")
 
 
-def _ask_configuration() -> tuple[GenerationMode, str, Gender, int, bool, bool, ProfessionCategory, OutputFormat, Path | None] | None:
+def _ask_configuration() -> tuple[GenerationMode, str, Gender, int, bool, bool, ProfessionCategory, ExperienceLevel, OutputFormat, Path | None] | None:
     """Fragt alle Einstellungen interaktiv ab. Gibt None zurück bei Abbruch (Ctrl+C)."""
 
     # ── Modus ──────────────────────────────────────────────────────────────────
@@ -142,6 +143,7 @@ def _ask_configuration() -> tuple[GenerationMode, str, Gender, int, bool, bool, 
 
     # ── Berufskategorie (nur wenn Charakterbogen aktiv) ────────────────────────
     profession_category = ProfessionCategory.ALL
+    experience = ExperienceLevel.GESELLE
     if character:
         cat_str = questionary.select(
             "Berufskategorie:",
@@ -157,6 +159,21 @@ def _ask_configuration() -> tuple[GenerationMode, str, Gender, int, bool, bool, 
         if cat_str is None:
             return None
         profession_category = ProfessionCategory(cat_str)
+
+        experience_str = questionary.select(
+            "Erfahrungsstufe:",
+            choices=[
+                questionary.Choice("Lehrling", value="lehrling"),
+                questionary.Choice("Geselle", value="geselle"),
+                questionary.Choice("Meister", value="meister"),
+                questionary.Choice("Veteran", value="veteran"),
+            ],
+            default="geselle",
+            style=_STYLE,
+        ).ask()
+        if experience_str is None:
+            return None
+        experience = ExperienceLevel(experience_str)
 
     # ── Ausgabeformat ──────────────────────────────────────────────────────────
     fmt_str = questionary.select(
@@ -209,7 +226,7 @@ def _ask_configuration() -> tuple[GenerationMode, str, Gender, int, bool, bool, 
                 return None
             dest = Path(filename)
 
-    return mode, region, gender, count, show_components, character, profession_category, fmt, dest
+    return mode, region, gender, count, show_components, character, profession_category, experience, fmt, dest
 
 
 def _generate_and_output(
@@ -220,6 +237,7 @@ def _generate_and_output(
     show_components: bool,
     character: bool,
     profession_category: ProfessionCategory,
+    experience: ExperienceLevel,
     fmt: OutputFormat,
     dest: Path | None,
 ) -> None:
@@ -227,7 +245,8 @@ def _generate_and_output(
         if character:
             results: list[CharacterResult] | list[NameResult] = [
                 generate_character(region=region, mode=mode, gender=gender,
-                                   profession_category=profession_category)
+                                   profession_category=profession_category,
+                                   experience=experience)
                 for _ in range(count)
             ]
         else:
