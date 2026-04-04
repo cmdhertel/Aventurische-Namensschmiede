@@ -1,515 +1,326 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
+  "annotations": { "list": [{ "builtIn": 1, "datasource": { "type": "grafana", "uid": "-- Grafana --" }, "enable": true, "hide": true, "iconColor": "rgba(0, 211, 255, 1)", "name": "Annotations & Alerts", "type": "dashboard" }] },
+  "description": "Golden Signals at a glance: Traffic · Errors · Latency · Saturation",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "id": null,
-  "links": [],
-  "liveNow": false,
+  "links": [
+    { "icon": "external link", "tags": ["namenschmiede"], "title": "HTTP Details", "tooltip": "Drill into HTTP metrics", "type": "dashboards", "url": "" },
+    { "icon": "external link", "tags": ["namenschmiede"], "title": "Name Generation", "tooltip": "Drill into generation metrics", "type": "dashboards", "url": "" },
+    { "icon": "external link", "tags": ["namenschmiede"], "title": "Logs", "tooltip": "Open log explorer", "type": "dashboards", "url": "" }
+  ],
   "panels": [
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "title": "Golden Signals",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Average HTTP requests per second over the last 5 minutes.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "fixedColor": "#5794F2", "mode": "fixed" },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "reqps"
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] },
+          "unit": "reqps",
+          "decimals": 2
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 1 },
       "id": 1,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum by (http_route, http_method) (rate(http_server_request_count_total{http_route=~\"$route\"}[5m]))",
-          "legendFormat": "{{http_method}} {{http_route}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "HTTP Request Rate",
-      "type": "timeseries"
+      "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "sum(rate(http_server_request_count_total[5m]))", "legendFormat": "Req/s", "range": true, "refId": "A" }],
+      "title": "Request Rate",
+      "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Percentage of requests that resulted in a 5xx error in the last 5 minutes.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": { "mode": "thresholds" },
+          "decimals": 2,
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "orange",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 }] },
+          "unit": "percent",
+          "max": 100,
+          "min": 0
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 1 },
+      "id": 2,
+      "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "100 * sum(rate(app_errors_count_total[5m])) / clamp_min(sum(rate(http_server_request_count_total[5m])), 1)", "legendFormat": "Error %", "range": true, "refId": "A" }],
+      "title": "Error Rate",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "95th percentile HTTP response latency over the last 5 minutes.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 500 }, { "color": "red", "value": 1000 }] },
           "unit": "ms"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_milliseconds_bucket{http_route=~\"$route\"}[5m])))",
-          "legendFormat": "p95",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_milliseconds_bucket{http_route=~\"$route\"}[5m])))",
-          "legendFormat": "p99",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "HTTP Latency (p95 / p99)",
-      "type": "timeseries"
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 1 },
+      "id": 3,
+      "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_milliseconds_bucket[5m])))", "legendFormat": "p95", "range": true, "refId": "A" }],
+      "title": "p95 Latency",
+      "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Name generation calls per second — the core business throughput.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "fixedColor": "#73BF69", "mode": "fixed" },
           "decimals": 2,
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "percent"
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "ops"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 8
-      },
-      "id": 3,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 1 },
+      "id": 4,
+      "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "sum(rate(namegen_generate_count_total[5m]))", "legendFormat": "Gen/s", "range": true, "refId": "A" }],
+      "title": "Generate Throughput",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 6 },
+      "id": 101,
+      "title": "Traffic & Errors",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "HTTP request rate broken down by route and method. Use the Route variable to filter.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisLabel": "", "fillOpacity": 12, "gradientMode": "opacity", "lineInterpolation": "smooth", "lineWidth": 2, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" } },
+          "mappings": [],
+          "unit": "reqps"
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "overrides": []
       },
+      "gridPos": { "h": 9, "w": 16, "x": 0, "y": 7 },
+      "id": 5,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        {
-          "editorMode": "code",
-          "expr": "100 * sum(rate(app_errors_count_total{http_route=~\"$route\"}[5m])) / clamp_min(sum(rate(http_server_request_count_total{http_route=~\"$route\"}[5m])), 1)",
-          "refId": "A"
-        }
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "sum by (http_route, http_method) (rate(http_server_request_count_total{http_route=~\"$route\"}[5m]))", "legendFormat": "{{http_method}} {{http_route}}", "range": true, "refId": "A" }
+      ],
+      "title": "Request Rate by Route",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Percentage of requests with 5xx errors. Red background activates at >1%.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 }] },
+          "unit": "percent",
+          "max": 100,
+          "min": 0
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 9, "w": 8, "x": 16, "y": 7 },
+      "id": 6,
+      "options": { "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showThresholdLabels": true, "showThresholdMarkers": true },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "100 * sum(rate(app_errors_count_total{http_route=~\"$route\"}[5m])) / clamp_min(sum(rate(http_server_request_count_total{http_route=~\"$route\"}[5m])), 1)", "legendFormat": "Error %", "range": true, "refId": "A" }
       ],
       "title": "Error Rate (5m)",
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
+      "id": 102,
+      "title": "Latency",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "HTTP response latency percentiles. p99 > 1s indicates a degradation worth investigating.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 8, "gradientMode": "opacity", "lineInterpolation": "smooth", "lineWidth": 2, "showPoints": "never", "spanNulls": false },
+          "mappings": [],
+          "unit": "ms"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "p50" }, "properties": [{ "id": "color", "value": { "fixedColor": "#73BF69", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "p95" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FF9830", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "p99" }, "properties": [{ "id": "color", "value": { "fixedColor": "#F2495C", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 17 },
+      "id": 7,
+      "options": { "legend": { "calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "histogram_quantile(0.50, sum by (le) (rate(http_server_request_duration_milliseconds_bucket{http_route=~\"$route\"}[5m])))", "legendFormat": "p50", "range": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_milliseconds_bucket{http_route=~\"$route\"}[5m])))", "legendFormat": "p95", "range": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_milliseconds_bucket{http_route=~\"$route\"}[5m])))", "legendFormat": "p99", "range": true, "refId": "C" }
+      ],
+      "title": "HTTP Response Latency Percentiles",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
+      "id": 103,
+      "title": "Name Generation",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Name generation throughput by region and mode.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 12, "gradientMode": "opacity", "lineInterpolation": "smooth", "lineWidth": 2, "showPoints": "never", "spanNulls": false },
           "mappings": [],
           "unit": "ops"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 8
-      },
-      "id": 4,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 27 },
+      "id": 8,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (namegen_mode, namegen_region) (rate(namegen_generate_count_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m]))",
-          "legendFormat": "{{namegen_region}} {{namegen_mode}}",
-          "refId": "A"
-        }
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "sum by (namegen_mode, namegen_region) (rate(namegen_generate_count_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m]))", "legendFormat": "{{namegen_region}} · {{namegen_mode}}", "range": true, "refId": "A" }
       ],
-      "title": "Generate Calls",
+      "title": "Generate Calls by Region & Mode",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Generation pipeline latency breakdown: data load, name generation loop, and template render.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 8, "gradientMode": "opacity", "lineInterpolation": "smooth", "lineWidth": 2, "showPoints": "never", "spanNulls": false },
           "mappings": [],
           "unit": "ms"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 8
-      },
-      "id": 5,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 27 },
+      "id": 9,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        {
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(namegen_generate_loop_duration_ms_milliseconds_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))",
-          "legendFormat": "generate loop p95",
-          "refId": "A"
-        },
-        {
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(namegen_load_region_duration_ms_milliseconds_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))",
-          "legendFormat": "load_region p95",
-          "refId": "B"
-        },
-        {
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(namegen_template_render_duration_ms_milliseconds_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))",
-          "legendFormat": "template render p95",
-          "refId": "C"
-        }
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "histogram_quantile(0.95, sum by (le) (rate(namegen_generate_loop_duration_ms_milliseconds_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))", "legendFormat": "generate loop p95", "range": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "histogram_quantile(0.95, sum by (le) (rate(namegen_load_region_duration_ms_milliseconds_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))", "legendFormat": "load_region p95", "range": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "histogram_quantile(0.95, sum by (le) (rate(namegen_template_render_duration_ms_milliseconds_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))", "legendFormat": "template render p95", "range": true, "refId": "C" }
       ],
       "title": "Pipeline Latency (p95)",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Ratio of empty results (no name found) over all generation calls. Elevated values indicate data gaps in a region's TOML file.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "mappings": [],
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 16
-      },
-      "id": 6,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (namegen_region, namegen_mode) (rate(namegen_input_chars_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m]))",
-          "legendFormat": "input {{namegen_region}} {{namegen_mode}}",
-          "refId": "A"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum by (namegen_region, namegen_mode) (rate(namegen_output_chars_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m]))",
-          "legendFormat": "output {{namegen_region}} {{namegen_mode}}",
-          "refId": "B"
-        }
-      ],
-      "title": "Input/Output Chars per second",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "decimals": 2,
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "orange",
-                "value": 5
-              },
-              {
-                "color": "red",
-                "value": 10
-              }
-            ]
-          },
-          "unit": "percent"
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 5 }, { "color": "red", "value": 10 }] },
+          "unit": "percent",
+          "max": 100,
+          "min": 0
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 12,
-        "y": 16
-      },
-      "id": 7,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 36 },
+      "id": 10,
+      "options": { "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showThresholdLabels": true, "showThresholdMarkers": true },
       "targets": [
-        {
-          "editorMode": "code",
-          "expr": "100 * sum(rate(namegen_empty_results_count_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])) / clamp_min(sum(rate(namegen_generate_count_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])), 1)",
-          "refId": "A"
-        }
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "100 * sum(rate(namegen_empty_results_count_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])) / clamp_min(sum(rate(namegen_generate_count_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])), 1)", "range": true, "refId": "A" }
       ],
       "title": "Empty Result Ratio",
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Distribution of generated name lengths (characters). p50 reflects typical names, p95 reveals outliers.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 10, "gradientMode": "opacity", "lineInterpolation": "smooth", "lineWidth": 2, "showPoints": "never", "spanNulls": false },
           "mappings": [],
-          "unit": "short"
+          "unit": "none"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 18,
-        "y": 16
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
+      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 36 },
+      "id": 11,
+      "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "none" } },
       "targets": [
-        {
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.5, sum by (le) (rate(namegen_name_length_chars_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))",
-          "legendFormat": "name length p50",
-          "refId": "A"
-        },
-        {
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(namegen_name_length_chars_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))",
-          "legendFormat": "name length p95",
-          "refId": "B"
-        }
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "histogram_quantile(0.50, sum by (le) (rate(namegen_name_length_chars_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))", "legendFormat": "name length p50", "range": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "histogram_quantile(0.95, sum by (le) (rate(namegen_name_length_chars_bucket{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m])))", "legendFormat": "name length p95", "range": true, "refId": "B" }
       ],
       "title": "Name Length Distribution",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "tempo",
-        "uid": "tempo"
-      },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Characters consumed (input params) vs characters produced (output names) per second.",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 10, "gradientMode": "opacity", "lineInterpolation": "smooth", "lineWidth": 2, "showPoints": "never", "spanNulls": false },
+          "mappings": [],
+          "unit": "cps"
+        },
         "overrides": []
       },
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 24
-      },
-      "id": 9,
-      "options": {
-        "dedupStrategy": "none",
-        "limit": 50,
-        "queryType": "traceqlSearch",
-        "spanStartTimeShift": "1h",
-        "tableType": "traces"
-      },
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 36 },
+      "id": 12,
+      "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "none" } },
       "targets": [
-        {
-          "datasource": {
-            "type": "tempo",
-            "uid": "tempo"
-          },
-          "filters": [],
-          "limit": 50,
-          "query": "{ name = \"namegen.generate\" }",
-          "queryType": "traceqlSearch",
-          "refId": "A"
-        }
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "sum(rate(namegen_input_chars_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m]))", "legendFormat": "input chars/s", "range": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "editorMode": "code", "expr": "sum(rate(namegen_output_chars_total{namegen_region=~\"$region\", namegen_mode=~\"$mode\"}[5m]))", "legendFormat": "output chars/s", "range": true, "refId": "B" }
+      ],
+      "title": "Input / Output Throughput",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 41 },
+      "id": 104,
+      "title": "Distributed Traces",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "tempo", "uid": "tempo" },
+      "description": "Most recent name generation traces. Click any row to inspect spans, timing, and correlated logs.",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 42 },
+      "id": 13,
+      "options": { "dedupStrategy": "none", "limit": 50, "queryType": "traceqlSearch", "spanStartTimeShift": "1h", "tableType": "traces" },
+      "targets": [
+        { "datasource": { "type": "tempo", "uid": "tempo" }, "filters": [], "limit": 50, "query": "{ name = \"namegen.generate\" }", "queryType": "traceqlSearch", "refId": "A" }
       ],
       "title": "Recent Generate Traces",
       "type": "traces"
@@ -518,24 +329,12 @@
   "refresh": "30s",
   "schemaVersion": 39,
   "style": "dark",
-  "tags": [
-    "namenschmiede",
-    "otel",
-    "prometheus",
-    "tempo"
-  ],
+  "tags": ["namenschmiede", "overview"],
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": true,
-          "text": "All",
-          "value": ".*"
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
+        "current": { "selected": true, "text": "All", "value": ".*" },
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
         "definition": "label_values(http_server_request_count_total, http_route)",
         "hide": 0,
         "includeAll": true,
@@ -543,11 +342,7 @@
         "multi": false,
         "name": "route",
         "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(http_server_request_count_total, http_route)",
-          "refId": "Prometheus-route-Variable-Query"
-        },
+        "query": { "qryType": 1, "query": "label_values(http_server_request_count_total, http_route)", "refId": "Prometheus-route-Variable-Query" },
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -555,15 +350,8 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": true,
-          "text": "All",
-          "value": ".*"
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
+        "current": { "selected": true, "text": "All", "value": ".*" },
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
         "definition": "label_values(namegen_generate_count_total, namegen_region)",
         "hide": 0,
         "includeAll": true,
@@ -571,11 +359,7 @@
         "multi": false,
         "name": "region",
         "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(namegen_generate_count_total, namegen_region)",
-          "refId": "Prometheus-region-Variable-Query"
-        },
+        "query": { "qryType": 1, "query": "label_values(namegen_generate_count_total, namegen_region)", "refId": "Prometheus-region-Variable-Query" },
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -583,15 +367,8 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": true,
-          "text": "All",
-          "value": ".*"
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
+        "current": { "selected": true, "text": "All", "value": ".*" },
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
         "definition": "label_values(namegen_generate_count_total, namegen_mode)",
         "hide": 0,
         "includeAll": true,
@@ -599,11 +376,7 @@
         "multi": false,
         "name": "mode",
         "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(namegen_generate_count_total, namegen_mode)",
-          "refId": "Prometheus-mode-Variable-Query"
-        },
+        "query": { "qryType": 1, "query": "label_values(namegen_generate_count_total, namegen_mode)", "refId": "Prometheus-mode-Variable-Query" },
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -612,14 +385,11 @@
       }
     ]
   },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
+  "time": { "from": "now-3h", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Aventurische Namenschmiede - Observability",
-  "uid": "namenschmiede-observability",
+  "title": "Namenschmiede · Overview",
+  "uid": "namenschmiede-overview",
   "version": 1,
   "weekStart": ""
 }

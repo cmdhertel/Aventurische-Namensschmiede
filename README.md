@@ -25,10 +25,14 @@ docker compose up --build
 ```
 
 Danach verfügbar unter:
-- App: **http://localhost:8000**
-- Grafana: **http://localhost:3000** (Login: `admin` / `admin`)
-- Prometheus: **http://localhost:9090**
-- Tempo API: **http://localhost:3200**
+
+| Service | URL | Hinweis |
+|---|---|---|
+| Web-App | <http://localhost:8000> | |
+| Grafana | <http://localhost:3300> | Login: `admin` / `admin` |
+| Prometheus | <http://localhost:9090> | |
+| Loki (API) | <http://localhost:3100> | |
+| Tempo (API) | <http://localhost:3200> | |
 
 ---
 
@@ -77,30 +81,62 @@ web/
 
 ---
 
-## Observability (Logging, Metrics, Traces)
+## Observability (Logs, Metriken, Traces)
 
-Die Web-App liefert strukturierte Logs und OpenTelemetry-Metriken/Traces.
+Die Web-App instrumentiert den gesamten Request-Lifecycle mit OpenTelemetry und strukturierten Logs.
+Der komplette Observability-Stack startet automatisch per `docker compose up --build`.
 
-Mit `docker compose up --build` startet ein kompletter Grafana-Stack containerbasiert mit:
-- OpenTelemetry Collector (`otel-collector`)
-- Prometheus (Metriken)
-- Tempo (Spans/Traces)
-- Grafana (Visualisierung)
+### Stack-Versionen
 
-Die Web-App sendet OTLP automatisch an `http://otel-collector:4318`.
+| Komponente | Image | Zweck |
+|---|---|---|
+| **OpenTelemetry Collector** | `otel/opentelemetry-collector-contrib:0.149.0` | OTLP-Empfang, Routing |
+| **Prometheus** | `prom/prometheus:v3.11.0` | Metriken-Speicherung |
+| **Tempo** | `grafana/tempo:2.10.3` | Distributed Tracing |
+| **Loki** | `grafana/loki:3.4.2` | Log-Aggregation |
+| **Alloy** | `grafana/alloy:v1.8.3` | Log-Kollektor (Docker → Loki) |
+| **Grafana** | `grafana/grafana:12.4.2` | Visualisierung |
 
-Vorkonfiguriertes Grafana-Dashboard wird automatisch provisioniert:
-- **Aventurische Namenschmiede - Observability**
-- Pfad: `Namenschmiede`-Folder in Grafana
-- Nützliche Metriken:
-  - `http.server.request.count`
-  - `http.server.request.duration` (ms)
-  - `namegen.generate.count`
-  - `namegen.input.chars`
-  - `namegen.output.chars`
+### Pipeline
 
-Zusätzliche Span-Attribute auf `/generate` enthalten u. a. Region, Modus, Geschlecht,
-Charakter-Modus, Kategorien sowie Input/Output-Zeichenanzahl.
+```
+Web-App (OTLP)
+  └─▶ OTel Collector
+        ├─▶ Prometheus (Metriken via Prometheus-Exporter :9464)
+        └─▶ Tempo (Traces via OTLP gRPC)
+
+Docker-Container-Logs
+  └─▶ Alloy (Docker-Socket)
+        └─▶ Loki (Log-Speicherung)
+```
+
+### Grafana-Dashboards
+
+Alle Dashboards werden automatisch im Ordner **Namenschmiede** provisioniert:
+
+| Dashboard | Zweck |
+|---|---|
+| **Namenschmiede · Overview** | Golden Signals auf einen Blick: RPS, Error-Rate, p95-Latenz, Traces |
+| **Namenschmiede · HTTP & API** | HTTP-Traffic, Latenz-Perzentile (p50/p90/p95/p99), Fehler-Analyse |
+| **Namenschmiede · Name Generation** | Regionen/Modi, Pipeline-Latenz, Namenslängen-Verteilung, Leerquote |
+| **Namenschmiede · Logs** | Loki-Logstream, Fehlerrate, Level-Verteilung; TraceIDs sind klickbar → Tempo |
+
+### Logs ↔ Traces Korrelation
+
+Jede Log-Zeile enthält `trace_id=<hex>` und `span_id=<hex>`. In Grafana:
+- **Log → Trace**: TraceID-Link in jedem Log-Eintrag öffnet den zugehörigen Tempo-Span
+- **Trace → Log**: Klick auf einen Span in Tempo springt direkt zur Loki-Abfrage mit `filterByTraceID`
+
+### Wichtige Metriken
+
+| Metrik | Bedeutung |
+|---|---|
+| `http_server_request_count_total` | HTTP-Requests gesamt |
+| `http_server_request_duration_milliseconds_bucket` | Latenz-Histogramm |
+| `app_errors_count_total` | 5xx-Fehler |
+| `namegen_generate_count_total` | Generierungsaufrufe |
+| `namegen_empty_results_count_total` | Leere Ergebnisse (Datenqualität) |
+| `namegen_name_length_chars_bucket` | Namenslängen-Histogramm |
 
 ---
 
