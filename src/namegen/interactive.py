@@ -12,7 +12,8 @@ from .chargen import generate_character
 from .generator import GeneratorError, generate
 from .loader import LoaderError, list_regions, load_region
 from .models import CharacterResult, Gender, GenerationMode, NameResult, ProfessionCategory
-from .output import OutputFormat, default_filename, write as output_write
+from .output import OutputFormat, default_filename
+from .output import write as output_write
 
 console = Console()
 
@@ -41,8 +42,12 @@ def run() -> None:
         if config is None:
             break
 
-        mode, region, gender, count, show_components, character, profession_category, fmt, dest = config
-        _generate_and_output(mode, region, gender, count, show_components, character, profession_category, fmt, dest)
+        mode, region, gender, count, show_components, character, profession_category, fmt, dest = (
+            config
+        )
+        _generate_and_output(
+            mode, region, gender, count, show_components, character, profession_category, fmt, dest
+        )
 
         console.print()
         again = questionary.confirm(
@@ -58,7 +63,12 @@ def run() -> None:
     console.print("[dim]Auf Wiedersehen![/dim]")
 
 
-def _ask_configuration() -> tuple[GenerationMode, str, Gender, int, bool, bool, ProfessionCategory, OutputFormat, Path | None] | None:
+_ConfigResult = tuple[
+    GenerationMode, str, Gender, int, bool, bool, ProfessionCategory, OutputFormat, Path | None
+]
+
+
+def _ask_configuration() -> _ConfigResult | None:
     """Fragt alle Einstellungen interaktiv ab. Gibt None zurück bei Abbruch (Ctrl+C)."""
 
     # ── Modus ──────────────────────────────────────────────────────────────────

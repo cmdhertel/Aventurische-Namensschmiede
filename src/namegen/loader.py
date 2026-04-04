@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import tomllib
-from functools import lru_cache
+from functools import cache
 from importlib.resources import files
 
 from .models import RegionData
@@ -16,7 +16,7 @@ class LoaderError(Exception):
 _DATA_PACKAGE = "namegen.data"
 
 
-@lru_cache(maxsize=None)
+@cache
 def _parse_region(region_name: str) -> RegionData:
     """Parse and validate one TOML file. Result is cached for the process lifetime."""
     filename = f"{region_name}.toml"

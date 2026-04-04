@@ -6,19 +6,15 @@ import csv
 import io
 import json
 import random
-import sys
 
 import pytest
 
 from namegen.chargen import generate_character
 from namegen.generator import generate
 from namegen.models import (
-    CharacterTraits,
     CharacterResult,
-    Gender,
     GenerationMode,
     NameResult,
-    PhysicalTraits,
 )
 from namegen.output import (
     OutputFormat,
@@ -33,7 +29,6 @@ from namegen.output import (
     default_filename,
     write,
 )
-
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -188,7 +183,7 @@ def test_to_markdown_has_region_header() -> None:
 
 def test_to_markdown_pipe_delimited_rows() -> None:
     text = _to_markdown(_name_results(2), show_components=False)
-    data_lines = [l for l in text.splitlines() if l.startswith("|") and "---" not in l]
+    data_lines = [line for line in text.splitlines() if line.startswith("|") and "---" not in line]
     # header + 2 data rows
     assert len(data_lines) >= 3
 

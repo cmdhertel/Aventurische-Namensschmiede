@@ -91,15 +91,20 @@ def _write_characters(
 
 def _write_rich_characters(results: list[CharacterResult]) -> None:
     from rich.panel import Panel
-    from rich.text import Text
 
     for r in results:
         t = r.traits
         lines = [
             f"[bold amber]{r.full_name}[/bold amber]",
-            f"[dim]{r.name.region}  ·  {_GENDER_DE[r.gender.value]}  ·  {r.age} Jahre  ·  {r.profession}[/dim]",
+            (
+                f"[dim]{r.name.region}  ·  {_GENDER_DE[r.gender.value]}"
+                f"  ·  {r.age} Jahre  ·  {r.profession}[/dim]"
+            ),
             "",
-            f"[bold]Äußeres:[/bold]  Haare {t.physical.hair}, Augen {t.physical.eyes}, Statur {t.physical.build}",
+            (
+                f"[bold]Äußeres:[/bold]  Haare {t.physical.hair},"
+                f" Augen {t.physical.eyes}, Statur {t.physical.build}"
+            ),
             f"[bold]Wesen:[/bold]    {t.personality}",
             f"[bold]Ziel:[/bold]     {t.motivation}",
             f"[bold]Eigenart:[/bold] {t.quirk}",
@@ -112,8 +117,14 @@ def _chars_to_plain(results: list[CharacterResult]) -> str:
     for r in results:
         t = r.traits
         lines += [
-            f"{r.full_name}  ({r.name.region}, {_GENDER_DE[r.gender.value]}, {r.age} J., {r.profession})",
-            f"  Äußeres:  Haare {t.physical.hair}, Augen {t.physical.eyes}, Statur {t.physical.build}",
+            (
+                f"{r.full_name}  ({r.name.region},"
+                f" {_GENDER_DE[r.gender.value]}, {r.age} J., {r.profession})"
+            ),
+            (
+                f"  Äußeres:  Haare {t.physical.hair},"
+                f" Augen {t.physical.eyes}, Statur {t.physical.build}"
+            ),
             f"  Wesen:    {t.personality}",
             f"  Ziel:     {t.motivation}",
             f"  Eigenart: {t.quirk}",

@@ -18,7 +18,6 @@ from .models import (
     ProfessionCategory,
 )
 
-
 # ── Data loading ───────────────────────────────────────────────────────────────
 
 @lru_cache(maxsize=1)

@@ -11,10 +11,8 @@ from namegen.chargen import _generate_age, _load_professions_by_category, genera
 from namegen.models import (
     CharacterResult,
     Gender,
-    GenerationMode,
     ProfessionCategory,
 )
-
 
 RNG_BASE = 42
 

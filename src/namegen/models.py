@@ -7,7 +7,6 @@ from typing import Annotated
 
 from pydantic import BaseModel, Field
 
-
 # ── Enums ─────────────────────────────────────────────────────────────────────
 
 class Gender(StrEnum):
@@ -110,7 +109,7 @@ class CharacterTraits(BaseModel):
 
 class CharacterResult(BaseModel):
     """Full fluff character sheet wrapping a NameResult."""
-    name:       "NameResult"
+    name:       NameResult
     age:        int
     profession: str
     traits:     CharacterTraits
@@ -120,7 +119,7 @@ class CharacterResult(BaseModel):
         return self.name.full_name
 
     @property
-    def gender(self) -> "Gender":
+    def gender(self) -> Gender:
         return self.name.gender
 
     @property
@@ -149,7 +148,7 @@ class NameResult(BaseModel):
         mode: GenerationMode,
         components: NameComponents | None = None,
         resolved_gender: Gender | None = None,
-    ) -> "NameResult":
+    ) -> NameResult:
         full = f"{first} {last}" if last else first
         return cls(
             first_name=first,
