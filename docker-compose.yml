@@ -58,6 +58,13 @@ services:
       - "3200:3200"
     networks:
       - app_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3200/ready || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      # Ring join + 15s stability buffer typically takes 45-60s on first boot
+      start_period: 90s
 
   loki:
     image: grafana/loki:3.4.2
@@ -108,9 +115,13 @@ services:
       - ./ops/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
     restart: unless-stopped
     depends_on:
-      - prometheus
-      - tempo
-      - loki
+      prometheus:
+        condition: service_started
+      tempo:
+        # service_started is enough: container registered in Docker DNS before Grafana probes
+        condition: service_started
+      loki:
+        condition: service_healthy
     ports:
       - "3300:3000"
     networks:
