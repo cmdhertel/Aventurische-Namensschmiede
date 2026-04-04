@@ -10,7 +10,7 @@ from rich.rule import Rule
 
 from .chargen import generate_character
 from .generator import GeneratorError, generate
-from .loader import LoaderError, list_regions, load_region
+from .loader import LoaderError, get_origin_catalog, load_region
 from .models import CharacterResult, Gender, GenerationMode, NameResult, ProfessionCategory
 from .output import OutputFormat, default_filename, write as output_write
 
@@ -74,23 +74,47 @@ def _ask_configuration() -> tuple[GenerationMode, str, Gender, int, bool, bool, 
         return None
     mode = GenerationMode(mode_str)
 
-    # ── Region ─────────────────────────────────────────────────────────────────
+    # ── Spezies / Kultur / Origin ─────────────────────────────────────────────
     try:
-        region_ids = list_regions()
+        catalog = get_origin_catalog()
     except Exception as exc:
-        console.print(f"[red]Fehler beim Laden der Regionen:[/red] {exc}")
+        console.print(f"[red]Fehler beim Laden der Origins:[/red] {exc}")
+        return None
+
+    species_options = sorted({(item["species_id"], item["species_name"]) for item in catalog}, key=lambda x: x[1])
+    species_id = questionary.select(
+        "Spezies:",
+        choices=[questionary.Choice(label, value=value) for value, label in species_options],
+        style=_STYLE,
+    ).ask()
+    if species_id is None:
+        return None
+
+    culture_options = sorted(
+        {
+            (item["culture_id"], item["culture_name"])
+            for item in catalog
+            if item["species_id"] == species_id
+        },
+        key=lambda x: x[1],
+    )
+    culture_id = questionary.select(
+        "Kultur:",
+        choices=[questionary.Choice(label, value=value) for value, label in culture_options],
+        style=_STYLE,
+    ).ask()
+    if culture_id is None:
         return None
 
     region_choices = []
-    for rid in region_ids:
-        try:
-            data = load_region(rid)
-            label = f"{data.meta.region:<18} {data.meta.notes}"
-        except Exception:
-            label = rid
-        region_choices.append(questionary.Choice(label, value=rid))
+    for item in catalog:
+        if item["species_id"] != species_id or item["culture_id"] != culture_id:
+            continue
+        data = load_region(item["id"])
+        label = f"{data.meta.region:<18} {data.meta.notes}"
+        region_choices.append(questionary.Choice(label, value=item["id"]))
 
-    region = questionary.select("Region:", choices=region_choices, style=_STYLE).ask()
+    region = questionary.select("Origin:", choices=region_choices, style=_STYLE).ask()
     if region is None:
         return None
 

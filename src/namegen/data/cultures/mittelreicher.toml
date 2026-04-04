@@ -1,0 +1,41 @@
+[meta]
+name = "Mittelreicher"
+notes = "Garetisch geprägte Mehrheitskultur des Mittelreichs."
+
+[naming_schema]
+type = "given_family"
+description = "Vorname plus Familienname oder Adelsname."
+
+[simple.first]
+male = ["Alrik", "Cordovan", "Darian", "Gerion", "Hagen", "Praiodan", "Refardeon", "Viburn"]
+female = ["Alena", "Caya", "Dorlen", "Elwene", "Fiana", "Khorena", "Oleana", "Xaviera"]
+
+[simple.last]
+neutral = ["Alfaran", "Berlind", "Damotil", "Fuxfell", "Harnischmacher", "Meeltheuer", "Winterkalt", "Zandor", "vom Berg", "von Galahan"]
+
+[compose.first]
+infix_probability = 0.25
+[compose.first.male]
+prefix = ["Al", "Cor", "Da", "Ge", "Ha", "Praio", "Refar", "Vi"]
+infix = ["ri", "de", "re", "vi"]
+suffix = ["k", "an", "ion", "dan", "urn"]
+[compose.first.female]
+prefix = ["Ale", "Ca", "Dor", "El", "Fi", "Kho", "Ole", "Xa"]
+infix = ["ne", "ri", "we", "vi"]
+suffix = ["na", "ya", "len", "ene", "ra"]
+
+[character]
+languages = ["Garethi"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["je nach Heimatort im Mittelreich"]
+social_status = ["Adel", "Unfrei"]
+professions = ["Bauer", "Handwerker", "Söldner", "Stadtsoldat", "Kaufmann"]
+typical_advantages = ["Glück"]
+typical_disadvantages = ["Aberglaube", "Vorurteile gegen Fremde"]
+typical_talents = ["Holzbearbeitung", "Metallbearbeitung", "Pflanzenkunde", "Tierkunde"]
+personality = ["pflichtbewusst und traditionsverbunden"]
+motivations = ["will Familie, Lehnsherrn oder Dorf Ehre machen"]
+quirks = ["zitiert Sprichwörter aus Gareth oder Punin"]
+
+package_ap = 12
+

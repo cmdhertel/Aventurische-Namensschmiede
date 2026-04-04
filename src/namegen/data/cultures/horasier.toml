@@ -1,0 +1,42 @@
+[meta]
+name = "Horasier"
+notes = "Höfische, urbane Kultur des Horasreichs."
+
+[naming_schema]
+type = "given_family_connector"
+connector = "dy"
+description = "Vorname plus Familienname; bei Adligen oft mit dy."
+
+[simple.first]
+male = ["Alricio", "Baduin", "Carolan", "Cusimo", "Jacopo", "Phedro", "Quendan", "Rondrigo"]
+female = ["Ardare", "Carisia", "Elaria", "Gylvana", "Pamina", "Quedora", "Sanya", "Sharina"]
+
+[simple.last]
+neutral = ["Bosvani", "Caranda", "Delicado", "Marnion", "Melior", "Novacasa", "Spinola", "Vansanti", "Barazza", "Casibelli"]
+
+[compose.first]
+infix_probability = 0.25
+[compose.first.male]
+prefix = ["Alri", "Badu", "Caro", "Cusi", "Jaco", "Phe", "Quen", "Rondri"]
+infix = ["ci", "da", "ra"]
+suffix = ["o", "an", "io", "go"]
+[compose.first.female]
+prefix = ["Ar", "Cari", "Ela", "Gyl", "Pam", "Que", "San", "Shar"]
+infix = ["da", "ri", "li"]
+suffix = ["are", "sia", "ria", "ina"]
+
+[character]
+languages = ["Garethi (Horathi)"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["je nach Heimatort im Horasreich"]
+social_status = ["Adel"]
+professions = ["Händler", "Hofkünstler", "Gelehrter", "Duellant", "Seefahrer"]
+typical_advantages = ["Soziale Anpassungsfähigkeit"]
+typical_disadvantages = ["Arroganz", "Eitelkeit", "Vorurteile gegen Nichthorasier"]
+typical_talents = ["Etikette", "Handel", "Rechtskunde", "Tanzen", "Gassenwissen"]
+personality = ["gewandt, kultiviert und leicht eitel"]
+motivations = ["sucht Ruhm in Gesellschaft und Salons"]
+quirks = ["verbessert die Etikette anderer ungefragt"]
+
+package_ap = 27
+

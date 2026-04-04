@@ -97,12 +97,13 @@ def _write_rich_characters(results: list[CharacterResult]) -> None:
         t = r.traits
         lines = [
             f"[bold amber]{r.full_name}[/bold amber]",
-            f"[dim]{r.name.region}  ·  {_GENDER_DE[r.gender.value]}  ·  {r.age} Jahre  ·  {r.profession}[/dim]",
+            f"[dim]{r.species or 'Unbekannt'}  ·  {r.culture or 'Unbekannt'}  ·  {r.name.region}  ·  {_GENDER_DE[r.gender.value]}  ·  {r.age} Jahre  ·  {r.profession}[/dim]",
             "",
             f"[bold]Äußeres:[/bold]  Haare {t.physical.hair}, Augen {t.physical.eyes}, Statur {t.physical.build}",
             f"[bold]Wesen:[/bold]    {t.personality}",
             f"[bold]Ziel:[/bold]     {t.motivation}",
             f"[bold]Eigenart:[/bold] {t.quirk}",
+            f"[bold]Hintergrund:[/bold] Sprache {r.language or '–'}, Schrift {r.script or '–'}, Sozialstatus {r.social_status or '–'}",
         ]
         console.print(Panel("\n".join(lines), border_style="magenta", padding=(0, 1)))
 
@@ -112,11 +113,12 @@ def _chars_to_plain(results: list[CharacterResult]) -> str:
     for r in results:
         t = r.traits
         lines += [
-            f"{r.full_name}  ({r.name.region}, {_GENDER_DE[r.gender.value]}, {r.age} J., {r.profession})",
+            f"{r.full_name}  ({r.species or 'Unbekannt'}, {r.culture or 'Unbekannt'}, {r.name.region}, {_GENDER_DE[r.gender.value]}, {r.age} J., {r.profession})",
             f"  Äußeres:  Haare {t.physical.hair}, Augen {t.physical.eyes}, Statur {t.physical.build}",
             f"  Wesen:    {t.personality}",
             f"  Ziel:     {t.motivation}",
             f"  Eigenart: {t.quirk}",
+            f"  Kontext:  Sprache {r.language or '–'}, Schrift {r.script or '–'}, Sozialstatus {r.social_status or '–'}",
             "",
         ]
     return "\n".join(lines)
@@ -128,6 +130,11 @@ def _chars_to_json(results: list[CharacterResult]) -> str:
             "name": r.name.model_dump(mode="json", exclude_none=True),
             "age": r.age,
             "profession": r.profession,
+            "species": r.species,
+            "culture": r.culture,
+            "language": r.language,
+            "script": r.script,
+            "social_status": r.social_status,
             "traits": {
                 "hair": r.traits.physical.hair,
                 "eyes": r.traits.physical.eyes,
@@ -142,7 +149,8 @@ def _chars_to_json(results: list[CharacterResult]) -> str:
 
 def _chars_to_csv(results: list[CharacterResult]) -> str:
     buf = io.StringIO()
-    fieldnames = ["full_name", "gender", "region", "age", "profession",
+    fieldnames = ["full_name", "gender", "species", "culture", "region", "age", "profession",
+                  "language", "script", "social_status",
                   "hair", "eyes", "build", "personality", "motivation", "quirk"]
     writer = csv.DictWriter(buf, fieldnames=fieldnames)
     writer.writeheader()
@@ -150,9 +158,14 @@ def _chars_to_csv(results: list[CharacterResult]) -> str:
         writer.writerow({
             "full_name":    r.full_name,
             "gender":       r.gender.value,
+            "species":      r.species or "",
+            "culture":      r.culture or "",
             "region":       r.region,
             "age":          r.age,
             "profession":   r.profession,
+            "language":     r.language or "",
+            "script":       r.script or "",
+            "social_status": r.social_status or "",
             "hair":         r.traits.physical.hair,
             "eyes":         r.traits.physical.eyes,
             "build":        r.traits.physical.build,
@@ -170,7 +183,7 @@ def _write_rich(results: list[NameResult], show_components: bool) -> None:
         console.print(f"[bold]{results[0].full_name}[/bold]")
         return
 
-    cols = ["Name", "Geschlecht"]
+    cols = ["Name", "Geschlecht", "Spezies", "Kultur"]
     if show_components and results[0].mode == GenerationMode.COMPOSE:
         cols.append("Bausteine")
 
@@ -180,6 +193,8 @@ def _write_rich(results: list[NameResult], show_components: bool) -> None:
         row = [
             f"[bold]{r.full_name}[/bold]",
             _GENDER_DE[r.resolved_gender.value],
+            r.species or "–",
+            r.culture or "–",
         ]
         if show_components and r.mode == GenerationMode.COMPOSE and r.components:
             row.append(_format_components(r))
@@ -218,7 +233,7 @@ def _to_json(results: list[NameResult]) -> str:
 
 def _to_csv(results: list[NameResult], show_components: bool) -> str:
     buf = io.StringIO()
-    fieldnames = ["full_name", "first_name", "last_name", "gender", "region", "mode"]
+    fieldnames = ["full_name", "first_name", "last_name", "gender", "species", "culture", "region", "mode"]
     if show_components:
         fieldnames += ["first_prefix", "first_infix", "first_suffix",
                        "last_prefix",  "last_infix",  "last_suffix"]
@@ -232,6 +247,8 @@ def _to_csv(results: list[NameResult], show_components: bool) -> str:
             "first_name": r.first_name,
             "last_name":  r.last_name or "",
             "gender":     r.gender.value,
+            "species":    r.species or "",
+            "culture":    r.culture or "",
             "region":     r.region,
             "mode":       r.mode.value,
         }
@@ -266,13 +283,13 @@ def _to_markdown(results: list[NameResult], show_components: bool) -> str:
     lines = [
         f"## DSA Namen – {r0.region}",
         "",
-        f"Region: **{r0.region}** · Modus: **{mode_label}** · {len(results)} Namen",
+        f"Spezies: **{r0.species or '–'}** · Kultur: **{r0.culture or '–'}** · Origin: **{r0.region}** · Modus: **{mode_label}** · {len(results)} Namen",
         "",
         md_row(cols),
         md_row(["---"] * len(cols)),
     ]
     for r in results:
-        row = [r.full_name, _GENDER_DE[r.resolved_gender.value]]
+        row = [r.full_name, _GENDER_DE[r.resolved_gender.value], r.species or "–", r.culture or "–"]
         if show_components and r.mode == GenerationMode.COMPOSE and r.components:
             row.append(_format_components(r))
         lines.append(md_row(row))
@@ -350,7 +367,7 @@ def _write_pdf(results: list[NameResult], dest: Path | None, show_components: bo
     story = [
         Paragraph("Das Schwarze Auge – Namensliste", title_style),
         Paragraph(
-            f"Region: {r0.region}  ·  Modus: {mode_label}  ·  {len(results)} Namen",
+            f"Spezies: {r0.species or '–'}  ·  Kultur: {r0.culture or '–'}  ·  Origin: {r0.region}  ·  Modus: {mode_label}  ·  {len(results)} Namen",
             subtitle_style,
         ),
     ]
@@ -454,7 +471,7 @@ def _write_pdf_characters(results: list[CharacterResult], dest: Path | None) -> 
     story = [
         Paragraph("Das Schwarze Auge – Charakterliste", title_style),
         Paragraph(
-            f"Region: {r0.region}  ·  {len(results)} Charaktere",
+            f"Spezies: {r0.species or '–'}  ·  Kultur: {r0.culture or '–'}  ·  Origin: {r0.region}  ·  {len(results)} Charaktere",
             subtitle_style,
         ),
     ]

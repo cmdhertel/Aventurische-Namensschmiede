@@ -1,0 +1,29 @@
+[meta]
+name = "Auelfen"
+notes = "Elfische Kultur mit Namen aus Rufname und Sippenname."
+
+[naming_schema]
+type = "given_family"
+description = "Elfischer Rufname mit Sippenname statt bürgerlichem Familiennamen."
+
+[simple.first]
+male = ["Aylir", "Beornil", "Calyan", "Elaith", "Felar", "Lindariel", "Silor", "Variel"]
+female = ["Alari", "Caeluin", "Delayar", "Elaine", "Fenryl", "Liawen", "Syalia", "Yeshinna"]
+neutral = ["Ailin", "Elanor", "Silvayn"]
+
+[simple.last]
+neutral = ["vom Silberquell", "aus dem Weidenhain", "Sternensang", "Tautropfen", "Mondblatt", "Lichtfluss"]
+
+[character]
+languages = ["Isdira"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["Auen und lichte Wälder"]
+social_status = ["Frei"]
+professions = ["Wildniskundiger", "Bogenschütze", "Heiler", "Zauberweber"]
+typical_advantages = ["Richtungssinn", "Wohlklang"]
+typical_disadvantages = ["Weltfremd"]
+typical_talents = ["Singen", "Pflanzenkunde", "Wildnisleben", "Sinnesschärfe"]
+personality = ["sanft, melancholisch und naturverbunden"]
+motivations = ["folgt Traum, Lied oder Zeichen der Natur"]
+quirks = ["hält längere Pausen, als Menschen es gewohnt sind"]
+

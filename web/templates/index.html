@@ -40,17 +40,37 @@
           hx-on::after-request="onNamesGenerated(event)"
           class="space-y-5">
 
-          <!-- Region -->
+          <script id="origin-catalog" type="application/json">{{ origins|tojson }}</script>
+
           <div>
-            <label for="region" class="form-label">Region</label>
+            <label for="species" class="form-label">Spezies</label>
             <div class="relative">
-              <select name="region" id="region">
-                {% for r in regions %}
-                <option value="{{ r.id }}" {% if r.id == selected_region %}selected{% endif %}>
-                  {{ r.name }}
-                </option>
-                {% endfor %}
-              </select>
+              <select id="species" onchange="syncOriginSelectors()"></select>
+              <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                <svg class="w-4 h-4" style="color: var(--color-text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label for="culture" class="form-label">Kultur</label>
+            <div class="relative">
+              <select id="culture" onchange="syncOriginSelectors()"></select>
+              <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                <svg class="w-4 h-4" style="color: var(--color-text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Origin -->
+          <div>
+            <label for="region" class="form-label">Origin</label>
+            <div class="relative">
+              <select name="region" id="region"></select>
               <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
                 <svg class="w-4 h-4" style="color: var(--color-text-muted);"
                      fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -210,7 +230,7 @@
             Noch keine Namen generiert
           </p>
           <p class="text-xs mt-1" style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
-            Wähle links eine Region und klicke auf Generieren
+            Wähle links Spezies, Kultur und Origin und klicke auf Generieren
           </p>
         </div>
 
@@ -226,6 +246,50 @@
 
 {% block scripts %}
 <script>
+  const ORIGINS = JSON.parse(document.getElementById('origin-catalog').textContent);
+  const SELECTED_ORIGIN = {{ selected_region|tojson }};
+
+  function fillSelect(select, options, selectedValue) {
+    select.innerHTML = '';
+    for (const option of options) {
+      const el = document.createElement('option');
+      el.value = option.value;
+      el.textContent = option.label;
+      if (option.value === selectedValue) el.selected = true;
+      select.appendChild(el);
+    }
+  }
+
+  function syncOriginSelectors() {
+    const speciesEl = document.getElementById('species');
+    const cultureEl = document.getElementById('culture');
+    const regionEl = document.getElementById('region');
+
+    if (speciesEl.options.length === 0) {
+      const speciesOptions = [...new Map(ORIGINS.map(o => [o.species_id, o.species_name])).entries()]
+        .map(([value, label]) => ({ value, label }));
+      fillSelect(speciesEl, speciesOptions, speciesOptions[0]?.value);
+    }
+
+    const selectedSpecies = speciesEl.value;
+    const cultureOptions = [...new Map(
+      ORIGINS.filter(o => o.species_id === selectedSpecies).map(o => [o.culture_id, o.culture_name])
+    ).entries()].map(([value, label]) => ({ value, label }));
+    const currentCulture = cultureOptions.some(o => o.value === cultureEl.value)
+      ? cultureEl.value
+      : cultureOptions[0]?.value;
+    fillSelect(cultureEl, cultureOptions, currentCulture);
+
+    const selectedCulture = cultureEl.value;
+    const regionOptions = ORIGINS
+      .filter(o => o.species_id === selectedSpecies && o.culture_id === selectedCulture)
+      .map(o => ({ value: o.id, label: o.name }));
+    const selectedRegion = regionOptions.some(o => o.value === regionEl.value)
+      ? regionEl.value
+      : (regionOptions.find(o => o.value === SELECTED_ORIGIN)?.value || regionOptions[0]?.value);
+    fillSelect(regionEl, regionOptions, selectedRegion);
+  }
+
   function toggleCharacter() {
     const cb      = document.getElementById('character-checkbox');
     const track   = document.getElementById('char-track');
@@ -307,5 +371,15 @@
     form.submit();
     document.body.removeChild(form);
   }
+
+  (() => {
+    const speciesOptions = [...new Map(ORIGINS.map(o => [o.species_id, o.species_name])).entries()]
+      .map(([value, label]) => ({ value, label }));
+    const selectedOrigin = ORIGINS.find(o => o.id === SELECTED_ORIGIN) || ORIGINS[0];
+    fillSelect(document.getElementById('species'), speciesOptions, selectedOrigin?.species_id);
+    syncOriginSelectors();
+    document.getElementById('culture').value = selectedOrigin?.culture_id || document.getElementById('culture').value;
+    syncOriginSelectors();
+  })();
 </script>
 {% endblock %}

@@ -12,7 +12,7 @@ from fastapi.templating import Jinja2Templates
 
 from namegen.chargen import generate_character
 from namegen.generator import generate
-from namegen.loader import list_regions, load_region
+from namegen.loader import get_origin_catalog, load_region
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 
 router = APIRouter()
@@ -28,15 +28,8 @@ _GENDER_DE = {
 }
 
 
-def _get_regions() -> list[dict]:
-    result = []
-    for rid in list_regions():
-        try:
-            rd = load_region(rid)
-            result.append({"id": rid, "name": rd.meta.region})
-        except Exception:
-            pass
-    return result
+def _get_origins() -> list[dict]:
+    return get_origin_catalog()
 
 
 @router.get("/")
@@ -44,10 +37,10 @@ async def index(
     request: Request,
     region: str | None = Query(default=None),
 ):
-    regions = _get_regions()
-    selected = region or (regions[0]["id"] if regions else "")
+    origins = _get_origins()
+    selected = region or (origins[0]["id"] if origins else "")
     return _TEMPLATES.TemplateResponse(request, "index.html", {
-        "regions":         regions,
+        "origins":         origins,
         "selected_region": selected,
     })
 
@@ -93,6 +86,7 @@ async def generate_names(
             "results":      results,
             "gender_de":    _GENDER_DE,
             "region_abbr":  region_data.meta.abbreviation,
+            "origin_data":  region_data,
         },
     )
 

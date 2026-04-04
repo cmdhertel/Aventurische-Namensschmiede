@@ -1,4 +1,4 @@
-"""Character generation: wraps name generation with age, profession, and traits."""
+"""Character generation with species, culture, and origin context."""
 
 from __future__ import annotations
 
@@ -16,10 +16,9 @@ from .models import (
     GenerationMode,
     PhysicalTraits,
     ProfessionCategory,
+    RegionData,
 )
 
-
-# ── Data loading ───────────────────────────────────────────────────────────────
 
 @lru_cache(maxsize=1)
 def _load_regelwiki_raw() -> dict:
@@ -34,7 +33,6 @@ def _load_traits_raw() -> dict:
 
 
 def _load_professions_by_category(category: ProfessionCategory) -> list[str]:
-    """Return the regelwiki profession list for the given category."""
     raw = _load_regelwiki_raw()["professionen"]
     match category:
         case ProfessionCategory.GEWEIHTE:
@@ -46,49 +44,34 @@ def _load_professions_by_category(category: ProfessionCategory) -> list[str]:
             return w["kaempfer"] + w["ordensleute"]
         case ProfessionCategory.PROFAN:
             return raw["weltliche"]["profane"]
-        case _:  # ALL
+        case _:
             w = raw["weltliche"]
-            return (
-                raw["geweihte"]
-                + raw["zauberer"]
-                + w["kaempfer"]
-                + w["ordensleute"]
-                + w["profane"]
-            )
+            return raw["geweihte"] + raw["zauberer"] + w["kaempfer"] + w["ordensleute"] + w["profane"]
 
 
-# ── Age distribution ───────────────────────────────────────────────────────────
+def _generate_age(data: RegionData, rng: random.Random) -> int:
+    adult_age = data.species.stats.adult_age if data.species else 18
+    max_age = data.species.stats.max_age if data.species else 80
 
-def _generate_age(rng: random.Random) -> int:
-    """
-    Ages 18–80 for humans. Ages 70+ become progressively less likely:
-    probability drops linearly from 1.0 at age 70 to ~0.1 at age 80.
-    """
     while True:
-        age = rng.randint(18, 80)
-        if age <= 70:
+        age = rng.randint(adult_age, max_age)
+        soft_cap = adult_age + int((max_age - adult_age) * 0.75)
+        if age <= soft_cap:
             return age
-        threshold = 1.0 - (age - 70) * 0.09
+        threshold = max(0.1, 1.0 - (age - soft_cap) / max(1, max_age - soft_cap))
         if rng.random() < threshold:
             return age
 
 
-# ── Profession selection ───────────────────────────────────────────────────────
-
 def _pick_profession(
-    region: str,
+    data: RegionData,
     category: ProfessionCategory,
     rng: random.Random,
 ) -> str:
-    """
-    Pick a profession from the regelwiki list for the given category.
-    For ProfessionCategory.ALL, regional professions are added with 2× weight
-    to reflect local prevalence.
-    """
     base_pool = _load_professions_by_category(category)
 
     if category == ProfessionCategory.ALL:
-        regional = load_region(region).character.professions
+        regional = data.character.professions
         pool = base_pool + regional * 2 if regional else base_pool
     else:
         pool = base_pool
@@ -96,23 +79,26 @@ def _pick_profession(
     return rng.choice(pool)
 
 
-# ── Traits generation ──────────────────────────────────────────────────────────
+def _weighted_pool(base: list[str], extra: list[str], multiplier: int = 3) -> list[str]:
+    if not extra:
+        return base
+    return base + extra * multiplier
 
-def _generate_traits(rng: random.Random) -> CharacterTraits:
+
+def _generate_traits(data: RegionData, rng: random.Random) -> CharacterTraits:
     raw = _load_traits_raw()
+    char = data.character
     return CharacterTraits(
         physical=PhysicalTraits(
-            hair=rng.choice(raw["physical"]["hair"]),
-            eyes=rng.choice(raw["physical"]["eyes"]),
-            build=rng.choice(raw["physical"]["build"]),
+            hair=rng.choice(_weighted_pool(raw["physical"]["hair"], char.hair)),
+            eyes=rng.choice(_weighted_pool(raw["physical"]["eyes"], char.eyes)),
+            build=rng.choice(_weighted_pool(raw["physical"]["build"], char.build)),
         ),
-        personality=rng.choice(raw["personality"]["traits"]),
-        motivation=rng.choice(raw["background"]["motivations"]),
-        quirk=rng.choice(raw["background"]["quirks"]),
+        personality=rng.choice(_weighted_pool(raw["personality"]["traits"], char.personality)),
+        motivation=rng.choice(_weighted_pool(raw["background"]["motivations"], char.motivations)),
+        quirk=rng.choice(_weighted_pool(raw["background"]["quirks"], char.quirks)),
     )
 
-
-# ── Public API ─────────────────────────────────────────────────────────────────
 
 def generate_character(
     region: str,
@@ -121,17 +107,28 @@ def generate_character(
     profession_category: ProfessionCategory = ProfessionCategory.ALL,
     rng: random.Random | None = None,
 ) -> CharacterResult:
-    """Generate a full fluff character (name + age + profession + traits)."""
     _rng = rng if rng is not None else random
+    data = load_region(region)
 
     name = generate(region=region, mode=mode, gender=gender, rng=_rng)
-    age = _generate_age(_rng)
-    profession = _pick_profession(region, profession_category, _rng)
-    traits = _generate_traits(_rng)
+    age = _generate_age(data, _rng)
+    profession = _pick_profession(data, profession_category, _rng)
+    traits = _generate_traits(data, _rng)
+
+    language = _rng.choice(data.character.languages) if data.character.languages else None
+    script = _rng.choice(data.character.scripts) if data.character.scripts else None
+    social_status = _rng.choice(data.character.social_status) if data.character.social_status else None
 
     return CharacterResult(
         name=name,
         age=age,
         profession=profession,
         traits=traits,
+        language=language,
+        script=script,
+        social_status=social_status,
+        species_stats=data.species.stats if data.species else None,
+        typical_advantages=data.character.typical_advantages,
+        typical_disadvantages=data.character.typical_disadvantages,
+        typical_talents=data.character.typical_talents,
     )

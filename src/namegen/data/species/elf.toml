@@ -1,0 +1,22 @@
+[meta]
+name = "Elf"
+notes = "Magisch begabte, langlebige Spezies."
+
+[stats]
+ap_value = 18
+life_points = 2
+soul_power = -4
+toughness = -6
+speed = 8
+adult_age = 30
+max_age = 300
+attribute_modifiers = ["IN und GE +1", "KL oder KK -2"]
+automatic_advantages = ["Zauberer", "Zweistimmiger Gesang"]
+
+[character]
+typical_advantages = ["Richtungssinn", "Wohlklang"]
+typical_disadvantages = ["Weltfremd"]
+personality = ["träumerisch und naturverbunden", "fremdelt mit menschlichen Konventionen"]
+motivations = ["folgt den Stimmen der Natur"]
+quirks = ["spricht manchmal in Bildern oder Liedzeilen"]
+
