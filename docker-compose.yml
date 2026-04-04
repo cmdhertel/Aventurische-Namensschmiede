@@ -22,7 +22,7 @@ services:
       - app_net
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.123.0
+    image: otel/opentelemetry-collector-contrib:0.149.0
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     volumes:
       - ./ops/observability/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
@@ -31,7 +31,7 @@ services:
       - app_net
 
   prometheus:
-    image: prom/prometheus:v2.54.1
+    image: prom/prometheus:v3
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
@@ -48,7 +48,7 @@ services:
       - app_net
 
   tempo:
-    image: grafana/tempo:2.7.2
+    image: grafana/tempo
     command: ["-config.file=/etc/tempo/tempo.yaml"]
     volumes:
       - ./ops/observability/tempo.yaml:/etc/tempo/tempo.yaml:ro
@@ -60,7 +60,7 @@ services:
       - app_net
 
   grafana:
-    image: grafana/grafana:11.2.2
+    image: grafana/grafana:12.4.2
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
@@ -76,7 +76,7 @@ services:
       - prometheus
       - tempo
     ports:
-      - "3000:3000"
+      - "3300:3000"
     networks:
       - app_net
 
