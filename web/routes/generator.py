@@ -11,14 +11,14 @@ from time import perf_counter
 from fastapi import APIRouter, Form, Query, Request
 from fastapi.responses import StreamingResponse
 from fastapi.templating import Jinja2Templates
+from observability import AppMetrics
+from observability_utils import count_empty_names, name_length, safe_full_name
 from opentelemetry.trace import Tracer, get_tracer
 
 from namegen.chargen import generate_character
 from namegen.generator import generate
 from namegen.loader import get_origin_catalog, load_region
 from namegen.models import Gender, GenerationMode, ProfessionCategory
-from observability import AppMetrics
-from observability_utils import count_empty_names, name_length, safe_full_name
 
 router = APIRouter()
 
@@ -162,7 +162,8 @@ async def generate_names(
 
         if count > 0 and (empty_results / count) > 0.1:
             _logger.warning(
-                "event=namegen.data_quality.warning region=%s mode=%s character=%s empty_ratio=%.2f",
+                "event=namegen.data_quality.warning region=%s mode=%s"
+                " character=%s empty_ratio=%.2f",
                 region,
                 mode,
                 character,
@@ -170,7 +171,9 @@ async def generate_names(
             )
 
         _logger.info(
-            "event=namegen.generate region=%s mode=%s gender=%s character=%s profession_category=%s count=%s input_chars=%s output_chars=%s empty_results=%s",
+            "event=namegen.generate region=%s mode=%s gender=%s"
+            " character=%s profession_category=%s count=%s"
+            " input_chars=%s output_chars=%s empty_results=%s",
             region,
             mode,
             gender,
@@ -195,7 +198,9 @@ async def generate_names(
         )
 
         if _metrics:
-            _metrics.template_render_duration_ms.record((perf_counter() - render_start) * 1000, attrs)
+            _metrics.template_render_duration_ms.record(
+                (perf_counter() - render_start) * 1000, attrs
+            )
 
         return response
 

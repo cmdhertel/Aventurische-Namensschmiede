@@ -10,8 +10,9 @@ WEB_DIR = ROOT / "web"
 if str(WEB_DIR) not in sys.path:
     sys.path.insert(0, str(WEB_DIR))
 
-from observability_utils import count_empty_names, name_length, safe_full_name
-from namegen.models import Gender, GenerationMode, NameResult
+from observability_utils import count_empty_names, name_length, safe_full_name  # noqa: E402
+
+from namegen.models import Gender, GenerationMode, NameResult  # noqa: E402
 
 
 class _LegacyName:

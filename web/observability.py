@@ -24,7 +24,6 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExport
 from opentelemetry.trace import Status, StatusCode
 from rich.logging import RichHandler
 
-
 _LOGGER_NAME = "namenschmiede.observability"
 
 
@@ -257,7 +256,8 @@ def create_metrics_middleware(
                 span.set_status(Status(StatusCode.ERROR, str(exc)))
 
             logger.exception(
-                "event=http.request.error request_id=%s method=%s path=%s route=%s duration_ms=%.2f error_type=%s",
+                "event=http.request.error request_id=%s method=%s path=%s"
+                " route=%s duration_ms=%.2f error_type=%s",
                 request_id,
                 method,
                 path,
@@ -291,7 +291,8 @@ def create_metrics_middleware(
         response.headers["X-Request-ID"] = request_id
 
         logger.info(
-            "event=http.request request_id=%s method=%s path=%s route=%s status=%s duration_ms=%.2f",
+            "event=http.request request_id=%s method=%s path=%s"
+            " route=%s status=%s duration_ms=%.2f",
             request_id,
             method,
             path,
