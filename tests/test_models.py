@@ -257,9 +257,9 @@ def test_character_result_age_and_profession() -> None:
 def test_character_result_traits() -> None:
     cr = _make_character_result()
     assert cr.traits.physical.hair == "schwarz"
-    assert cr.traits.physical.eyes == "blau"
-    assert cr.traits.personality == "mutig"
-    assert cr.traits.quirk == "pfeift beim Denken"
+    assert cr.traits.physical.eyes == "grau"
+    assert cr.traits.personality == "stur"
+    assert cr.traits.quirk == "prüft Steine"
 
 
 # ── RegionData Defaults ───────────────────────────────────────────────────────

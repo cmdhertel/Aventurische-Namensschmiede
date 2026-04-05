@@ -191,7 +191,7 @@ def test_profession_all_includes_regional_professions_in_pool() -> None:
     """Regionale Berufe sollen für category=alle berücksichtigt werden."""
     from namegen.loader import load_region
 
-    regional = load_region("mittelreich_kosch").character.professions
+    regional = set(load_region("mittelreich_kosch").character.professions)
     assert regional, "Kosch sollte regionale Berufe haben"
     # Mit genug Samples muss mindestens ein regionaler Beruf gewürfelt werden
     professions = {

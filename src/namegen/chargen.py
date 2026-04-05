@@ -77,6 +77,22 @@ def _generate_age(data: RegionData, rng: random.Random) -> int:
             return age
 
 
+def _generate_experience_age(
+    experience: ExperienceLevel,
+    rng: random.Random,
+) -> int:
+    """Generate an age from the user-facing experience brackets."""
+    match experience:
+        case ExperienceLevel.LEHRLING:
+            return rng.randint(10, 16)
+        case ExperienceLevel.GESELLE:
+            return rng.randint(17, 25)
+        case ExperienceLevel.MEISTER:
+            return rng.randint(26, 45)
+        case ExperienceLevel.VETERAN:
+            return rng.randint(46, 80)
+
+
 def _pick_profession(
     data: RegionData,
     category: ProfessionCategory,
@@ -136,7 +152,7 @@ def generate_character(
         rng=_rng,
         infix_probability_override=infix_probability_override,
     )
-    age = _generate_age(data, _rng)
+    age = _generate_experience_age(experience, _rng)
     profession = _pick_profession(data, profession_category, _rng)
     traits = _generate_traits(data, _rng)
 
