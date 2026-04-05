@@ -60,10 +60,13 @@ class ComposeParts(BaseModel):
     suffix: list[str] = Field(default_factory=list)
 
 
+_DEFAULT_INFIX_PROBABILITY = 0.3
+
+
 class ComposeSection(BaseModel):
     """Gendered ComposeParts plus infix probability for one name slot (first or last)."""
 
-    infix_probability: Annotated[float, Field(ge=0.0, le=1.0)] = 0.3
+    infix_probability: Annotated[float | None, Field(ge=0.0, le=1.0)] = None
     male: ComposeParts = Field(default_factory=ComposeParts)
     female: ComposeParts = Field(default_factory=ComposeParts)
     neutral: ComposeParts = Field(default_factory=ComposeParts)
@@ -78,6 +81,17 @@ class NameSchema(BaseModel):
     female_patronym_pattern: str = "{parent}dottir"
     neutral_patronym_pattern: str = "{parent}"
     description: str = ""
+
+    def is_default(self) -> bool:
+        """True if this schema has no customizations (can be replaced by a base schema)."""
+        return (
+            self.type == NameSchemaType.GIVEN_FAMILY
+            and self.connector is None
+            and self.description == ""
+            and self.male_patronym_pattern == "{parent}son"
+            and self.female_patronym_pattern == "{parent}dottir"
+            and self.neutral_patronym_pattern == "{parent}"
+        )
 
 
 class SimpleConfig(BaseModel):

@@ -11,9 +11,10 @@ from rich import box
 from rich.console import Console
 from rich.table import Table
 
+from .catalog import get_origin_catalog
 from .chargen import generate_character, get_profession_groups
 from .generator import GeneratorError, generate
-from .loader import LoaderError, get_origin_catalog, list_regions, load_region
+from .loader import LoaderError, list_regions, load_region
 from .models import ExperienceLevel, Gender, GenerationMode, ProfessionCategory
 from .output import OutputFormat
 from .output import write as output_write

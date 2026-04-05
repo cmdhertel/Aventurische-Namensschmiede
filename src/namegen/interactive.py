@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 
 import questionary
 from rich.console import Console
 from rich.rule import Rule
 
+from .catalog import get_origin_catalog, selection_supports_compose
 from .chargen import generate_character
 from .generator import GeneratorError, generate
-from .loader import LoaderError, get_origin_catalog, selection_supports_compose
+from .loader import LoaderError
 from .models import (
     CharacterResult,
     ExperienceLevel,
@@ -51,29 +53,17 @@ def run() -> None:
         if config is None:
             break
 
-        (
-            mode,
-            region,
-            gender,
-            count,
-            show_components,
-            character,
-            profession_category,
-            experience,
-            fmt,
-            dest,
-        ) = config
         _generate_and_output(
-            mode,
-            region,
-            gender,
-            count,
-            show_components,
-            character,
-            profession_category,
-            experience,
-            fmt,
-            dest,
+            config.mode,
+            config.region,
+            config.gender,
+            config.count,
+            config.show_components,
+            config.character,
+            config.profession_category,
+            config.experience,
+            config.fmt,
+            config.dest,
         )
 
         console.print()
@@ -90,21 +80,21 @@ def run() -> None:
     console.print("[dim]Auf Wiedersehen![/dim]")
 
 
-_ConfigResult = tuple[
-    GenerationMode,
-    str,
-    Gender,
-    int,
-    bool,
-    bool,
-    ProfessionCategory,
-    ExperienceLevel,
-    OutputFormat,
-    Path | None,
-]
+@dataclass
+class _GenerationConfig:
+    mode: GenerationMode
+    region: str
+    gender: Gender
+    count: int
+    show_components: bool
+    character: bool
+    profession_category: ProfessionCategory
+    experience: ExperienceLevel
+    fmt: OutputFormat
+    dest: Path | None
 
 
-def _ask_configuration() -> _ConfigResult | None:
+def _ask_configuration() -> _GenerationConfig | None:
     """Fragt alle Einstellungen interaktiv ab. Gibt None zurück bei Abbruch (Ctrl+C)."""
 
     # ── Spezies / Kultur / Region ─────────────────────────────────────────────
@@ -150,7 +140,7 @@ def _ask_configuration() -> _ConfigResult | None:
         console.print("[red]Keine passenden Regionen gefunden.[/red]")
         return None
 
-    if matching_entries[0].get("has_region") == "true":
+    if matching_entries[0].get("has_region"):
         region_choices = []
         for item in matching_entries:
             label = item["region_name"] or item["name"]
@@ -320,17 +310,17 @@ def _ask_configuration() -> _ConfigResult | None:
                 return None
             dest = Path(filename)
 
-    return (
-        mode,
-        region,
-        gender,
-        count,
-        show_components,
-        character,
-        profession_category,
-        experience,
-        fmt,
-        dest,
+    return _GenerationConfig(
+        mode=mode,
+        region=region,
+        gender=gender,
+        count=count,
+        show_components=show_components,
+        character=character,
+        profession_category=profession_category,
+        experience=experience,
+        fmt=fmt,
+        dest=dest,
     )
 
 

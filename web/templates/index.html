@@ -295,7 +295,7 @@
     const matchingEntries = ORIGINS.filter(
       o => o.species_id === selectedSpecies && o.culture_id === selectedCulture
     );
-    const showRegion = matchingEntries[0]?.has_region === 'true';
+    const showRegion = !!matchingEntries[0]?.has_region;
     const regionOptions = matchingEntries.map(o => ({
       value: o.id,
       label: showRegion ? o.region_name : o.name,
@@ -314,7 +314,7 @@
     const composePill = document.getElementById('mode-pill-compose');
     const simpleInput = document.querySelector('input[name="mode"][value="simple"]');
     const selectedEntry = ORIGINS.find(o => o.id === selectionId);
-    composeEnabled = selectedEntry?.has_compose === 'true';
+    composeEnabled = !!selectedEntry?.has_compose;
 
     composeInput.disabled = !composeEnabled;
     composePill.style.opacity = composeEnabled ? '' : '0.45';
@@ -474,7 +474,8 @@
       return;
     }
 
-    const names = entries.map(({ kind, ...entry }) => entry);
+    const kind = entries[0].kind;
+    const names = entries.map(({ kind: _k, ...entry }) => entry);
 
     const form = document.createElement('form');
     form.method = 'POST';
@@ -483,7 +484,12 @@
     inp.type = 'hidden';
     inp.name = 'names';
     inp.value = JSON.stringify(names);
+    const kindInp = document.createElement('input');
+    kindInp.type = 'hidden';
+    kindInp.name = 'kind';
+    kindInp.value = kind;
     form.appendChild(inp);
+    form.appendChild(kindInp);
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
