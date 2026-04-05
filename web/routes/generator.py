@@ -17,7 +17,11 @@ from opentelemetry.trace import Tracer, get_tracer
 
 from namegen.chargen import generate_character
 from namegen.generator import generate
-from namegen.loader import get_origin_catalog, resolve_generation_targets, selection_supports_compose
+from namegen.loader import (
+    get_origin_catalog,
+    resolve_generation_targets,
+    selection_supports_compose,
+)
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 
 router = APIRouter()
