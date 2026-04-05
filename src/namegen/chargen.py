@@ -21,6 +21,7 @@ from .models import (
 
 # ── Data loading ───────────────────────────────────────────────────────────────
 
+
 @lru_cache(maxsize=1)
 def _load_regelwiki_raw() -> dict:
     data = files("namegen.data").joinpath("professions_regelwiki.toml").read_bytes()
@@ -49,11 +50,7 @@ def _load_professions_by_category(category: ProfessionCategory) -> list[str]:
         case _:  # ALL
             w = raw["weltliche"]
             return (
-                raw["geweihte"]
-                + raw["zauberer"]
-                + w["kaempfer"]
-                + w["ordensleute"]
-                + w["profane"]
+                raw["geweihte"] + raw["zauberer"] + w["kaempfer"] + w["ordensleute"] + w["profane"]
             )
 
 
@@ -69,6 +66,7 @@ def get_profession_groups() -> list[tuple[str, list[str]]]:
 
 # ── Age distribution ───────────────────────────────────────────────────────────
 
+
 def _generate_age(rng: random.Random, experience: ExperienceLevel) -> int:
     """Generate an age within the configured experience bracket."""
     match experience:
@@ -83,6 +81,7 @@ def _generate_age(rng: random.Random, experience: ExperienceLevel) -> int:
 
 
 # ── Profession selection ───────────────────────────────────────────────────────
+
 
 def _pick_profession(
     region: str,
@@ -107,6 +106,7 @@ def _pick_profession(
 
 # ── Traits generation ──────────────────────────────────────────────────────────
 
+
 def _generate_traits(rng: random.Random) -> CharacterTraits:
     raw = _load_traits_raw()
     return CharacterTraits(
@@ -122,6 +122,7 @@ def _generate_traits(rng: random.Random) -> CharacterTraits:
 
 
 # ── Public API ─────────────────────────────────────────────────────────────────
+
 
 def generate_character(
     region: str,

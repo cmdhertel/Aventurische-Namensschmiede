@@ -23,6 +23,7 @@ class GeneratorError(Exception):
 
 # ── Pool resolution helpers ────────────────────────────────────────────────────
 
+
 def _resolve_simple_pool(
     pool: GenderedStringPool,
     gender: Gender,
@@ -86,6 +87,7 @@ def _pick(primary: list[str], fallback: list[str], component: str, slot: str, re
 
 
 # ── Public API ─────────────────────────────────────────────────────────────────
+
 
 def generate(
     region: str,

@@ -24,18 +24,20 @@ from .output import write as output_write
 
 console = Console()
 
-_STYLE = questionary.Style([
-    ("qmark",       "fg:#a855f7 bold"),
-    ("question",    "bold"),
-    ("answer",      "fg:#a855f7 bold"),
-    ("pointer",     "fg:#a855f7 bold"),
-    ("highlighted", "fg:#a855f7 bold"),
-    ("selected",    "fg:#a855f7"),
-])
+_STYLE = questionary.Style(
+    [
+        ("qmark", "fg:#a855f7 bold"),
+        ("question", "bold"),
+        ("answer", "fg:#a855f7 bold"),
+        ("pointer", "fg:#a855f7 bold"),
+        ("highlighted", "fg:#a855f7 bold"),
+        ("selected", "fg:#a855f7"),
+    ]
+)
 
 # Formate die immer in eine Datei schreiben oder nicht (clipboard)
-_ALWAYS_FILE  = {OutputFormat.PDF}
-_NEVER_FILE   = {OutputFormat.RICH, OutputFormat.CLIPBOARD}
+_ALWAYS_FILE = {OutputFormat.PDF}
+_NEVER_FILE = {OutputFormat.RICH, OutputFormat.CLIPBOARD}
 
 
 def run() -> None:
@@ -50,12 +52,28 @@ def run() -> None:
             break
 
         (
-            mode, region, gender, count, show_components, character,
-            profession_category, experience, fmt, dest,
+            mode,
+            region,
+            gender,
+            count,
+            show_components,
+            character,
+            profession_category,
+            experience,
+            fmt,
+            dest,
         ) = config
         _generate_and_output(
-            mode, region, gender, count, show_components, character,
-            profession_category, experience, fmt, dest,
+            mode,
+            region,
+            gender,
+            count,
+            show_components,
+            character,
+            profession_category,
+            experience,
+            fmt,
+            dest,
         )
 
         console.print()
@@ -73,8 +91,16 @@ def run() -> None:
 
 
 _ConfigResult = tuple[
-    GenerationMode, str, Gender, int, bool, bool,
-    ProfessionCategory, ExperienceLevel, OutputFormat, Path | None,
+    GenerationMode,
+    str,
+    Gender,
+    int,
+    bool,
+    bool,
+    ProfessionCategory,
+    ExperienceLevel,
+    OutputFormat,
+    Path | None,
 ]
 
 
@@ -86,7 +112,7 @@ def _ask_configuration() -> _ConfigResult | None:
         "Generierungsmodus:",
         choices=[
             questionary.Choice("Einfach       – Namen aus vordefinierten Listen", value="simple"),
-            questionary.Choice("Komposition   – Namen aus Silbenbausteinen",      value="compose"),
+            questionary.Choice("Komposition   – Namen aus Silbenbausteinen", value="compose"),
         ],
         style=_STYLE,
     ).ask()
@@ -132,8 +158,11 @@ def _ask_configuration() -> _ConfigResult | None:
     count_str = questionary.text(
         "Anzahl Namen:",
         default="1",
-        validate=lambda v: True if (v.isdigit() and 1 <= int(v) <= 100)
-                           else "Bitte eine Zahl zwischen 1 und 100 eingeben.",
+        validate=lambda v: (
+            True
+            if (v.isdigit() and 1 <= int(v) <= 100)
+            else "Bitte eine Zahl zwischen 1 und 100 eingeben."
+        ),
         style=_STYLE,
     ).ask()
     if count_str is None:
@@ -167,11 +196,11 @@ def _ask_configuration() -> _ConfigResult | None:
         cat_str = questionary.select(
             "Berufskategorie:",
             choices=[
-                questionary.Choice("Alle Professionen",     value="alle"),
-                questionary.Choice("Geweihte",              value="geweihte"),
-                questionary.Choice("Zauberer",              value="zauberer"),
+                questionary.Choice("Alle Professionen", value="alle"),
+                questionary.Choice("Geweihte", value="geweihte"),
+                questionary.Choice("Zauberer", value="zauberer"),
                 questionary.Choice("Kämpfer & Ordensleute", value="kaempfer"),
-                questionary.Choice("Profane Berufe",        value="profan"),
+                questionary.Choice("Profane Berufe", value="profan"),
             ],
             style=_STYLE,
         ).ask()
@@ -198,13 +227,13 @@ def _ask_configuration() -> _ConfigResult | None:
     fmt_str = questionary.select(
         "Ausgabeformat:",
         choices=[
-            questionary.Choice("Terminal-Tabelle  (Rich)",   value="rich"),
-            questionary.Choice("Nur Namen         (Plain)",  value="plain"),
-            questionary.Choice("JSON",                       value="json"),
-            questionary.Choice("CSV",                        value="csv"),
-            questionary.Choice("Markdown",                   value="markdown"),
+            questionary.Choice("Terminal-Tabelle  (Rich)", value="rich"),
+            questionary.Choice("Nur Namen         (Plain)", value="plain"),
+            questionary.Choice("JSON", value="json"),
+            questionary.Choice("CSV", value="csv"),
+            questionary.Choice("Markdown", value="markdown"),
             questionary.Choice("Zwischenablage    (Clipboard)", value="clipboard"),
-            questionary.Choice("PDF",                        value="pdf"),
+            questionary.Choice("PDF", value="pdf"),
         ],
         style=_STYLE,
     ).ask()
@@ -246,8 +275,16 @@ def _ask_configuration() -> _ConfigResult | None:
             dest = Path(filename)
 
     return (
-        mode, region, gender, count, show_components, character,
-        profession_category, experience, fmt, dest,
+        mode,
+        region,
+        gender,
+        count,
+        show_components,
+        character,
+        profession_category,
+        experience,
+        fmt,
+        dest,
     )
 
 
@@ -266,16 +303,17 @@ def _generate_and_output(
     try:
         if character:
             results: list[CharacterResult] | list[NameResult] = [
-                generate_character(region=region, mode=mode, gender=gender,
-                                   profession_category=profession_category,
-                                   experience=experience)
+                generate_character(
+                    region=region,
+                    mode=mode,
+                    gender=gender,
+                    profession_category=profession_category,
+                    experience=experience,
+                )
                 for _ in range(count)
             ]
         else:
-            results = [
-                generate(region=region, mode=mode, gender=gender)
-                for _ in range(count)
-            ]
+            results = [generate(region=region, mode=mode, gender=gender) for _ in range(count)]
     except (GeneratorError, LoaderError) as exc:
         console.print(f"[red]Fehler:[/red] {exc}")
         return

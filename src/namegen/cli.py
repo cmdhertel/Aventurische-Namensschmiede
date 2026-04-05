@@ -33,6 +33,7 @@ def _default(ctx: typer.Context) -> None:
     """Startet das interaktive Menü wenn kein Unterbefehl angegeben wird."""
     if ctx.invoked_subcommand is None:
         from . import interactive
+
         interactive.run()
 
 
@@ -103,58 +104,77 @@ FormatOpt = Annotated[
 ]
 OutputOpt = Annotated[
     Path | None,
-    typer.Option(
-        "--output", "-o", help="Ausgabedatei (Standard: stdout / Standardname für PDF)."
-    ),
+    typer.Option("--output", "-o", help="Ausgabedatei (Standard: stdout / Standardname für PDF)."),
 ]
 
 
 # ── Commands ───────────────────────────────────────────────────────────────────
 
+
 @app.command("simple")
 def cmd_simple(
-    ctx:             typer.Context,
+    ctx: typer.Context,
     region: RegionArg,
-    gender:          GenderOpt     = Gender.ANY,
-    count:           CountOpt      = 1,
-    character:       CharacterOpt  = False,
-    category:        CategoryOpt   = ProfessionCategory.ALL,
-    experience:      ExperienceOpt = ExperienceLevel.GESELLE,
-    fmt:             FormatOpt     = OutputFormat.RICH,
-    output:          OutputOpt     = None,
+    gender: GenderOpt = Gender.ANY,
+    count: CountOpt = 1,
+    character: CharacterOpt = False,
+    category: CategoryOpt = ProfessionCategory.ALL,
+    experience: ExperienceOpt = ExperienceLevel.GESELLE,
+    fmt: FormatOpt = OutputFormat.RICH,
+    output: OutputOpt = None,
 ) -> None:
     """Namen aus vordefinierten Listen generieren."""
     _validate_character_options(ctx, character)
-    _run(region, GenerationMode.SIMPLE, gender, count, show_components=False,
-         character=character, category=category, experience=experience,
-         fmt=fmt, dest=output)
+    _run(
+        region,
+        GenerationMode.SIMPLE,
+        gender,
+        count,
+        show_components=False,
+        character=character,
+        category=category,
+        experience=experience,
+        fmt=fmt,
+        dest=output,
+    )
 
 
 @app.command("compose")
 def cmd_compose(
-    ctx:             typer.Context,
+    ctx: typer.Context,
     region: RegionArg,
-    gender:          GenderOpt     = Gender.ANY,
-    count:           CountOpt      = 1,
+    gender: GenderOpt = Gender.ANY,
+    count: CountOpt = 1,
     show_components: ComponentsOpt = False,
-    character:       CharacterOpt  = False,
-    category:        CategoryOpt   = ProfessionCategory.ALL,
-    experience:      ExperienceOpt = ExperienceLevel.GESELLE,
+    character: CharacterOpt = False,
+    category: CategoryOpt = ProfessionCategory.ALL,
+    experience: ExperienceOpt = ExperienceLevel.GESELLE,
     infix_probability: InfixProbOpt = None,
-    fmt:             FormatOpt     = OutputFormat.RICH,
-    output:          OutputOpt     = None,
+    fmt: FormatOpt = OutputFormat.RICH,
+    output: OutputOpt = None,
 ) -> None:
     """Namen aus Silbenbausteinen zusammensetzen."""
     _validate_character_options(ctx, character)
-    _run(region, GenerationMode.COMPOSE, gender, count, show_components,
-         character=character, category=category, experience=experience,
-         infix_probability_override=infix_probability, fmt=fmt, dest=output)
+    _run(
+        region,
+        GenerationMode.COMPOSE,
+        gender,
+        count,
+        show_components,
+        character=character,
+        category=category,
+        experience=experience,
+        infix_probability_override=infix_probability,
+        fmt=fmt,
+        dest=output,
+    )
 
 
 @app.command("menu")
 def cmd_menu() -> None:
     """Interaktives Menü zur Namens-Generierung."""
     from . import interactive
+
     interactive.run()
 
 
@@ -190,6 +210,7 @@ def cmd_professions() -> None:
 
 # ── Shared generation + output ─────────────────────────────────────────────────
 
+
 def _run(
     region: str,
     mode: GenerationMode,
@@ -206,15 +227,24 @@ def _run(
     try:
         if character:
             results = [
-                generate_character(region=region, mode=mode, gender=gender,
-                                   profession_category=category, experience=experience,
-                                   infix_probability_override=infix_probability_override)
+                generate_character(
+                    region=region,
+                    mode=mode,
+                    gender=gender,
+                    profession_category=category,
+                    experience=experience,
+                    infix_probability_override=infix_probability_override,
+                )
                 for _ in range(count)
             ]
         else:
             results = [
-                generate(region=region, mode=mode, gender=gender,
-                         infix_probability_override=infix_probability_override)
+                generate(
+                    region=region,
+                    mode=mode,
+                    gender=gender,
+                    infix_probability_override=infix_probability_override,
+                )
                 for _ in range(count)
             ]
     except (GeneratorError, LoaderError) as exc:

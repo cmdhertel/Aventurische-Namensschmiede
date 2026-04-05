@@ -20,6 +20,7 @@ RNG_BASE = 42
 
 # ── CharacterResult: Grundstruktur ────────────────────────────────────────────
 
+
 def test_generate_character_returns_character_result() -> None:
     result = generate_character("mittelreich_kosch", rng=random.Random(1))
     assert isinstance(result, CharacterResult)
@@ -62,17 +63,19 @@ def test_generate_character_properties() -> None:
 
 # ── Determinismus ─────────────────────────────────────────────────────────────
 
+
 def test_generate_character_same_seed_deterministic() -> None:
     r1 = generate_character("mittelreich_kosch", rng=random.Random(99))
     r2 = generate_character("mittelreich_kosch", rng=random.Random(99))
-    assert r1.full_name      == r2.full_name
-    assert r1.experience     == r2.experience
-    assert r1.age            == r2.age
-    assert r1.profession     == r2.profession
-    assert r1.traits.quirk   == r2.traits.quirk
+    assert r1.full_name == r2.full_name
+    assert r1.experience == r2.experience
+    assert r1.age == r2.age
+    assert r1.profession == r2.profession
+    assert r1.traits.quirk == r2.traits.quirk
 
 
 # ── Altersverteilung ──────────────────────────────────────────────────────────
+
 
 @pytest.mark.parametrize(
     ("experience", "minimum", "maximum"),
@@ -100,6 +103,7 @@ def test_age_median_for_geselle_is_in_reasonable_range() -> None:
 
 
 # ── Berufskategorien ──────────────────────────────────────────────────────────
+
 
 @pytest.mark.parametrize("category", list(ProfessionCategory))
 def test_profession_category_returns_nonempty_list(category: ProfessionCategory) -> None:
@@ -162,8 +166,12 @@ def test_profession_category_kaempfer_excludes_geweihte() -> None:
 
 def test_profession_category_all_is_superset_of_others() -> None:
     all_profs = set(_load_professions_by_category(ProfessionCategory.ALL))
-    for category in (ProfessionCategory.GEWEIHTE, ProfessionCategory.ZAUBERER,
-                     ProfessionCategory.KAEMPFER, ProfessionCategory.PROFAN):
+    for category in (
+        ProfessionCategory.GEWEIHTE,
+        ProfessionCategory.ZAUBERER,
+        ProfessionCategory.KAEMPFER,
+        ProfessionCategory.PROFAN,
+    ):
         cat_profs = set(_load_professions_by_category(category))
         assert cat_profs.issubset(all_profs), (
             f"Kategorie '{category}' enthält Berufe, die nicht in 'alle' sind"
@@ -173,12 +181,14 @@ def test_profession_category_all_is_superset_of_others() -> None:
 def test_profession_all_includes_regional_professions_in_pool() -> None:
     """Regionale Berufe sollen für category=alle berücksichtigt werden."""
     from namegen.loader import load_region
+
     regional = load_region("mittelreich_kosch").character.professions
     assert regional, "Kosch sollte regionale Berufe haben"
     # Mit genug Samples muss mindestens ein regionaler Beruf gewürfelt werden
     professions = {
-        generate_character("mittelreich_kosch", profession_category=ProfessionCategory.ALL,
-                           rng=random.Random(i)).profession
+        generate_character(
+            "mittelreich_kosch", profession_category=ProfessionCategory.ALL, rng=random.Random(i)
+        ).profession
         for i in range(200)
     }
     assert professions & set(regional), "Kein regionaler Beruf in 200 Versuchen – unwahrscheinlich"
@@ -187,6 +197,7 @@ def test_profession_all_includes_regional_professions_in_pool() -> None:
 def test_profession_non_all_category_ignores_regional() -> None:
     """Kategorie-spezifische Auswahl soll KEINE regionalen Berufe enthalten."""
     from namegen.loader import load_region
+
     regional = set(load_region("mittelreich_kosch").character.professions)
     geweihte_pool = set(_load_professions_by_category(ProfessionCategory.GEWEIHTE))
     # Regionale Kosch-Berufe wie "Bergmann" dürfen nicht in Geweihte sein
@@ -197,8 +208,10 @@ def test_profession_non_all_category_ignores_regional() -> None:
 
 # ── Alle Regionen ─────────────────────────────────────────────────────────────
 
+
 def test_all_regions_generate_character() -> None:
     from namegen.loader import list_regions
+
     for region_id in list_regions():
         result = generate_character(region_id, rng=random.Random(3))
         assert result.full_name

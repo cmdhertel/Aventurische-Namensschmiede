@@ -17,14 +17,12 @@ from namegen.models import Gender, GenerationMode, ProfessionCategory
 
 router = APIRouter()
 
-_TEMPLATES = Jinja2Templates(
-    directory=str(Path(__file__).parent.parent / "templates")
-)
+_TEMPLATES = Jinja2Templates(directory=str(Path(__file__).parent.parent / "templates"))
 
 _GENDER_DE = {
-    "male":   "♂ Männlich",
+    "male": "♂ Männlich",
     "female": "♀ Weiblich",
-    "any":    "⚥ Beliebig",
+    "any": "⚥ Beliebig",
 }
 
 
@@ -46,10 +44,14 @@ async def index(
 ):
     regions = _get_regions()
     selected = region or (regions[0]["id"] if regions else "")
-    return _TEMPLATES.TemplateResponse(request, "index.html", {
-        "regions":         regions,
-        "selected_region": selected,
-    })
+    return _TEMPLATES.TemplateResponse(
+        request,
+        "index.html",
+        {
+            "regions": regions,
+            "selected_region": selected,
+        },
+    )
 
 
 @router.get("/rechtliches")
@@ -60,39 +62,36 @@ async def legal_page(request: Request):
 @router.post("/generate")
 async def generate_names(
     request: Request,
-    region:              str  = Form(...),
-    gender:              str  = Form("any"),
-    mode:                str  = Form("simple"),
-    count:               int  = Form(5),
-    character:           bool = Form(False),
-    profession_category: str  = Form("alle"),
+    region: str = Form(...),
+    gender: str = Form("any"),
+    mode: str = Form("simple"),
+    count: int = Form(5),
+    character: bool = Form(False),
+    profession_category: str = Form("alle"),
 ):
     count = max(1, min(count, 50))
     region_data = load_region(region)
-    gmode    = GenerationMode(mode)
-    gend     = Gender(gender)
+    gmode = GenerationMode(mode)
+    gend = Gender(gender)
     category = ProfessionCategory(profession_category)
 
     if character:
         results = [
-            generate_character(region=region, mode=gmode, gender=gend,
-                               profession_category=category)
+            generate_character(region=region, mode=gmode, gender=gend, profession_category=category)
             for _ in range(count)
         ]
         template = "partials/character_row.html"
     else:
-        results = [
-            generate(region=region, mode=gmode, gender=gend)
-            for _ in range(count)
-        ]
+        results = [generate(region=region, mode=gmode, gender=gend) for _ in range(count)]
         template = "partials/name_row.html"
 
     return _TEMPLATES.TemplateResponse(
-        request, template,
+        request,
+        template,
         {
-            "results":      results,
-            "gender_de":    _GENDER_DE,
-            "region_abbr":  region_data.meta.abbreviation,
+            "results": results,
+            "gender_de": _GENDER_DE,
+            "region_abbr": region_data.meta.abbreviation,
         },
     )
 

@@ -8,6 +8,7 @@ from namegen.loader import LoaderError, list_regions, load_region
 
 # ── list_regions ──────────────────────────────────────────────────────────────
 
+
 def test_list_regions_returns_nonempty_list() -> None:
     regions = list_regions()
     assert isinstance(regions, list)
@@ -33,8 +34,10 @@ def test_list_regions_contains_only_strings() -> None:
 
 # ── load_region ───────────────────────────────────────────────────────────────
 
+
 def test_load_region_returns_region_data() -> None:
     from namegen.models import RegionData
+
     data = load_region("mittelreich_kosch")
     assert isinstance(data, RegionData)
 
@@ -71,6 +74,7 @@ def test_load_region_notes_is_string() -> None:
 
 
 # ── TOML-Schema: Felder sind optional und haben sinnvolle Defaults ─────────────
+
 
 def test_region_simple_pools_are_lists() -> None:
     data = load_region("mittelreich_kosch")
