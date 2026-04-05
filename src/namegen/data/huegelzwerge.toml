@@ -1,0 +1,27 @@
+[meta]
+region = "Hügelzwerge"
+abbreviation = "HZW"
+notes = "Menschennähere Zwergennamen; Familiennamen sind unter Hügelzwergen verbreitet."
+
+[origin]
+species_id = "dwarf"
+culture_id = "huegelzwerge"
+region_id = "huegelzwerge"
+
+[naming_schema]
+type = "given_family"
+description = "Unter Hügelzwergen sind feste Sippen- und Familiennamen verbreiteter als reine Patronyme."
+
+[simple.first]
+male = ["Adamantosch", "Albrax", "Arombolosch", "Calaman", "Garax", "Greifax", "Hangor", "Tordim", "Ugosch", "Xenos"]
+female = ["Angrella", "Borascha", "Branda", "Diamante", "Garoscha", "Grescha", "Norgalda", "Saphira", "Theruka", "Turmaline"]
+
+[simple.parent]
+male = ["Agam", "Angrax", "Garmosch", "Gurthar", "Ordamon", "Rambosch"]
+female = ["Angrescha", "Garoscha", "Organa", "Saphira", "Theruka"]
+
+[simple.last]
+neutral = ["Eisenbart", "Funkenflug", "Glimmherd", "Hüglinger", "Klappertopf", "Silberhaar", "Sternhagel", "Zwiebelbock"]
+
+[character]
+professions = ["Brauer", "Händler", "Schmied", "Handwerker"]

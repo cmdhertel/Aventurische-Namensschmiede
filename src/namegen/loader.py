@@ -48,13 +48,67 @@ _REAL_CULTURE_MAP = {
     "thorwal": "thorwaler",
     "ctki_ssrr": "ctki_ssrr",
     "auelfen": "auelfen",
+    "elfen_firnelfen": "firnelfen",
+    "elfen_waldelfen": "waldelfen",
+    "elfen_steppenelfen": "steppenelfen",
+    "elfen_hochelfen": "hochelfen",
+    "elfen_shakagra": "shakagra",
     "ambosszwerge": "ambosszwerge",
+    "huegelzwerge": "huegelzwerge",
+    "brillantzwerge": "brillantzwerge",
+    "tiefzwerge": "tiefzwerge",
 }
 
 _SPECIES_MAP = {
     "auelfen": "elf",
+    "elfen_firnelfen": "elf",
+    "elfen_waldelfen": "elf",
+    "elfen_steppenelfen": "elf",
+    "elfen_hochelfen": "elf",
+    "elfen_shakagra": "elf",
     "ambosszwerge": "dwarf",
+    "huegelzwerge": "dwarf",
+    "brillantzwerge": "dwarf",
+    "tiefzwerge": "dwarf",
     "ctki_ssrr": "achaz",
+}
+
+_REGION_ONLY_CULTURE_ID = "mittelreicher"
+_CULTURE_ONLY_CATALOG_IDS = (
+    "ambosszwerge",
+    "auelfen",
+    "brillantzwerge",
+    "firnelfen",
+    "hochelfen",
+    "huegelzwerge",
+    "shakagra",
+    "steppenelfen",
+    "tiefzwerge",
+    "waldelfen",
+)
+_CULTURE_REGION_METADATA_MAP = {
+    "ambosszwerge": "ambosszwerge",
+    "auelfen": "auelfen",
+    "brillantzwerge": "brillantzwerge",
+    "firnelfen": "elfen_firnelfen",
+    "hochelfen": "elfen_hochelfen",
+    "huegelzwerge": "huegelzwerge",
+    "shakagra": "elfen_shakagra",
+    "steppenelfen": "elfen_steppenelfen",
+    "tiefzwerge": "tiefzwerge",
+    "waldelfen": "elfen_waldelfen",
+}
+_CULTURE_SPECIES_MAP = {
+    "ambosszwerge": "dwarf",
+    "auelfen": "elf",
+    "brillantzwerge": "dwarf",
+    "firnelfen": "elf",
+    "hochelfen": "elf",
+    "huegelzwerge": "dwarf",
+    "shakagra": "elf",
+    "steppenelfen": "elf",
+    "tiefzwerge": "dwarf",
+    "waldelfen": "elf",
 }
 
 
@@ -181,6 +235,40 @@ def _load_raw_origin(origin_name: str) -> dict:
     return raw
 
 
+def _abbreviation_from_name(name: str) -> str:
+    letters = "".join(char for char in name.upper() if char.isalpha())
+    return (letters[:3] or "REG").ljust(3, "X")
+
+
+def _load_raw_culture_region(culture_id: str) -> dict:
+    raw_culture = _read_toml(f"cultures/{culture_id.lower()}.toml")
+    meta = raw_culture.get("meta", {})
+    metadata_id = _CULTURE_REGION_METADATA_MAP.get(culture_id)
+    region_meta = {}
+    if metadata_id is not None:
+        try:
+            region_meta = _read_toml(f"{metadata_id}.toml").get("meta", {})
+        except LoaderError:
+            region_meta = {}
+
+    region_name = region_meta.get("region", meta.get("name", culture_id))
+    notes = region_meta.get("notes", meta.get("notes", ""))
+    abbreviation = region_meta.get("abbreviation", _abbreviation_from_name(region_name))
+
+    return {
+        "meta": {
+            "region": region_name,
+            "abbreviation": abbreviation,
+            "notes": notes,
+        },
+        "origin": {
+            "species_id": _CULTURE_SPECIES_MAP.get(culture_id, "human"),
+            "culture_id": culture_id,
+            "region_id": culture_id,
+        },
+    }
+
+
 def _build_synthetic_culture(raw: dict) -> CultureData:
     meta = raw.get("meta", {})
     return CultureData(
@@ -233,9 +321,12 @@ list_origins = list_regions
 
 @cache
 def load_region(region_name: str) -> RegionData:
-    """Load a resolved origin profile by its file stem (case-insensitive)."""
+    """Load a resolved region profile by ID (case-insensitive)."""
     origin_id = region_name.lower()
-    raw = _load_raw_origin(origin_id)
+    try:
+        raw = _load_raw_origin(origin_id)
+    except LoaderError:
+        raw = _load_raw_culture_region(origin_id)
     region = RegionData.model_validate(raw)
 
     species_id = region.origin.species_id
@@ -277,8 +368,29 @@ load_origin = load_region
 
 def get_origin_catalog() -> list[dict[str, str]]:
     catalog: list[dict[str, str]] = []
+    for culture_id in _CULTURE_ONLY_CATALOG_IDS:
+        data = load_region(culture_id)
+        catalog.append(
+            {
+                "id": culture_id,
+                "name": data.meta.region,
+                "species_id": data.origin.species_id,
+                "species_name": data.species.meta.name if data.species else data.origin.species_id,
+                "culture_id": data.origin.culture_id,
+                "culture_name": data.culture.meta.name if data.culture else data.origin.culture_id,
+                "region_name": "",
+                "has_region": "false",
+            }
+        )
+
     for origin_id in list_regions():
         data = load_region(origin_id)
+        if data.origin.species_id in {"elf", "dwarf"}:
+            continue
+
+        is_region_choice = data.origin.culture_id == _REGION_ONLY_CULTURE_ID
+        if not is_region_choice and origin_id.startswith("mittelreich_"):
+            continue
         catalog.append(
             {
                 "id": origin_id,
@@ -287,6 +399,15 @@ def get_origin_catalog() -> list[dict[str, str]]:
                 "species_name": data.species.meta.name if data.species else data.origin.species_id,
                 "culture_id": data.origin.culture_id,
                 "culture_name": data.culture.meta.name if data.culture else data.origin.culture_id,
+                "region_name": data.meta.region if is_region_choice else "",
+                "has_region": "true" if is_region_choice else "false",
             }
         )
-    return catalog
+    return sorted(
+        catalog,
+        key=lambda item: (
+            item["species_name"],
+            item["culture_name"],
+            item["region_name"] or item["name"],
+        ),
+    )

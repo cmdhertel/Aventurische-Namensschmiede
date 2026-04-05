@@ -1,0 +1,31 @@
+[meta]
+name = "Hügelzwerge"
+notes = "Menschennähere Zwergennamen; Familiennamen sind unter Hügelzwergen verbreitet."
+
+[naming_schema]
+type = "given_family"
+description = "Unter Hügelzwergen sind feste Sippen- und Familiennamen verbreiteter als reine Patronyme."
+
+[simple.first]
+male = ["Adamantosch", "Albrax", "Arombolosch", "Calaman", "Garax", "Greifax", "Hangor", "Tordim", "Ugosch", "Xenos"]
+female = ["Angrella", "Borascha", "Branda", "Diamante", "Garoscha", "Grescha", "Norgalda", "Saphira", "Theruka", "Turmaline"]
+
+[simple.parent]
+male = ["Agam", "Angrax", "Garmosch", "Gurthar", "Ordamon", "Rambosch"]
+female = ["Angrescha", "Garoscha", "Organa", "Saphira", "Theruka"]
+
+[simple.last]
+neutral = ["Eisenbart", "Funkenflug", "Glimmherd", "Hüglinger", "Klappertopf", "Silberhaar", "Sternhagel", "Zwiebelbock"]
+
+[character]
+languages = ["Rogolan"]
+scripts = ["Angram"]
+local_knowledge = ["Hügelsiedlungen, Handelswege und Menschenstädte"]
+social_status = ["Frei"]
+professions = ["Brauer", "Händler", "Schmied", "Handwerker"]
+typical_advantages = ["Zäher Hund"]
+typical_disadvantages = ["Sturheit", "Hitzeempfindlich"]
+typical_talents = ["Handel", "Brauen", "Metallbearbeitung", "Zechen"]
+personality = ["gesellig, geschäftstüchtig und stolz auf gutes Handwerk"]
+motivations = ["will Wohlstand und Ansehen für Familie und Sippe mehren"]
+quirks = ["kennt zu fast allem einen handfesten Vergleich aus Küche, Keller oder Werkstatt"]

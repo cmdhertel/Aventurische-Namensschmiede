@@ -38,7 +38,7 @@ def _resolve_simple_pool(
 
     if not candidates:
         raise GeneratorError(
-            f"Origin '{region}' has no {slot} entries for gender='{gender}'. "
+            f"Region '{region}' has no {slot} entries for gender='{gender}'. "
             f"Add entries to the TOML file."
         )
     return candidates
@@ -73,7 +73,7 @@ def _pick(
     pool = primary if primary else fallback
     if not pool:
         raise GeneratorError(
-            f"Origin '{region}' compose mode: no '{component}' entries for {slot}."
+            f"Region '{region}' compose mode: no '{component}' entries for {slot}."
         )
     return rng.choice(pool)
 
@@ -90,7 +90,7 @@ def _pick_parent_name(data: RegionData, rng: random.Random) -> str:
         candidates = data.simple.first.male + data.simple.first.female + data.simple.first.neutral
 
     if not candidates:
-        raise GeneratorError(f"Origin '{data.meta.region}' has no parent-name pool.")
+        raise GeneratorError(f"Region '{data.meta.region}' has no parent-name pool.")
     return rng.choice(candidates)
 
 

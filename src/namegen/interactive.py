@@ -120,11 +120,11 @@ def _ask_configuration() -> _ConfigResult | None:
         return None
     mode = GenerationMode(mode_str)
 
-    # ── Spezies / Kultur / Origin ─────────────────────────────────────────────
+    # ── Spezies / Kultur / Region ─────────────────────────────────────────────
     try:
         catalog = get_origin_catalog()
     except Exception as exc:
-        console.print(f"[red]Fehler beim Laden der Origins:[/red] {exc}")
+        console.print(f"[red]Fehler beim Laden der Regionen:[/red] {exc}")
         return None
 
     species_options = sorted(
@@ -154,17 +154,27 @@ def _ask_configuration() -> _ConfigResult | None:
     if culture_id is None:
         return None
 
-    region_choices = []
-    for item in catalog:
-        if item["species_id"] != species_id or item["culture_id"] != culture_id:
-            continue
-        data = load_region(item["id"])
-        label = f"{data.meta.region:<18} {data.meta.notes}"
-        region_choices.append(questionary.Choice(label, value=item["id"]))
-
-    region = questionary.select("Origin:", choices=region_choices, style=_STYLE).ask()
-    if region is None:
+    matching_entries = [
+        item
+        for item in catalog
+        if item["species_id"] == species_id and item["culture_id"] == culture_id
+    ]
+    if not matching_entries:
+        console.print("[red]Keine passenden Regionen gefunden.[/red]")
         return None
+
+    if matching_entries[0].get("has_region") == "true":
+        region_choices = []
+        for item in matching_entries:
+            data = load_region(item["id"])
+            label = f"{data.meta.region:<18} {data.meta.notes}"
+            region_choices.append(questionary.Choice(label, value=item["id"]))
+
+        region = questionary.select("Region:", choices=region_choices, style=_STYLE).ask()
+        if region is None:
+            return None
+    else:
+        region = matching_entries[0]["id"]
 
     # ── Geschlecht ─────────────────────────────────────────────────────────────
     gender_str = questionary.select(

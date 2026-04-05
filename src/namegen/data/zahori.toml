@@ -1,0 +1,15 @@
+[meta]
+region = "Zahori"
+abbreviation = "ZAH"
+notes = "Fahrendes Volk mit tulamidisch-garetischen Mischformen und Sippennamen."
+
+[simple.first]
+male = ["Ayano", "Boronardo", "Carryo", "Diego", "Garroti", "Ippolito", "Lumiro", "Nadir", "Rastafan", "Ta'ir", "Zarrigo", "Zavero"]
+female = ["Avaris", "Caleya", "Esfera", "Esmeralda", "Jadira", "Madalena", "Morona", "Phelica", "Rahjessa", "Shayla", "Zafira", "Zalina"]
+
+[simple.last]
+neutral = ["Alfahan", "Cruento", "Espadin", "Nevasca", "Pelagatos", "Sfaraldo", "Soleado", "Vaharada", "Ventarha", "Zurriaga"]
+
+[character]
+professions = ["Schausteller", "Wahrsager", "Kunstreiter", "Musiker"]
+
