@@ -1,0 +1,26 @@
+[meta]
+region = "Tulamidenlande"
+abbreviation = "TUL"
+notes = "Breiter tulamidischer Kulturraum außerhalb der separat geführten Regionalprofile."
+
+[simple.first]
+male = ["Abdul", "Achmad", "Ali", "Arif", "Babur", "Chaled", "Habib", "Kasim", "Rashid", "Sulman", "Yussuf", "Zahir"]
+female = ["Abla", "Aicha", "Amina", "Amira", "Ayrina", "Belizeth", "Chadijah", "Delilah", "Halima", "Layla", "Sharisad", "Yasmin"]
+
+[simple.parent]
+male = ["Gaftar", "Khaled", "Kasim", "Rashid", "Sulman", "Yakuban"]
+female = ["Aicha", "Amina", "Layla", "Sharisad", "Zulhamin"]
+
+[simple.last]
+neutral = ["Yakubanim", "Okharim", "al'Orhima", "al'Nassori", "abu'l Ketab"]
+
+[simple.byname]
+neutral = ["al'Ahmad", "al'Amar", "al'Ankhra", "al'Azila", "al'Chadid", "al'Haimamud"]
+
+[naming_schema]
+type = "given_byname"
+description = "Tulamidische Namen plus Ehrentitel oder Herkunfts-/Ahnenbezug."
+
+[character]
+professions = ["Zauberer", "Gelehrte", "Karawanenführer", "Händler"]
+

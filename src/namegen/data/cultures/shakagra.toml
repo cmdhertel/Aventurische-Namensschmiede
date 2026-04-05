@@ -1,0 +1,27 @@
+[meta]
+name = "Shakagra"
+notes = "Nachtalbische Namen mit harschen Lauten und finsteren Beinamen."
+
+[naming_schema]
+type = "given_byname"
+description = "Shakagra tragen meist Rufname plus finsteren Ehren- oder Schreckensnamen."
+
+[simple.first]
+male = ["Airai", "Athlorion", "Beryllisar", "Calherion", "Feyangola", "Kiren", "Mandrion", "Nathildur", "Sharazil", "Val'Ayar", "Zhayarh", "Zuul'ayar"]
+female = ["Al'ysaaria", "Anasasiel", "Callyna", "Dhar'ella", "Fey'Rathil", "Kashariel", "Lossyril", "Lyssareth", "Nindarreth", "Sal'ana-fey", "Yllaria", "Zil'Shath"]
+
+[simple.byname]
+neutral = ["Finsterblick", "Spinnenhaar", "Schwarzklinge", "Weißhaut", "Todesspeer", "verlacht-den-Tod"]
+
+[character]
+languages = ["Isdira"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["Dunkelreiche, Höhlen und verborgene Pfade"]
+social_status = ["Frei"]
+professions = ["Krieger", "Schattenpriesterin", "Späher", "Meuchelmörder"]
+typical_advantages = ["Dunkelsicht", "Richtungssinn"]
+typical_disadvantages = ["Lichtempfindlich", "Misstrauen"]
+typical_talents = ["Schleichen", "Sinnesschärfe", "Klettern", "Einschüchtern"]
+personality = ["kühl, kontrolliert und voller latenter Bedrohung"]
+motivations = ["will Stärke beweisen und Schwäche verbergen"]
+quirks = ["lächelt oft genau dann, wenn andere zurückweichen sollten"]

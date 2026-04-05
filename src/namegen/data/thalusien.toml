@@ -1,0 +1,15 @@
+[meta]
+region = "Thalusien"
+abbreviation = "THA"
+notes = "Tulamidisch geprägte Küstenregion mit retulamidisierten und regional verhärteten Namen."
+
+[simple.first]
+male = ["Ajit", "Amar", "Ankhra", "Bahram", "Djaffar", "Esam", "Haschabna", "Kasan", "Mhapasha", "Muyanpasha", "Surkan", "Zamir"]
+female = ["Abrizah", "Amina", "Asha", "Azizel", "Bastrabeth", "Dalilah", "Halifa", "Naranya", "Sharisad", "Shenny", "Suriyabati", "Yazamin"]
+
+[simple.last]
+neutral = ["Abukhuncha", "Adjani", "Alhashim", "Bruckensi", "Elawall", "Elyussam", "Perhimani", "Ronissagami", "Thalusfurter", "Zulhamidi"]
+
+[character]
+professions = ["Papyrusmacher", "Perlentaucher", "Hirte", "Händler"]
+

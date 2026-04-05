@@ -1,0 +1,27 @@
+[meta]
+name = "Hochelfen"
+notes = "Getragene, mythisch anmutende Altelfennamen mit starkem Beinameinsatz."
+
+[naming_schema]
+type = "given_byname"
+description = "Hochelfische Namen tragen häufig mythische Zweit- und Ehrnamen."
+
+[simple.first]
+male = ["Achanill", "Adernath", "Alaris", "Athavarion", "Caradel", "Ganathor", "Kallariel", "Lerniran", "Ometheon", "Thamysis", "Vonthodael", "Zerzaiol"]
+female = ["Adamaria", "Alfadriel", "Andalya", "Elionai", "Lafadiel", "Madalya", "Nuriel", "Pyrdona", "Safiriel", "Shayatariel", "Vayadona", "Zaliel"]
+
+[simple.byname]
+neutral = ["mit-dem-Sternenmal", "Goldzunge", "Sphärensang", "Sternenschwalbe", "Vergangenheitssucher", "wandelt-in-Träumen"]
+
+[character]
+languages = ["Isdira"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["Ruinen alter Reiche und verborgene Orte"]
+social_status = ["Frei"]
+professions = ["Elementarmagier", "Gelehrte", "Kristallformer", "Liedweber"]
+typical_advantages = ["Wohlklang", "Zauberer"]
+typical_disadvantages = ["Weltfremd"]
+typical_talents = ["Sagen & Legenden", "Magiekunde", "Singen", "Geschichtswissen"]
+personality = ["erhaben, entrückt und von langer Erinnerung geprägt"]
+motivations = ["sucht Splitter vergangener Größe und vergessene Harmonie"]
+quirks = ["spricht von uralten Ereignissen, als lägen sie nur wenige Jahre zurück"]

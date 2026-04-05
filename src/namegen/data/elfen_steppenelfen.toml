@@ -1,0 +1,19 @@
+[meta]
+region = "Steppenelfen"
+abbreviation = "SEL"
+notes = "Nomadische Reiterelfen mit offenen, weiten Klangmustern."
+
+[origin]
+species_id = "elf"
+culture_id = "steppenelfen"
+region_id = "elfen_steppenelfen"
+
+[simple.first]
+male = ["Aimsir", "Alenor", "Aras", "Bavindhor", "Cavariel", "Farnion", "Imrayon", "Mandavar", "Navarion", "Teleriel", "Valandariel", "Visalyar"]
+female = ["Adaloe", "Ariana", "Daleone", "Dialya", "Diannon", "Elyannon", "Fiannon", "Hylarione", "Liloe", "Rhiannon", "Sanaha", "Valannon"]
+
+[simple.last]
+neutral = ["Steppenherz", "Steppenläufer", "Wolkenreiter", "Windhalmsucher", "Mähnenweber", "Sternenhüter"]
+
+[character]
+professions = ["Reiter", "Jäger", "Spurenleser", "Sänger"]

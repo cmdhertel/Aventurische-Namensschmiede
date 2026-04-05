@@ -1,0 +1,15 @@
+[meta]
+region = "Mittelreich: Weiden"
+abbreviation = "WEI"
+notes = "Altertümliche, märchenhaft-weidener Namen mit Wald-, Bären- und Rondra-Anklängen."
+
+[simple.first]
+male = ["Ailfir", "Alarwin", "Angilbert", "Anshag", "Avon", "Geldor", "Gerwulf", "Herdan", "Ilmar", "Menzel", "Rondril", "Waldemar"]
+female = ["Aartrude", "Adilgunde", "Alwen", "Bärlinde", "Elftraute", "Farnlieb", "Gwynna", "Holdtraude", "Lanzelind", "Rondragabund", "Walpurga", "Yolina"]
+
+[simple.last]
+neutral = ["Ackermann", "Brachfelder", "Kolenbrander", "Morgenroth", "Orkenhauer", "Rohleder", "Waldner", "Auenfels", "Nordfalk", "Weißenstein"]
+
+[character]
+professions = ["Ritter", "Jäger", "Barde", "Forstläufer"]
+

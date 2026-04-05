@@ -1,0 +1,15 @@
+[meta]
+region = "Mittelreich: Warunk"
+abbreviation = "WAR"
+notes = "Tobrische Grundschicht mit rondrianischen Namen und Nachhall der Schattenlandzeit."
+
+[simple.first]
+male = ["Arngrim", "Bastan", "Eberhelm", "Gilborn", "Karloff", "Leomar", "Perainian", "Rondrian", "Sumudan", "Throndwig", "Travinor", "Wolfhelm"]
+female = ["Alruna", "Alwide", "Diomara", "Gerja", "Kajandra", "Oleana", "Perainiane", "Rondriane", "Rondwige", "Tsalinde", "Xaira", "Xyleste"]
+
+[simple.last]
+neutral = ["Angerling", "Altschulz", "Bitterwein", "Erlingsen", "Kleinbrück", "Lederer", "Linnentreu", "Warunker", "Bregelsaum", "Erlengrund"]
+
+[character]
+professions = ["Krämer", "Stadtsoldat", "Pflanzenkundiger", "Grenzreiter"]
+

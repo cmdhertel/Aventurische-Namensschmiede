@@ -1,0 +1,21 @@
+[meta]
+region = "Kalifat"
+abbreviation = "KAL"
+notes = "Novadisch geprägter Teilraum der tulamidischen Welt mit Patronymik nach ibn/bint."
+
+[origin]
+species_id = "human"
+culture_id = "novadis"
+region_id = "kalifat"
+
+[simple.first]
+male = ["Abdul", "Achmad", "Akim", "Bahir", "Faruq", "Hakim", "Kasim", "Malik", "Marwan", "Omar", "Rashid", "Salim"]
+female = ["Aicha", "Aischa", "Amina", "Amira", "Ayla", "Ayrina", "Bediya", "Halima", "Layla", "Naima", "Salma", "Zuleikha"]
+
+[simple.parent]
+male = ["Gaftar", "Kasim", "Rashid", "Salim", "Tariq", "Hakim", "Karim", "Omar"]
+female = ["Aischa", "Amina", "Layla", "Sharisad", "Zuleikha"]
+
+[character]
+professions = ["Karawanenführer", "Wüstenkrieger", "Stammesältester", "Kamelzüchter"]
+

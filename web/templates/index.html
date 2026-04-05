@@ -66,10 +66,10 @@
             </div>
           </div>
 
-          <!-- Origin -->
+          <!-- Region -->
           <div>
-            <label for="region" class="form-label">Origin</label>
-            <div class="relative">
+            <label for="region" id="region-label" class="form-label">Region</label>
+            <div id="region-wrap" class="relative">
               <select name="region" id="region"></select>
               <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
                 <svg class="w-4 h-4" style="color: var(--color-text-muted);"
@@ -230,7 +230,7 @@
             Noch keine Namen generiert
           </p>
           <p class="text-xs mt-1" style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
-            Wähle links Spezies, Kultur und Origin und klicke auf Generieren
+            Wähle links Spezies, Kultur und gegebenenfalls Region und klicke auf Generieren
           </p>
         </div>
 
@@ -264,6 +264,8 @@
     const speciesEl = document.getElementById('species');
     const cultureEl = document.getElementById('culture');
     const regionEl = document.getElementById('region');
+    const regionWrap = document.getElementById('region-wrap');
+    const regionLabel = document.getElementById('region-label');
 
     if (speciesEl.options.length === 0) {
       const speciesOptions = [...new Map(ORIGINS.map(o => [o.species_id, o.species_name])).entries()]
@@ -281,13 +283,20 @@
     fillSelect(cultureEl, cultureOptions, currentCulture);
 
     const selectedCulture = cultureEl.value;
-    const regionOptions = ORIGINS
-      .filter(o => o.species_id === selectedSpecies && o.culture_id === selectedCulture)
-      .map(o => ({ value: o.id, label: o.name }));
+    const matchingEntries = ORIGINS.filter(
+      o => o.species_id === selectedSpecies && o.culture_id === selectedCulture
+    );
+    const showRegion = matchingEntries[0]?.has_region === 'true';
+    const regionOptions = matchingEntries.map(o => ({
+      value: o.id,
+      label: showRegion ? o.region_name : o.name,
+    }));
     const selectedRegion = regionOptions.some(o => o.value === regionEl.value)
       ? regionEl.value
       : (regionOptions.find(o => o.value === SELECTED_ORIGIN)?.value || regionOptions[0]?.value);
     fillSelect(regionEl, regionOptions, selectedRegion);
+    regionWrap.style.display = showRegion ? '' : 'none';
+    regionLabel.style.display = showRegion ? '' : 'none';
   }
 
   function toggleCharacter() {

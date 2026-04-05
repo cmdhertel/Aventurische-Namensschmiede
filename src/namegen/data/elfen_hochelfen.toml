@@ -1,0 +1,23 @@
+[meta]
+region = "Hochelfen"
+abbreviation = "HEL"
+notes = "Getragene, mythisch anmutende Altelfennamen mit starkem Beinameinsatz."
+
+[origin]
+species_id = "elf"
+culture_id = "hochelfen"
+region_id = "elfen_hochelfen"
+
+[simple.first]
+male = ["Achanill", "Adernath", "Alaris", "Athavarion", "Caradel", "Ganathor", "Kallariel", "Lerniran", "Ometheon", "Thamysis", "Vonthodael", "Zerzaiol"]
+female = ["Adamaria", "Alfadriel", "Andalya", "Elionai", "Lafadiel", "Madalya", "Nuriel", "Pyrdona", "Safiriel", "Shayatariel", "Vayadona", "Zaliel"]
+
+[simple.byname]
+neutral = ["mit-dem-Sternenmal", "Goldzunge", "Sphärensang", "Sternenschwalbe", "Vergangenheitssucher", "wandelt-in-Träumen"]
+
+[naming_schema]
+type = "given_byname"
+description = "Hochelfische Namen tragen häufig mythische Zweit- und Ehrnamen."
+
+[character]
+professions = ["Elementarmagier", "Gelehrte", "Kristallformer", "Liedweber"]

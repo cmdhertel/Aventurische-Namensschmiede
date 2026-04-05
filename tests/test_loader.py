@@ -30,7 +30,19 @@ def test_list_species_contains_core_entries() -> None:
 
 def test_list_cultures_contains_core_entries() -> None:
     cultures = list_cultures()
-    for expected in ("mittelreicher", "horasier", "thorwaler", "ctki_ssrr"):
+    for expected in (
+        "mittelreicher",
+        "horasier",
+        "thorwaler",
+        "ctki_ssrr",
+        "firnelfen",
+        "steppenelfen",
+        "hochelfen",
+        "shakagra",
+        "huegelzwerge",
+        "brillantzwerge",
+        "tiefzwerge",
+    ):
         assert expected in cultures
 
 
@@ -87,6 +99,36 @@ def test_catalog_contains_selection_metadata() -> None:
     entry = next(item for item in get_origin_catalog() if item["id"] == "mittelreich_kosch")
     assert entry["species_name"] == "Mensch"
     assert entry["culture_name"] == "Mittelreicher"
+    assert entry["region_name"] == "Kosch"
+    assert entry["has_region"] == "true"
+
+
+def test_catalog_uses_culture_ids_for_non_mittelreich_elves_and_dwarves() -> None:
+    entry = next(item for item in get_origin_catalog() if item["id"] == "firnelfen")
+    assert entry["culture_name"] == "Firnelfen"
+    assert entry["region_name"] == ""
+    assert entry["has_region"] == "false"
+    assert all(
+        item["id"]
+        not in {
+            "elfen_firnelfen",
+            "elfen_waldelfen",
+            "elfen_steppenelfen",
+            "elfen_hochelfen",
+            "elfen_shakagra",
+        }
+        for item in get_origin_catalog()
+    )
+
+
+def test_load_region_accepts_culture_only_ids() -> None:
+    data = load_region("steppenelfen")
+    assert data.meta.region == "Steppenelfen"
+    assert data.origin.species_id == "elf"
+    assert data.origin.culture_id == "steppenelfen"
+    assert data.origin.region_id == "steppenelfen"
+    assert data.culture is not None
+    assert data.culture.meta.name == "Steppenelfen"
 
 
 def test_load_region_all_known_regions_load_without_error() -> None:

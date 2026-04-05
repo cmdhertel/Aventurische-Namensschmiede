@@ -1,0 +1,15 @@
+[meta]
+region = "Nostria"
+abbreviation = "NOS"
+notes = "Altmodische nostrische Namen mit städtischen Familiennamen und protzigen Adelsbezügen."
+
+[simple.first]
+male = ["Ablasion", "Alriklas", "Andaryn", "Basilio", "Bosper", "Gasparyn", "Haldoryn", "Kasimir", "Murro", "Ornibian", "Travino", "Waldmiryn"]
+female = ["Andariane", "Asmodette", "Brealetha", "Elida", "Firunette", "Jolantha", "Kasmyra", "Nostriane", "Selma", "Tommeliane", "Yasmina", "Zanya"]
+
+[simple.last]
+neutral = ["Altgewander", "Bramhusen", "Krennelsiek", "Linneweber", "Nietendeeler", "Schlachtrössler", "Styper", "Vestwind", "Warftburg", "Wyrmbluth"]
+
+[character]
+professions = ["Fischer", "Warftbauer", "Ritter", "Schiffer"]
+

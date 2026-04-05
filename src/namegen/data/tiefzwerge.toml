@@ -1,0 +1,20 @@
+[meta]
+region = "Tiefzwerge"
+abbreviation = "TFZ"
+notes = "Verkürzte, verfallene Namensformen aus den Tiefen unter menschlichen Siedlungen."
+
+[origin]
+species_id = "dwarf"
+culture_id = "tiefzwerge"
+region_id = "tiefzwerge"
+
+[simple.first]
+male = ["Aska", "Baska", "Curon", "Fafka", "Grimrik", "Ingrik", "Raska", "Staska", "Trafka", "Zaron"]
+female = ["Agri", "Argre", "Broge", "Cere", "Fruri", "Grime", "Miri", "Nogri", "Stari", "Zure"]
+
+[simple.parent]
+male = ["Curon", "Grimrik", "Ingrik", "Zaron"]
+female = ["Agri", "Broge", "Grime", "Miri", "Zure"]
+
+[character]
+professions = ["Plünderer", "Höhlenbewohner", "Aasfinder"]

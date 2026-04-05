@@ -350,7 +350,7 @@ def _to_markdown(results: list[NameResult], show_components: bool) -> str:
         "",
         (
             f"Spezies: **{r0.species or '–'}** · Kultur: **{r0.culture or '–'}**"
-            f" · Origin: **{r0.region}** · Modus: **{mode_label}** · {len(results)} Namen"
+            f" · Region: **{r0.region}** · Modus: **{mode_label}** · {len(results)} Namen"
         ),
         "",
         md_row(cols),
@@ -441,7 +441,7 @@ def _write_pdf(results: list[NameResult], dest: Path | None, show_components: bo
         Paragraph(
             (
                 f"Spezies: {r0.species or '–'}  ·  Kultur: {r0.culture or '–'}"
-                f"  ·  Origin: {r0.region}  ·  Modus: {mode_label}  ·  {len(results)} Namen"
+                f"  ·  Region: {r0.region}  ·  Modus: {mode_label}  ·  {len(results)} Namen"
             ),
             subtitle_style,
         ),
@@ -562,7 +562,7 @@ def _write_pdf_characters(results: list[CharacterResult], dest: Path | None) -> 
         Paragraph(
             (
                 f"Spezies: {r0.species or '–'}  ·  Kultur: {r0.culture or '–'}"
-                f"  ·  Origin: {r0.region}  ·  {len(results)} Charaktere"
+                f"  ·  Region: {r0.region}  ·  {len(results)} Charaktere"
             ),
             subtitle_style,
         ),

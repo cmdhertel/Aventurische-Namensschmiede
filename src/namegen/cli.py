@@ -41,7 +41,7 @@ def _default(ctx: typer.Context) -> None:
 
 RegionArg = Annotated[
     str,
-    typer.Argument(help="Origin ID (z.B. mittelreich_kosch, thorwal, auelfen)."),
+    typer.Argument(help="Region- oder Kultur-ID (z.B. mittelreich_kosch, thorwal, firnelfen)."),
 ]
 GenderOpt = Annotated[
     Gender,
@@ -180,7 +180,7 @@ def cmd_menu() -> None:
 
 @app.command("regions")
 def cmd_regions() -> None:
-    """Alle verfügbaren Origins auflisten."""
+    """Alle verfügbaren Regionen auflisten."""
     try:
         list_regions()
     except Exception as exc:
@@ -188,7 +188,8 @@ def cmd_regions() -> None:
         raise typer.Exit(1) from None
 
     table = Table(
-        "Origin",
+        "ID",
+        "Region",
         "Anzeigename",
         "Spezies",
         "Kultur",
@@ -201,6 +202,7 @@ def cmd_regions() -> None:
             r = load_region(item["id"])
             table.add_row(
                 item["id"],
+                item.get("region_name", "") or "–",
                 r.meta.region,
                 r.species.meta.name if r.species else "?",
                 r.culture.meta.name if r.culture else "?",

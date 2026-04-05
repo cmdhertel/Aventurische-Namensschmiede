@@ -1,0 +1,21 @@
+[meta]
+region = "Svellttal"
+abbreviation = "SVL"
+notes = "Wortkarge Grenzraumnamen mit Einflüssen aus Garethi, Nivesisch, Norbardisch und Thorwalsch."
+
+[simple.first]
+male = ["Carolan", "Enuk", "Geron", "Hilbert", "Hjalmar", "Januk", "Jockel", "Mokko", "Tjalv", "Tyrjuk"]
+female = ["Dascha", "Enja", "Leenja", "Mirhiban", "Nirka", "Rovena", "Saari", "Tjalva", "Valborga", "Vanja"]
+
+[simple.last]
+neutral = ["Auen", "Bogner", "Waidmann", "Mandelaug", "Messer-Jan", "Haken-Tyr", "Knochen-Renja", "aus Lowangen", "aus dem Svelltland"]
+
+[simple.byname]
+neutral = ["Haken-Tyr", "Knochen-Renja", "Messer-Jan", "Windläufer", "Wolfsblick"]
+
+[naming_schema]
+type = "given_byname"
+description = "Im Svellttal stehen klangvolle Beinamen häufig über festen Familiennamen."
+
+[character]
+professions = ["Grenzreiter", "Wirtshauskämpfer", "Perainegeweihter", "Schmuggler"]

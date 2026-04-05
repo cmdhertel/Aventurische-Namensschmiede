@@ -1,0 +1,31 @@
+[meta]
+name = "Tiefzwerge"
+notes = "Verkürzte, verfallene Namensformen aus den Tiefen unter menschlichen Siedlungen."
+
+[naming_schema]
+type = "given_patronym"
+male_patronym_pattern = "Sohn des {parent}"
+female_patronym_pattern = "Tochter des {parent}"
+neutral_patronym_pattern = "Kind des {parent}"
+description = "Verkürzter Rufname mit archaischem Abstammungsbezug."
+
+[simple.first]
+male = ["Aska", "Baska", "Curon", "Fafka", "Grimrik", "Ingrik", "Raska", "Staska", "Trafka", "Zaron"]
+female = ["Agri", "Argre", "Broge", "Cere", "Fruri", "Grime", "Miri", "Nogri", "Stari", "Zure"]
+
+[simple.parent]
+male = ["Curon", "Grimrik", "Ingrik", "Zaron"]
+female = ["Agri", "Broge", "Grime", "Miri", "Zure"]
+
+[character]
+languages = ["Rogolan"]
+scripts = ["Angram"]
+local_knowledge = ["Tiefenstollen, Kavernen und vergessene Schächte"]
+social_status = ["Frei"]
+professions = ["Plünderer", "Höhlenbewohner", "Aasfinder"]
+typical_advantages = ["Zäher Hund"]
+typical_disadvantages = ["Lichtscheu", "Misstrauen"]
+typical_talents = ["Orientierung", "Schleichen", "Zechen", "Sinnesschärfe"]
+personality = ["zäh, verschlossen und an das Überleben in der Finsternis gewöhnt"]
+motivations = ["will Beute, Schutz und einen sicheren Platz in der Tiefe sichern"]
+quirks = ["lauscht vor Antworten oft erst in die Dunkelheit, als erwarte sie ein Echo"]
