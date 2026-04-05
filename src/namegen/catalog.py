@@ -209,13 +209,11 @@ def selection_supports_compose(selection_id: str) -> bool:
     concrete_catalog = _get_concrete_origin_catalog()
     if selection in list_species():
         return any(
-            item["species_id"] == selection and item["has_compose"]
-            for item in concrete_catalog
+            item["species_id"] == selection and item["has_compose"] for item in concrete_catalog
         )
     if selection in list_cultures():
         return any(
-            item["culture_id"] == selection and item["has_compose"]
-            for item in concrete_catalog
+            item["culture_id"] == selection and item["has_compose"] for item in concrete_catalog
         )
     return False
 

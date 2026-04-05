@@ -7,8 +7,8 @@ import tomllib
 from functools import lru_cache
 from importlib.resources import files
 
-from .generator import generate
 from .catalog import pick_generation_target
+from .generator import generate
 from .loader import load_region
 from .models import (
     CharacterResult,

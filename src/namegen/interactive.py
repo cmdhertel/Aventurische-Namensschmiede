@@ -9,9 +9,9 @@ import questionary
 from rich.console import Console
 from rich.rule import Rule
 
+from .catalog import get_origin_catalog, selection_supports_compose
 from .chargen import generate_character
 from .generator import GeneratorError, generate
-from .catalog import get_origin_catalog, selection_supports_compose
 from .loader import LoaderError
 from .models import (
     CharacterResult,

@@ -7,6 +7,7 @@ import random
 from .catalog import pick_generation_target
 from .loader import load_region
 from .models import (
+    _DEFAULT_INFIX_PROBABILITY,
     ComposeParts,
     ComposeSection,
     Gender,
@@ -16,7 +17,6 @@ from .models import (
     NameResult,
     NameSchemaType,
     RegionData,
-    _DEFAULT_INFIX_PROBABILITY,
 )
 
 

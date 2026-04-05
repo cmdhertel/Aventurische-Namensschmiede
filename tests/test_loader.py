@@ -244,9 +244,7 @@ def test_species_map_keys_are_known_regions() -> None:
     """Alle Keys in _SPECIES_MAP müssen bekannte Regionen oder Katalog-IDs sein."""
     regions = set(list_regions())
     for origin_id in _SPECIES_MAP:
-        assert origin_id in regions, (
-            f"_SPECIES_MAP enthält unbekannte Region/Origin: '{origin_id}'"
-        )
+        assert origin_id in regions, f"_SPECIES_MAP enthält unbekannte Region/Origin: '{origin_id}'"
 
 
 def test_species_map_values_are_loadable_species() -> None:

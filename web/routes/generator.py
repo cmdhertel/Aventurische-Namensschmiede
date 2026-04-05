@@ -16,13 +16,13 @@ from observability_utils import count_empty_names, name_length, safe_full_name
 from opentelemetry.trace import Tracer, get_tracer
 from result_transfer import parse_results_json
 
-from namegen.chargen import generate_character
-from namegen.generator import generate
 from namegen.catalog import (
     get_origin_catalog,
     resolve_generation_targets,
     selection_supports_compose,
 )
+from namegen.chargen import generate_character
+from namegen.generator import generate
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 
 router = APIRouter()
@@ -162,12 +162,14 @@ async def generate_names(
         input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
         empty_results = count_empty_names(results)
 
-        attrs.update({
-            "namegen.requested_count": count,
-            "namegen.input_chars": input_chars,
-            "namegen.output_chars": output_chars,
-            "namegen.empty_results": empty_results,
-        })
+        attrs.update(
+            {
+                "namegen.requested_count": count,
+                "namegen.input_chars": input_chars,
+                "namegen.output_chars": output_chars,
+                "namegen.empty_results": empty_results,
+            }
+        )
         span.set_attributes(attrs)
 
         if _metrics:

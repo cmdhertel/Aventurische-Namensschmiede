@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import random
 import tomllib
 from functools import cache
 from importlib.resources import files
@@ -101,6 +100,8 @@ _CULTURE_SPECIES_MAP = {
     "tiefzwerge": "dwarf",
     "waldelfen": "elf",
 }
+
+
 def _read_toml(path: str) -> dict:
     try:
         raw_bytes = files(_DATA_PACKAGE).joinpath(path).read_bytes()
@@ -298,8 +299,6 @@ def list_regions() -> list[str]:
         for p in data_dir.iterdir()
         if p.name.endswith(".toml") and p.name not in _NON_REGION_TOML
     )
-
-
 
 
 @cache
