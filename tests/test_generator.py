@@ -6,9 +6,8 @@ import random
 
 import pytest
 
-from namegen.generator import GeneratorError, generate
+from namegen.generator import generate
 from namegen.models import Gender, GenerationMode, NameResult
-
 
 RNG = random.Random(42)
 
@@ -86,13 +85,18 @@ def test_generate_any_gender_field() -> None:
 
 def test_generate_male_resolved_gender_not_female() -> None:
     """Männliche Vornamensanfrage soll keine weiblichen Namen liefern."""
-    results = [generate("mittelreich_kosch", gender=Gender.MALE, rng=random.Random(i)) for i in range(30)]
+    results = [
+        generate("mittelreich_kosch", gender=Gender.MALE, rng=random.Random(i)) for i in range(30)
+    ]
     for r in results:
         assert r.resolved_gender != Gender.FEMALE
 
 
 def test_generate_female_resolved_gender_not_male() -> None:
-    results = [generate("mittelreich_kosch", gender=Gender.FEMALE, rng=random.Random(i)) for i in range(30)]
+    results = [
+        generate("mittelreich_kosch", gender=Gender.FEMALE, rng=random.Random(i))
+        for i in range(30)
+    ]
     for r in results:
         assert r.resolved_gender != Gender.MALE
 

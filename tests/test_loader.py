@@ -6,7 +6,6 @@ import pytest
 
 from namegen.loader import LoaderError, list_regions, load_region
 
-
 # ── list_regions ──────────────────────────────────────────────────────────────
 
 def test_list_regions_returns_nonempty_list() -> None:

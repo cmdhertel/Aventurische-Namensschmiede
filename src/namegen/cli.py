@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 from click.core import ParameterSource
@@ -16,6 +16,8 @@ from .generator import GeneratorError, generate
 from .loader import LoaderError, list_regions, load_region
 from .models import ExperienceLevel, Gender, GenerationMode, ProfessionCategory
 from .output import OutputFormat, write as output_write
+from .models import Gender, GenerationMode, ProfessionCategory
+from .output import write as output_write
 
 app = typer.Typer(
     name="namegen",
@@ -47,6 +49,54 @@ ExperienceOpt = Annotated[ExperienceLevel, typer.Option("--experience", help="Er
 InfixProbOpt  = Annotated[float | None, typer.Option("--infix-probability", min=0.0, max=1.0, help="Überschreibt im Compose-Modus temporär die Infix-Wahrscheinlichkeit für Vor- und Nachnamen.")]
 FormatOpt     = Annotated[OutputFormat,       typer.Option("--format", "-f", help="Ausgabeformat: rich | plain | json | csv | markdown | clipboard | pdf", case_sensitive=False)]
 OutputOpt     = Annotated[Optional[Path],     typer.Option("--output", "-o", help="Ausgabedatei (Standard: stdout / Standardname für PDF).")]
+RegionArg = Annotated[
+    str,
+    typer.Argument(help="Region ID (z.B. kosch, mittelreich, horasreich)."),
+]
+GenderOpt = Annotated[
+    Gender,
+    typer.Option("--gender", "-g", help="male | female | any", case_sensitive=False),
+]
+CountOpt = Annotated[
+    int,
+    typer.Option("--count", "-n", help="Anzahl Namen.", min=1, max=100),
+]
+ComponentsOpt = Annotated[
+    bool,
+    typer.Option("--components", "-c", help="Silbenbausteine anzeigen (nur compose)."),
+]
+CharacterOpt = Annotated[
+    bool,
+    typer.Option(
+        "--character",
+        "-C",
+        help="Vollständigen Charakter generieren (Beruf, Alter, Eigenschaften).",
+    ),
+]
+CategoryOpt = Annotated[
+    ProfessionCategory,
+    typer.Option(
+        "--category",
+        "-k",
+        help="Berufskategorie: alle | geweihte | zauberer | kaempfer | profan",
+        case_sensitive=False,
+    ),
+]
+FormatOpt = Annotated[
+    OutputFormat,
+    typer.Option(
+        "--format",
+        "-f",
+        help="Ausgabeformat: rich | plain | json | csv | markdown | clipboard | pdf",
+        case_sensitive=False,
+    ),
+]
+OutputOpt = Annotated[
+    Path | None,
+    typer.Option(
+        "--output", "-o", help="Ausgabedatei (Standard: stdout / Standardname für PDF)."
+    ),
+]
 
 
 # ── Commands ───────────────────────────────────────────────────────────────────
@@ -105,7 +155,7 @@ def cmd_regions() -> None:
         ids = list_regions()
     except Exception as exc:
         console.print(f"[red]Fehler:[/red] {exc}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     table = Table("Region", "Anzeigename", "Beschreibung", box=box.SIMPLE, header_style="bold cyan")
     for region_id in ids:
@@ -159,7 +209,7 @@ def _run(
             ]
     except (GeneratorError, LoaderError) as exc:
         console.print(f"[red]Fehler:[/red] {exc}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     output_write(results, fmt=fmt, dest=dest, show_components=show_components)
 

@@ -19,7 +19,6 @@ from namegen.models import (
     RegionMeta,
 )
 
-
 # ── Enum-Werte ────────────────────────────────────────────────────────────────
 
 def test_gender_values() -> None:
@@ -66,12 +65,16 @@ def test_region_meta_valid() -> None:
 
 
 def test_region_meta_abbreviation_too_short() -> None:
-    with pytest.raises(Exception):
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
         RegionMeta(region="X", abbreviation="AB")
 
 
 def test_region_meta_abbreviation_too_long() -> None:
-    with pytest.raises(Exception):
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
         RegionMeta(region="X", abbreviation="ABCD")
 
 

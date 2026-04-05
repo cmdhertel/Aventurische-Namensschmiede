@@ -12,10 +12,8 @@ from namegen.models import (
     CharacterResult,
     ExperienceLevel,
     Gender,
-    GenerationMode,
     ProfessionCategory,
 )
-
 
 RNG_BASE = 42
 
