@@ -23,6 +23,7 @@ class GeneratorError(Exception):
 
 # ── Pool resolution helpers ────────────────────────────────────────────────────
 
+
 def _resolve_simple_pool(
     pool: GenderedStringPool,
     gender: Gender,
@@ -87,11 +88,13 @@ def _pick(primary: list[str], fallback: list[str], component: str, slot: str, re
 
 # ── Public API ─────────────────────────────────────────────────────────────────
 
+
 def generate(
     region: str,
     mode: GenerationMode = GenerationMode.SIMPLE,
     gender: Gender = Gender.ANY,
     rng: random.Random | None = None,
+    infix_probability_override: float | None = None,
 ) -> NameResult:
     """
     Generate a single name.
@@ -113,7 +116,7 @@ def generate(
 
     if mode == GenerationMode.SIMPLE:
         return _generate_simple(data, gender, _rng)
-    return _generate_compose(data, gender, _rng)
+    return _generate_compose(data, gender, _rng, infix_probability_override)
 
 
 def _generate_simple(data: RegionData, gender: Gender, rng: random.Random) -> NameResult:
@@ -136,16 +139,26 @@ def _generate_simple(data: RegionData, gender: Gender, rng: random.Random) -> Na
     )
 
 
-def _generate_compose(data: RegionData, gender: Gender, rng: random.Random) -> NameResult:
+def _generate_compose(
+    data: RegionData,
+    gender: Gender,
+    rng: random.Random,
+    infix_probability_override: float | None = None,
+) -> NameResult:
     first_section = data.compose.first
     fp, fn = _resolve_compose_parts(first_section, gender)
+    first_infix_probability = (
+        infix_probability_override
+        if infix_probability_override is not None
+        else first_section.infix_probability
+    )
 
     prefix = _pick(fp.prefix, fn.prefix, "prefix", "first name", data.meta.region)
     suffix = _pick(fp.suffix, fn.suffix, "suffix", "first name", data.meta.region)
 
     infix: str | None = None
     infix_pool = fp.infix or fn.infix
-    if infix_pool and rng.random() < first_section.infix_probability:
+    if infix_pool and rng.random() < first_infix_probability:
         infix = rng.choice(infix_pool)
 
     first = prefix + (infix or "") + suffix
@@ -158,6 +171,11 @@ def _generate_compose(data: RegionData, gender: Gender, rng: random.Random) -> N
 
     last_section = data.compose.last
     lp, ln = _resolve_compose_parts(last_section, gender)
+    last_infix_probability = (
+        infix_probability_override
+        if infix_probability_override is not None
+        else last_section.infix_probability
+    )
     all_prefixes = lp.prefix + ln.prefix
     all_suffixes = lp.suffix + ln.suffix
 
@@ -166,7 +184,7 @@ def _generate_compose(data: RegionData, gender: Gender, rng: random.Random) -> N
         last_suffix = rng.choice(all_suffixes)
 
         last_infix_pool = lp.infix + ln.infix
-        if last_infix_pool and rng.random() < last_section.infix_probability:
+        if last_infix_pool and rng.random() < last_infix_probability:
             last_infix = rng.choice(last_infix_pool)
 
         last = last_prefix + (last_infix or "") + last_suffix

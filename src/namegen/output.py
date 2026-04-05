@@ -21,13 +21,13 @@ _GENDER_DE = {"male": "Männlich", "female": "Weiblich", "any": "Beliebig"}
 
 
 class OutputFormat(StrEnum):
-    RICH      = "rich"
-    PLAIN     = "plain"
-    JSON      = "json"
-    CSV       = "csv"
-    MARKDOWN  = "markdown"
+    RICH = "rich"
+    PLAIN = "plain"
+    JSON = "json"
+    CSV = "csv"
+    MARKDOWN = "markdown"
     CLIPBOARD = "clipboard"
-    PDF       = "pdf"
+    PDF = "pdf"
 
 
 def write(
@@ -63,6 +63,7 @@ def write(
 
 # ── Character output ──────────────────────────────────────────────────────────
 
+
 def _write_characters(
     results: list[CharacterResult],
     fmt: OutputFormat,
@@ -81,6 +82,7 @@ def _write_characters(
             text = "\n".join(r.full_name for r in results)
             try:
                 import pyperclip
+
                 pyperclip.copy(text)
                 console.print(f"[green]✓[/green] {len(results)} Charakter(e) kopiert.")
             except ImportError:
@@ -98,7 +100,7 @@ def _write_rich_characters(results: list[CharacterResult]) -> None:
             f"[bold amber]{r.full_name}[/bold amber]",
             (
                 f"[dim]{r.name.region}  ·  {_GENDER_DE[r.gender.value]}"
-                f"  ·  {r.age} Jahre  ·  {r.profession}[/dim]"
+                f"  ·  {r.experience.value}  ·  {r.age} Jahre  ·  {r.profession}[/dim]"
             ),
             "",
             (
@@ -119,7 +121,7 @@ def _chars_to_plain(results: list[CharacterResult]) -> str:
         lines += [
             (
                 f"{r.full_name}  ({r.name.region},"
-                f" {_GENDER_DE[r.gender.value]}, {r.age} J., {r.profession})"
+                f" {_GENDER_DE[r.gender.value]}, {r.experience.value}, {r.age} J., {r.profession})"
             ),
             (
                 f"  Äußeres:  Haare {t.physical.hair},"
@@ -137,6 +139,7 @@ def _chars_to_json(results: list[CharacterResult]) -> str:
     def _dump(r: CharacterResult) -> dict:
         return {
             "name": r.name.model_dump(mode="json", exclude_none=True),
+            "experience": r.experience.value,
             "age": r.age,
             "profession": r.profession,
             "traits": {
@@ -148,33 +151,50 @@ def _chars_to_json(results: list[CharacterResult]) -> str:
                 "quirk": r.traits.quirk,
             },
         }
+
     return json.dumps([_dump(r) for r in results], ensure_ascii=False, indent=2) + "\n"
 
 
 def _chars_to_csv(results: list[CharacterResult]) -> str:
     buf = io.StringIO()
-    fieldnames = ["full_name", "gender", "region", "age", "profession",
-                  "hair", "eyes", "build", "personality", "motivation", "quirk"]
+    fieldnames = [
+        "full_name",
+        "gender",
+        "region",
+        "experience",
+        "age",
+        "profession",
+        "hair",
+        "eyes",
+        "build",
+        "personality",
+        "motivation",
+        "quirk",
+    ]
     writer = csv.DictWriter(buf, fieldnames=fieldnames)
     writer.writeheader()
     for r in results:
-        writer.writerow({
-            "full_name":    r.full_name,
-            "gender":       r.gender.value,
-            "region":       r.region,
-            "age":          r.age,
-            "profession":   r.profession,
-            "hair":         r.traits.physical.hair,
-            "eyes":         r.traits.physical.eyes,
-            "build":        r.traits.physical.build,
-            "personality":  r.traits.personality,
-            "motivation":   r.traits.motivation,
-            "quirk":        r.traits.quirk,
-        })
+        writer.writerow(
+            {
+                "full_name": r.full_name,
+                "gender": r.gender.value,
+                "region": r.region,
+                "experience": r.experience.value,
+                "age": r.age,
+                "profession": r.profession,
+                "hair": r.traits.physical.hair,
+                "eyes": r.traits.physical.eyes,
+                "build": r.traits.physical.build,
+                "personality": r.traits.personality,
+                "motivation": r.traits.motivation,
+                "quirk": r.traits.quirk,
+            }
+        )
     return buf.getvalue()
 
 
 # ── Rich (Terminal-Tabelle) ────────────────────────────────────────────────────
+
 
 def _write_rich(results: list[NameResult], show_components: bool) -> None:
     if len(results) == 1 and not show_components:
@@ -201,6 +221,7 @@ def _write_rich(results: list[NameResult], show_components: bool) -> None:
 
 # ── Text-Datei / stdout ───────────────────────────────────────────────────────
 
+
 def _write_text(text: str, dest: Path | None) -> None:
     if dest is None:
         sys.stdout.write(text)
@@ -211,50 +232,62 @@ def _write_text(text: str, dest: Path | None) -> None:
 
 # ── Plain Text ─────────────────────────────────────────────────────────────────
 
+
 def _to_plain(results: list[NameResult]) -> str:
     return "\n".join(r.full_name for r in results) + "\n"
 
 
 # ── JSON ───────────────────────────────────────────────────────────────────────
 
+
 def _to_json(results: list[NameResult]) -> str:
-    return json.dumps(
-        [r.model_dump(mode="json", exclude_none=True) for r in results],
-        ensure_ascii=False,
-        indent=2,
-    ) + "\n"
+    return (
+        json.dumps(
+            [r.model_dump(mode="json", exclude_none=True) for r in results],
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n"
+    )
 
 
 # ── CSV ────────────────────────────────────────────────────────────────────────
+
 
 def _to_csv(results: list[NameResult], show_components: bool) -> str:
     buf = io.StringIO()
     fieldnames = ["full_name", "first_name", "last_name", "gender", "region", "mode"]
     if show_components:
-        fieldnames += ["first_prefix", "first_infix", "first_suffix",
-                       "last_prefix",  "last_infix",  "last_suffix"]
+        fieldnames += [
+            "first_prefix",
+            "first_infix",
+            "first_suffix",
+            "last_prefix",
+            "last_infix",
+            "last_suffix",
+        ]
 
     writer = csv.DictWriter(buf, fieldnames=fieldnames, extrasaction="ignore")
     writer.writeheader()
 
     for r in results:
         row: dict = {
-            "full_name":  r.full_name,
+            "full_name": r.full_name,
             "first_name": r.first_name,
-            "last_name":  r.last_name or "",
-            "gender":     r.gender.value,
-            "region":     r.region,
-            "mode":       r.mode.value,
+            "last_name": r.last_name or "",
+            "gender": r.gender.value,
+            "region": r.region,
+            "mode": r.mode.value,
         }
         if show_components and r.components:
             c = r.components
             row |= {
                 "first_prefix": c.first_prefix or "",
-                "first_infix":  c.first_infix  or "",
+                "first_infix": c.first_infix or "",
                 "first_suffix": c.first_suffix or "",
-                "last_prefix":  c.last_prefix  or "",
-                "last_infix":   c.last_infix   or "",
-                "last_suffix":  c.last_suffix  or "",
+                "last_prefix": c.last_prefix or "",
+                "last_infix": c.last_infix or "",
+                "last_suffix": c.last_suffix or "",
             }
         writer.writerow(row)
 
@@ -262,6 +295,7 @@ def _to_csv(results: list[NameResult], show_components: bool) -> str:
 
 
 # ── Markdown ───────────────────────────────────────────────────────────────────
+
 
 def _to_markdown(results: list[NameResult], show_components: bool) -> str:
     r0 = results[0]
@@ -294,6 +328,7 @@ def _to_markdown(results: list[NameResult], show_components: bool) -> str:
 
 # ── Clipboard ──────────────────────────────────────────────────────────────────
 
+
 def _write_clipboard(results: list[NameResult]) -> None:
     try:
         import pyperclip
@@ -311,6 +346,7 @@ def _write_clipboard(results: list[NameResult]) -> None:
 
 
 # ── PDF ────────────────────────────────────────────────────────────────────────
+
 
 def _write_pdf(results: list[NameResult], dest: Path | None, show_components: bool) -> None:
     try:
@@ -332,13 +368,15 @@ def _write_pdf(results: list[NameResult], dest: Path | None, show_components: bo
 
     BORDER = colors.HexColor("#999999")
     HEADER_BG = colors.HexColor("#DDDDDD")
-    ROW_ALT   = colors.HexColor("#F5F5F5")
+    ROW_ALT = colors.HexColor("#F5F5F5")
 
     doc = SimpleDocTemplate(
         str(dest),
         pagesize=A4,
-        leftMargin=2*cm, rightMargin=2*cm,
-        topMargin=2.5*cm, bottomMargin=2*cm,
+        leftMargin=2 * cm,
+        rightMargin=2 * cm,
+        topMargin=2.5 * cm,
+        bottomMargin=2 * cm,
     )
 
     styles = getSampleStyleSheet()
@@ -382,38 +420,42 @@ def _write_pdf(results: list[NameResult], dest: Path | None, show_components: bo
         table_data.append(row)
 
     # Seitenbreite A4 - Ränder = 17cm; Geschlechts-Spalten schmal
-    name_w = 7.25*cm
-    g_w    = 1.0*cm
+    name_w = 7.25 * cm
+    g_w = 1.0 * cm
     col_widths = [name_w, g_w, name_w, g_w]
 
     tbl = Table(table_data, colWidths=col_widths, repeatRows=1)
-    tbl.setStyle(TableStyle([
-        # Header
-        ("BACKGROUND",    (0, 0), (-1, 0),  HEADER_BG),
-        ("TEXTCOLOR",     (0, 0), (-1, 0),  colors.black),
-        ("FONTNAME",      (0, 0), (-1, 0),  "Helvetica-Bold"),
-        ("FONTSIZE",      (0, 0), (-1, 0),  9),
-        ("TOPPADDING",    (0, 0), (-1, 0),  6),
-        ("BOTTOMPADDING", (0, 0), (-1, 0),  6),
-        # Datenzeilen
-        ("FONTNAME",      (0, 1), (-1, -1), "Helvetica"),
-        ("FONTSIZE",      (0, 1), (-1, -1), 9),
-        ("TOPPADDING",    (0, 1), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
-        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [colors.white, ROW_ALT]),
-        # Trennlinie zwischen linker und rechter Namensspalte
-        ("LINEAFTER",     (1, 0), (1, -1),  1.0, BORDER),
-        # Äußerer Rahmen + horizontale Linien
-        ("BOX",           (0, 0), (-1, -1), 0.75, BORDER),
-        ("INNERGRID",     (0, 0), (-1, -1), 0.25, BORDER),
-        ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
-        # Geschlechts-Spalten zentrieren
-        ("ALIGN",         (1, 0), (1, -1),  "CENTER"),
-        ("ALIGN",         (3, 0), (3, -1),  "CENTER"),
-    ]))
+    tbl.setStyle(
+        TableStyle(
+            [
+                # Header
+                ("BACKGROUND", (0, 0), (-1, 0), HEADER_BG),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, 0), 9),
+                ("TOPPADDING", (0, 0), (-1, 0), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+                # Datenzeilen
+                ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+                ("FONTSIZE", (0, 1), (-1, -1), 9),
+                ("TOPPADDING", (0, 1), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, ROW_ALT]),
+                # Trennlinie zwischen linker und rechter Namensspalte
+                ("LINEAFTER", (1, 0), (1, -1), 1.0, BORDER),
+                # Äußerer Rahmen + horizontale Linien
+                ("BOX", (0, 0), (-1, -1), 0.75, BORDER),
+                ("INNERGRID", (0, 0), (-1, -1), 0.25, BORDER),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                # Geschlechts-Spalten zentrieren
+                ("ALIGN", (1, 0), (1, -1), "CENTER"),
+                ("ALIGN", (3, 0), (3, -1), "CENTER"),
+            ]
+        )
+    )
 
     story.append(tbl)
-    story.append(Spacer(1, 0.5*cm))
+    story.append(Spacer(1, 0.5 * cm))
     doc.build(story)
 
     console.print(f"[green]✓ PDF gespeichert:[/green] {dest}")
@@ -437,29 +479,39 @@ def _write_pdf_characters(results: list[CharacterResult], dest: Path | None) -> 
         region_slug = r0.region.lower().replace(" ", "_")
         dest = Path(f"dsa_charaktere_{region_slug}.pdf")
 
-    BORDER    = colors.HexColor("#999999")
+    BORDER = colors.HexColor("#999999")
     HEADER_BG = colors.HexColor("#DDDDDD")
-    ROW_ALT   = colors.HexColor("#F5F5F5")
+    ROW_ALT = colors.HexColor("#F5F5F5")
 
     doc = SimpleDocTemplate(
         str(dest),
         pagesize=A4,
-        leftMargin=2*cm, rightMargin=2*cm,
-        topMargin=2.5*cm, bottomMargin=2*cm,
+        leftMargin=2 * cm,
+        rightMargin=2 * cm,
+        topMargin=2.5 * cm,
+        bottomMargin=2 * cm,
     )
 
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
-        "DSATitle", parent=styles["Heading1"],
-        textColor=colors.black, fontSize=16, spaceAfter=4,
+        "DSATitle",
+        parent=styles["Heading1"],
+        textColor=colors.black,
+        fontSize=16,
+        spaceAfter=4,
     )
     subtitle_style = ParagraphStyle(
-        "DSASubtitle", parent=styles["Normal"],
-        textColor=colors.HexColor("#555555"), fontSize=9, spaceAfter=14,
+        "DSASubtitle",
+        parent=styles["Normal"],
+        textColor=colors.HexColor("#555555"),
+        fontSize=9,
+        spaceAfter=14,
     )
     cell_style = ParagraphStyle(
-        "DSACell", parent=styles["Normal"],
-        fontSize=8, leading=10,
+        "DSACell",
+        parent=styles["Normal"],
+        fontSize=8,
+        leading=10,
     )
 
     story = [
@@ -471,10 +523,10 @@ def _write_pdf_characters(results: list[CharacterResult], dest: Path | None) -> 
     ]
 
     # Columns: Name | G | Alter | Beruf | Eigenschaften
-    name_w   = 3.8 * cm
-    g_w      = 0.6 * cm
-    age_w    = 1.0 * cm
-    job_w    = 3.0 * cm
+    name_w = 3.8 * cm
+    g_w = 0.6 * cm
+    age_w = 1.0 * cm
+    job_w = 3.0 * cm
     traits_w = 8.6 * cm  # 17cm total - others
 
     header = ["Name", "G", "Alter", "Beruf", "Eigenschaften"]
@@ -486,36 +538,42 @@ def _write_pdf_characters(results: list[CharacterResult], dest: Path | None) -> 
             f"Haare {t.physical.hair}, Augen {t.physical.eyes}, {t.physical.build} · "
             f"{t.personality} · {t.motivation} · {t.quirk}"
         )
-        table_data.append([
-            Paragraph(f"<b>{r.full_name}</b>", cell_style),
-            _GENDER_SHORT.get(r.gender.value, "–"),
-            str(r.age),
-            Paragraph(r.profession, cell_style),
-            Paragraph(traits_text, cell_style),
-        ])
+        table_data.append(
+            [
+                Paragraph(f"<b>{r.full_name}</b>", cell_style),
+                _GENDER_SHORT.get(r.gender.value, "–"),
+                str(r.age),
+                Paragraph(r.profession, cell_style),
+                Paragraph(traits_text, cell_style),
+            ]
+        )
 
     tbl = Table(
         table_data,
         colWidths=[name_w, g_w, age_w, job_w, traits_w],
         repeatRows=1,
     )
-    tbl.setStyle(TableStyle([
-        ("BACKGROUND",    (0, 0), (-1, 0),  HEADER_BG),
-        ("FONTNAME",      (0, 0), (-1, 0),  "Helvetica-Bold"),
-        ("FONTSIZE",      (0, 0), (-1, 0),  9),
-        ("TOPPADDING",    (0, 0), (-1, 0),  6),
-        ("BOTTOMPADDING", (0, 0), (-1, 0),  6),
-        ("FONTNAME",      (0, 1), (-1, -1), "Helvetica"),
-        ("FONTSIZE",      (0, 1), (-1, -1), 8),
-        ("TOPPADDING",    (0, 1), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
-        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [colors.white, ROW_ALT]),
-        ("BOX",           (0, 0), (-1, -1), 0.75, BORDER),
-        ("INNERGRID",     (0, 0), (-1, -1), 0.25, BORDER),
-        ("VALIGN",        (0, 0), (-1, -1), "TOP"),
-        ("ALIGN",         (1, 0), (1, -1),  "CENTER"),
-        ("ALIGN",         (2, 0), (2, -1),  "CENTER"),
-    ]))
+    tbl.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), HEADER_BG),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, 0), 9),
+                ("TOPPADDING", (0, 0), (-1, 0), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+                ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+                ("FONTSIZE", (0, 1), (-1, -1), 8),
+                ("TOPPADDING", (0, 1), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, ROW_ALT]),
+                ("BOX", (0, 0), (-1, -1), 0.75, BORDER),
+                ("INNERGRID", (0, 0), (-1, -1), 0.25, BORDER),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("ALIGN", (1, 0), (1, -1), "CENTER"),
+                ("ALIGN", (2, 0), (2, -1), "CENTER"),
+            ]
+        )
+    )
 
     story.append(tbl)
     story.append(Spacer(1, 0.5 * cm))
@@ -526,13 +584,14 @@ def _write_pdf_characters(results: list[CharacterResult], dest: Path | None) -> 
 
 # ── Hilfsfunktionen ────────────────────────────────────────────────────────────
 
+
 def _format_components(r: NameResult) -> str:
     """Gibt die Silbenbausteine als lesbaren String zurück."""
     if not r.components:
         return ""
     c = r.components
     first = "+".join(p for p in [c.first_prefix, c.first_infix, c.first_suffix] if p)
-    last  = "+".join(p for p in [c.last_prefix,  c.last_infix,  c.last_suffix]  if p)
+    last = "+".join(p for p in [c.last_prefix, c.last_infix, c.last_suffix] if p)
     return f"{first}  |  {last}" if last else first
 
 
@@ -540,10 +599,10 @@ def default_filename(fmt: OutputFormat, region: str) -> str:
     """Liefert einen sinnvollen Standarddateinamen für ein Format."""
     slug = region.lower().replace(" ", "_")
     extensions = {
-        OutputFormat.PLAIN:    f"dsa_namen_{slug}.txt",
-        OutputFormat.JSON:     f"dsa_namen_{slug}.json",
-        OutputFormat.CSV:      f"dsa_namen_{slug}.csv",
+        OutputFormat.PLAIN: f"dsa_namen_{slug}.txt",
+        OutputFormat.JSON: f"dsa_namen_{slug}.json",
+        OutputFormat.CSV: f"dsa_namen_{slug}.csv",
         OutputFormat.MARKDOWN: f"dsa_namen_{slug}.md",
-        OutputFormat.PDF:      f"dsa_namen_{slug}.pdf",
+        OutputFormat.PDF: f"dsa_namen_{slug}.pdf",
     }
     return extensions.get(fmt, f"dsa_namen_{slug}.txt")

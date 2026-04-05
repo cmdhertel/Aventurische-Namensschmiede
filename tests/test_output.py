@@ -32,6 +32,7 @@ from namegen.output import (
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
+
 def _name_results(n: int = 3, region: str = "mittelreich_kosch") -> list[NameResult]:
     return [generate(region, rng=random.Random(i)) for i in range(n)]
 
@@ -49,6 +50,7 @@ def _char_results(n: int = 2) -> list[CharacterResult]:
 
 # ── write(): leere Liste ──────────────────────────────────────────────────────
 
+
 def test_write_empty_returns_silently(capsys: pytest.CaptureFixture) -> None:
     write([], fmt=OutputFormat.PLAIN)
     captured = capsys.readouterr()
@@ -56,6 +58,7 @@ def test_write_empty_returns_silently(capsys: pytest.CaptureFixture) -> None:
 
 
 # ── _to_plain ─────────────────────────────────────────────────────────────────
+
 
 def test_to_plain_contains_all_names() -> None:
     results = _name_results()
@@ -78,6 +81,7 @@ def test_to_plain_one_name_per_line() -> None:
 
 
 # ── _to_json ──────────────────────────────────────────────────────────────────
+
 
 def test_to_json_valid_json() -> None:
     text = _to_json(_name_results(3))
@@ -113,6 +117,7 @@ def test_to_json_ends_with_newline() -> None:
 
 
 # ── _to_csv ───────────────────────────────────────────────────────────────────
+
 
 def _parse_csv(text: str) -> list[dict]:
     return list(csv.DictReader(io.StringIO(text)))
@@ -163,6 +168,7 @@ def test_to_csv_compose_prefix_suffix_nonempty() -> None:
 
 # ── _to_markdown ──────────────────────────────────────────────────────────────
 
+
 def test_to_markdown_has_table_separator() -> None:
     text = _to_markdown(_name_results(2), show_components=False)
     assert "---" in text
@@ -195,6 +201,7 @@ def test_to_markdown_compose_has_bausteine_column() -> None:
 
 
 # ── write() → stdout (PLAIN / JSON / CSV / MARKDOWN) ─────────────────────────
+
 
 def test_write_plain_to_stdout(capsys: pytest.CaptureFixture) -> None:
     results = _name_results(2)
@@ -230,6 +237,7 @@ def test_write_markdown_to_stdout(capsys: pytest.CaptureFixture) -> None:
 
 # ── write() → Datei ───────────────────────────────────────────────────────────
 
+
 def test_write_plain_to_file(tmp_path) -> None:
     results = _name_results(3)
     out = tmp_path / "names.txt"
@@ -257,6 +265,7 @@ def test_write_csv_to_file(tmp_path) -> None:
 
 # ── Charakter: _chars_to_plain ────────────────────────────────────────────────
 
+
 def test_chars_to_plain_contains_names() -> None:
     results = _char_results(2)
     text = _chars_to_plain(results)
@@ -281,6 +290,7 @@ def test_chars_to_plain_contains_profession_and_age() -> None:
 
 
 # ── Charakter: _chars_to_json ─────────────────────────────────────────────────
+
 
 def test_chars_to_json_valid_json() -> None:
     data = json.loads(_chars_to_json(_char_results(2)))
@@ -312,11 +322,23 @@ def test_chars_to_json_name_block_has_full_name() -> None:
 
 # ── Charakter: _chars_to_csv ──────────────────────────────────────────────────
 
+
 def test_chars_to_csv_header_columns() -> None:
     text = _chars_to_csv(_char_results(1))
     header = next(csv.reader(io.StringIO(text)))
-    for col in ("full_name", "gender", "region", "age", "profession",
-                "hair", "eyes", "build", "personality", "motivation", "quirk"):
+    for col in (
+        "full_name",
+        "gender",
+        "region",
+        "age",
+        "profession",
+        "hair",
+        "eyes",
+        "build",
+        "personality",
+        "motivation",
+        "quirk",
+    ):
         assert col in header
 
 
@@ -340,6 +362,7 @@ def test_chars_to_csv_names_match() -> None:
 
 
 # ── write() mit CharacterResult ───────────────────────────────────────────────
+
 
 def test_write_characters_plain_to_stdout(capsys: pytest.CaptureFixture) -> None:
     results = _char_results(1)
@@ -368,6 +391,7 @@ def test_write_characters_csv_to_file(tmp_path) -> None:
 
 # ── write() Dispatcher: CharacterResult vs NameResult ────────────────────────
 
+
 def test_write_dispatcher_detects_character_result(capsys: pytest.CaptureFixture) -> None:
     """write() muss CharacterResult automatisch erkennen und traits ausgeben."""
     results = _char_results(1)
@@ -387,6 +411,7 @@ def test_write_dispatcher_detects_name_result(capsys: pytest.CaptureFixture) -> 
 
 
 # ── _format_components ────────────────────────────────────────────────────────
+
 
 def test_format_components_no_infix() -> None:
     r = generate("mittelreich_kosch", mode=GenerationMode.COMPOSE, rng=random.Random(0))
@@ -412,6 +437,7 @@ def test_format_components_returns_empty_for_none() -> None:
 
 
 # ── default_filename ──────────────────────────────────────────────────────────
+
 
 def test_default_filename_txt() -> None:
     name = default_filename(OutputFormat.PLAIN, "Kosch")

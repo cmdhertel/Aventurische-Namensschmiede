@@ -25,9 +25,7 @@ def _parse_region(region_name: str) -> RegionData:
         raw_bytes = resource.read_bytes()
     except (FileNotFoundError, TypeError) as exc:
         available = ", ".join(list_regions())
-        raise LoaderError(
-            f"Region '{region_name}' not found. Available: {available}"
-        ) from exc
+        raise LoaderError(f"Region '{region_name}' not found. Available: {available}") from exc
 
     try:
         raw_dict = tomllib.loads(raw_bytes.decode())

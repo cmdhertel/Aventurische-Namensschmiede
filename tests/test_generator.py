@@ -14,6 +14,7 @@ RNG = random.Random(42)
 
 # ── Grundlegende Ausgabe ──────────────────────────────────────────────────────
 
+
 def test_generate_simple_returns_name_result() -> None:
     result = generate("mittelreich_kosch", rng=random.Random(1))
     assert isinstance(result, NameResult)
@@ -55,6 +56,7 @@ def test_generate_simple_has_no_components() -> None:
 
 # ── Determinismus ─────────────────────────────────────────────────────────────
 
+
 def test_generate_same_seed_produces_same_result() -> None:
     r1 = generate("mittelreich_kosch", rng=random.Random(99))
     r2 = generate("mittelreich_kosch", rng=random.Random(99))
@@ -67,6 +69,7 @@ def test_generate_different_seeds_likely_differ() -> None:
 
 
 # ── Geschlecht ────────────────────────────────────────────────────────────────
+
 
 def test_generate_male_gender_field() -> None:
     result = generate("mittelreich_kosch", gender=Gender.MALE, rng=random.Random(1))
@@ -94,8 +97,7 @@ def test_generate_male_resolved_gender_not_female() -> None:
 
 def test_generate_female_resolved_gender_not_male() -> None:
     results = [
-        generate("mittelreich_kosch", gender=Gender.FEMALE, rng=random.Random(i))
-        for i in range(30)
+        generate("mittelreich_kosch", gender=Gender.FEMALE, rng=random.Random(i)) for i in range(30)
     ]
     for r in results:
         assert r.resolved_gender != Gender.MALE
@@ -103,22 +105,25 @@ def test_generate_female_resolved_gender_not_male() -> None:
 
 # ── Alle Regionen im Simple-Modus ─────────────────────────────────────────────
 
+
 def test_all_regions_generate_simple_any() -> None:
     from namegen.loader import list_regions
+
     for region_id in list_regions():
-        result = generate(region_id, mode=GenerationMode.SIMPLE, gender=Gender.ANY,
-                          rng=random.Random(7))
+        result = generate(
+            region_id, mode=GenerationMode.SIMPLE, gender=Gender.ANY, rng=random.Random(7)
+        )
         assert result.first_name, f"Region '{region_id}' lieferte keinen Vornamen"
         assert result.full_name
 
 
 # ── Nachname optional ─────────────────────────────────────────────────────────
 
+
 def test_full_name_without_last_name() -> None:
     """Wenn kein Nachname vorhanden, soll full_name nur den Vornamen enthalten."""
     result = NameResult.build(
-        first="Adalhard", last=None,
-        gender=Gender.MALE, region="Test", mode=GenerationMode.SIMPLE
+        first="Adalhard", last=None, gender=Gender.MALE, region="Test", mode=GenerationMode.SIMPLE
     )
     assert result.last_name is None
     assert result.full_name == "Adalhard"
@@ -126,8 +131,11 @@ def test_full_name_without_last_name() -> None:
 
 def test_full_name_with_last_name() -> None:
     result = NameResult.build(
-        first="Adalhard", last="von Kosch",
-        gender=Gender.MALE, region="Test", mode=GenerationMode.SIMPLE
+        first="Adalhard",
+        last="von Kosch",
+        gender=Gender.MALE,
+        region="Test",
+        mode=GenerationMode.SIMPLE,
     )
     assert result.last_name == "von Kosch"
     assert result.full_name == "Adalhard von Kosch"
@@ -135,19 +143,31 @@ def test_full_name_with_last_name() -> None:
 
 # ── Compose-Modus: Infixe ─────────────────────────────────────────────────────
 
+
 def test_compose_infix_probability_zero_never_uses_infix() -> None:
-    """Mit infix_probability=0 darf kein Infix im Vornamen auftauchen."""
-    from namegen.loader import load_region
-    data = load_region("mittelreich_kosch")
-    orig_prob = data.compose.first.infix_probability
-    data.compose.first.__dict__["infix_probability"] = 0.0
-    try:
-        for i in range(20):
-            r = generate("mittelreich_kosch", mode=GenerationMode.COMPOSE, rng=random.Random(i))
-            if r.components:
-                assert r.components.first_infix is None
-    finally:
-        data.compose.first.__dict__["infix_probability"] = orig_prob
+    """Mit Override 0 darf kein Infix im Vornamen oder Nachnamen auftauchen."""
+    for i in range(20):
+        r = generate(
+            "mittelreich_kosch",
+            mode=GenerationMode.COMPOSE,
+            rng=random.Random(i),
+            infix_probability_override=0.0,
+        )
+        assert r.components is not None
+        assert r.components.first_infix is None
+        assert r.components.last_infix is None
+
+
+def test_compose_infix_probability_one_uses_infix_when_pools_exist() -> None:
+    r = generate(
+        "mittelreich_kosch",
+        mode=GenerationMode.COMPOSE,
+        rng=random.Random(1),
+        infix_probability_override=1.0,
+    )
+    assert r.components is not None
+    assert r.components.first_infix is not None
+    assert r.components.last_infix is not None
 
 
 def test_compose_components_reconstruct_name() -> None:
@@ -162,7 +182,9 @@ def test_compose_components_reconstruct_name() -> None:
 
 # ── Fehlerbehandlung ──────────────────────────────────────────────────────────
 
+
 def test_generate_unknown_region_raises_loader_error() -> None:
     from namegen.loader import LoaderError
+
     with pytest.raises(LoaderError):
         generate("region_which_does_not_exist")
