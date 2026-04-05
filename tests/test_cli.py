@@ -6,7 +6,6 @@ from typer.testing import CliRunner
 
 from namegen.cli import app
 
-
 runner = CliRunner()
 
 
