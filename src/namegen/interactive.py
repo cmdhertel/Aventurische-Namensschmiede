@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 
 import questionary
 from rich.console import Console
 from rich.rule import Rule
 
+from .catalog import get_origin_catalog, selection_supports_compose
 from .chargen import generate_character
 from .generator import GeneratorError, generate
-from .loader import LoaderError, get_origin_catalog, load_region
+from .loader import LoaderError
 from .models import (
     CharacterResult,
     ExperienceLevel,
@@ -51,29 +53,17 @@ def run() -> None:
         if config is None:
             break
 
-        (
-            mode,
-            region,
-            gender,
-            count,
-            show_components,
-            character,
-            profession_category,
-            experience,
-            fmt,
-            dest,
-        ) = config
         _generate_and_output(
-            mode,
-            region,
-            gender,
-            count,
-            show_components,
-            character,
-            profession_category,
-            experience,
-            fmt,
-            dest,
+            config.mode,
+            config.region,
+            config.gender,
+            config.count,
+            config.show_components,
+            config.character,
+            config.profession_category,
+            config.experience,
+            config.fmt,
+            config.dest,
         )
 
         console.print()
@@ -90,41 +80,28 @@ def run() -> None:
     console.print("[dim]Auf Wiedersehen![/dim]")
 
 
-_ConfigResult = tuple[
-    GenerationMode,
-    str,
-    Gender,
-    int,
-    bool,
-    bool,
-    ProfessionCategory,
-    ExperienceLevel,
-    OutputFormat,
-    Path | None,
-]
+@dataclass
+class _GenerationConfig:
+    mode: GenerationMode
+    region: str
+    gender: Gender
+    count: int
+    show_components: bool
+    character: bool
+    profession_category: ProfessionCategory
+    experience: ExperienceLevel
+    fmt: OutputFormat
+    dest: Path | None
 
 
-def _ask_configuration() -> _ConfigResult | None:
+def _ask_configuration() -> _GenerationConfig | None:
     """Fragt alle Einstellungen interaktiv ab. Gibt None zurück bei Abbruch (Ctrl+C)."""
 
-    # ── Modus ──────────────────────────────────────────────────────────────────
-    mode_str = questionary.select(
-        "Generierungsmodus:",
-        choices=[
-            questionary.Choice("Einfach       – Namen aus vordefinierten Listen", value="simple"),
-            questionary.Choice("Komposition   – Namen aus Silbenbausteinen", value="compose"),
-        ],
-        style=_STYLE,
-    ).ask()
-    if mode_str is None:
-        return None
-    mode = GenerationMode(mode_str)
-
-    # ── Spezies / Kultur / Origin ─────────────────────────────────────────────
+    # ── Spezies / Kultur / Region ─────────────────────────────────────────────
     try:
         catalog = get_origin_catalog()
     except Exception as exc:
-        console.print(f"[red]Fehler beim Laden der Origins:[/red] {exc}")
+        console.print(f"[red]Fehler beim Laden der Regionen:[/red] {exc}")
         return None
 
     species_options = sorted(
@@ -154,17 +131,50 @@ def _ask_configuration() -> _ConfigResult | None:
     if culture_id is None:
         return None
 
-    region_choices = []
-    for item in catalog:
-        if item["species_id"] != species_id or item["culture_id"] != culture_id:
-            continue
-        data = load_region(item["id"])
-        label = f"{data.meta.region:<18} {data.meta.notes}"
-        region_choices.append(questionary.Choice(label, value=item["id"]))
-
-    region = questionary.select("Origin:", choices=region_choices, style=_STYLE).ask()
-    if region is None:
+    matching_entries = [
+        item
+        for item in catalog
+        if item["species_id"] == species_id and item["culture_id"] == culture_id
+    ]
+    if not matching_entries:
+        console.print("[red]Keine passenden Regionen gefunden.[/red]")
         return None
+
+    if matching_entries[0].get("has_region"):
+        region_choices = []
+        for item in matching_entries:
+            label = item["region_name"] or item["name"]
+            notes = item.get("notes", "")
+            region_choices.append(
+                questionary.Choice(f"{label:<24} {notes}".rstrip(), value=item["id"])
+            )
+
+        region = questionary.select("Region:", choices=region_choices, style=_STYLE).ask()
+        if region is None:
+            return None
+    else:
+        region = matching_entries[0]["id"]
+
+    # ── Modus ──────────────────────────────────────────────────────────────────
+    mode_choices = [
+        questionary.Choice("Einfach       – Namen aus vordefinierten Listen", value="simple")
+    ]
+    if selection_supports_compose(region):
+        mode_choices.append(
+            questionary.Choice("Komposition   – Namen aus Silbenbausteinen", value="compose")
+        )
+
+    if len(mode_choices) == 1:
+        mode_str = "simple"
+    else:
+        mode_str = questionary.select(
+            "Generierungsmodus:",
+            choices=mode_choices,
+            style=_STYLE,
+        ).ask()
+        if mode_str is None:
+            return None
+    mode = GenerationMode(mode_str)
 
     # ── Geschlecht ─────────────────────────────────────────────────────────────
     gender_str = questionary.select(
@@ -300,17 +310,17 @@ def _ask_configuration() -> _ConfigResult | None:
                 return None
             dest = Path(filename)
 
-    return (
-        mode,
-        region,
-        gender,
-        count,
-        show_components,
-        character,
-        profession_category,
-        experience,
-        fmt,
-        dest,
+    return _GenerationConfig(
+        mode=mode,
+        region=region,
+        gender=gender,
+        count=count,
+        show_components=show_components,
+        character=character,
+        profession_category=profession_category,
+        experience=experience,
+        fmt=fmt,
+        dest=dest,
     )
 
 

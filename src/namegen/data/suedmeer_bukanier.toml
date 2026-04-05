@@ -1,0 +1,22 @@
+[meta]
+region = "Südmeer & Bukanier"
+abbreviation = "SDB"
+notes = "Charyptische Piraten- und Bukaniernamen aus einem wilden Sprachmix."
+
+[simple.first]
+male = ["Abulondrio", "Alreq", "Balio", "Charumpo", "Efferdito", "Hammerfausto", "Kasimez", "Mokko", "Nadanero", "Rahjivio", "Taro", "Yelmez"]
+female = ["Alrecha", "Amaxia", "Cheska", "Dschinna", "Effelia", "Hammerfausta", "Karybdia", "Mihi", "Ramira", "Rizella", "Vanja", "Zilla"]
+
+[simple.last]
+neutral = ["de Sores", "di Diago", "Hakenhand", "Nadaljeff", "Seebär", "Stoppelbart", "Wogenbrecher", "Wulfirsonno", "Borotigez", "Rubanez"]
+
+[simple.byname]
+neutral = ["Blutfaust", "Brabacuda", "Geißel", "Goldzahn", "Hakenhand", "Muränenblick", "Plankentod", "Rumzwinger", "Schlangenbrecher", "Windpinkler"]
+
+[naming_schema]
+type = "given_byname"
+description = "Piraten tragen oft Vornamen plus markanten Beinamen."
+
+[character]
+professions = ["Piratenkapitän", "Freibeuter", "Smutje", "Steuermann"]
+

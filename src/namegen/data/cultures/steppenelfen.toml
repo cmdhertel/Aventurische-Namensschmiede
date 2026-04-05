@@ -1,0 +1,27 @@
+[meta]
+name = "Steppenelfen"
+notes = "Nomadische Reiterelfen mit offenen, weiten Klangmustern."
+
+[naming_schema]
+type = "given_family"
+description = "Elfischer Rufname mit poetischem Sippen- oder Weidenamen."
+
+[simple.first]
+male = ["Aimsir", "Alenor", "Aras", "Bavindhor", "Cavariel", "Farnion", "Imrayon", "Mandavar", "Navarion", "Teleriel", "Valandariel", "Visalyar"]
+female = ["Adaloe", "Ariana", "Daleone", "Dialya", "Diannon", "Elyannon", "Fiannon", "Hylarione", "Liloe", "Rhiannon", "Sanaha", "Valannon"]
+
+[simple.last]
+neutral = ["Steppenherz", "Steppenläufer", "Wolkenreiter", "Windhalmsucher", "Mähnenweber", "Sternenhüter"]
+
+[character]
+languages = ["Isdira"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["Steppen, Grasmeere und Wanderpfade"]
+social_status = ["Frei"]
+professions = ["Reiter", "Jäger", "Spurenleser", "Sänger"]
+typical_advantages = ["Richtungssinn", "Wohlklang"]
+typical_disadvantages = ["Weltfremd"]
+typical_talents = ["Reiten", "Wildnisleben", "Tierkunde", "Sinnesschärfe"]
+personality = ["freiheitsliebend, wachsam und auf Bewegung ausgerichtet"]
+motivations = ["folgt den Herden, dem Wind und dem Lied des Himmels"]
+quirks = ["prüft erst die Windrichtung, bevor eine Entscheidung fällt"]

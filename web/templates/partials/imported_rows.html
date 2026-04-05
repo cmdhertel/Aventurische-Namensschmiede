@@ -1,4 +1,5 @@
 {% for r in results %}
+{% if r.kind == 'character' %}
 {% set gv = r.name.resolved_gender.value %}
 <div class="name-entry group"
      data-full-name="{{ r.full_name }}"
@@ -17,7 +18,6 @@
      data-motivation="{{ r.traits.motivation }}"
      data-quirk="{{ r.traits.quirk }}">
 
-  <!-- Kopfzeile: Name + Badge + Löschen -->
   <div class="flex items-center gap-3 w-full">
     <div class="flex-1 min-w-0">
       <p class="font-display font-semibold text-sm sm:text-base"
@@ -30,7 +30,6 @@
       </p>
     </div>
 
-    <!-- Geschlecht-Badge -->
     <span class="shrink-0
       {% if gv == 'male' %}badge-male
       {% elif gv == 'female' %}badge-female
@@ -38,7 +37,6 @@
       {{ gender_de[gv] }}
     </span>
 
-    <!-- Löschen -->
     <button type="button" onclick="removeName(this)" aria-label="Entfernen"
             class="shrink-0 w-6 h-6 rounded flex items-center justify-center text-base leading-none
                    transition-all duration-150 opacity-0 group-hover:opacity-100 focus:opacity-100"
@@ -49,7 +47,6 @@
     </button>
   </div>
 
-  <!-- Eigenschaften -->
   <div class="w-full mt-2 pt-2 border-t grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-0.5 text-xs"
        style="border-color: var(--color-divider); color: var(--color-text-muted);">
     <span>
@@ -71,4 +68,46 @@
   </div>
 
 </div>
+{% else %}
+{% set gv = r.resolved_gender.value %}
+<div class="name-entry group"
+     data-full-name="{{ r.full_name }}"
+     data-gender="{{ gv }}"
+     data-region="{{ r.region }}"
+     data-culture="{{ r.culture or '' }}"
+     data-species="{{ r.species or '' }}"
+     data-region-abbr="{{ r.region_abbreviation or '' }}"
+     data-mode="{{ r.mode.value }}">
+
+  <div class="flex items-center gap-3 w-full">
+    <div class="flex-1 min-w-0">
+      <p class="font-display font-semibold text-sm sm:text-base"
+         style="color: var(--color-text);">
+        {{ r.full_name }}
+      </p>
+      <p class="text-xs mt-0.5"
+         style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
+        {{ r.species or 'Unbekannt' }} · {{ r.culture or 'Unbekannt' }} · {{ r.region }}
+      </p>
+    </div>
+
+    <span class="shrink-0
+      {% if gv == 'male' %}badge-male
+      {% elif gv == 'female' %}badge-female
+      {% else %}badge-neutral{% endif %}">
+      {{ gender_de[gv] }}
+    </span>
+
+    <button type="button" onclick="removeName(this)" aria-label="Entfernen"
+            class="shrink-0 w-6 h-6 rounded flex items-center justify-center text-base leading-none
+                   transition-all duration-150 opacity-0 group-hover:opacity-100 focus:opacity-100"
+            style="color: var(--color-text-faint);"
+            onmouseenter="this.style.color='#dc2626'; this.style.backgroundColor='rgba(220,38,38,0.08)'"
+            onmouseleave="this.style.color='var(--color-text-faint)'; this.style.backgroundColor='transparent'">
+      &times;
+    </button>
+  </div>
+
+</div>
+{% endif %}
 {% endfor %}

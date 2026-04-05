@@ -15,7 +15,6 @@ from .models import (
     CultureMeta,
     GenderedStringPool,
     NameSchema,
-    NameSchemaType,
     OriginRef,
     RegionData,
     SimpleConfig,
@@ -37,24 +36,69 @@ _REAL_CULTURE_MAP = {
     "mittelreich_garetien": "mittelreicher",
     "mittelreich_greifenfurt": "mittelreicher",
     "mittelreich_kosch": "mittelreicher",
+    "mittelreich_nordmarken": "mittelreicher",
     "mittelreich_perricum": "mittelreicher",
     "mittelreich_rabenmark": "mittelreicher",
     "mittelreich_rommilysermark": "mittelreicher",
     "mittelreich_sonnenmark": "mittelreicher",
     "mittelreich_tobrien": "mittelreicher",
+    "mittelreich_warunk": "mittelreicher",
+    "mittelreich_weiden": "mittelreicher",
+    "mittelreich_windhag": "mittelreicher",
     "horasreich": "horasier",
     "bornland": "bornlaender",
     "ferkina": "ferkinas",
     "thorwal": "thorwaler",
     "ctki_ssrr": "ctki_ssrr",
     "auelfen": "auelfen",
+    "elfen_firnelfen": "firnelfen",
+    "elfen_waldelfen": "waldelfen",
+    "elfen_steppenelfen": "steppenelfen",
+    "elfen_hochelfen": "hochelfen",
+    "elfen_shakagra": "shakagra",
     "ambosszwerge": "ambosszwerge",
+    "huegelzwerge": "huegelzwerge",
+    "brillantzwerge": "brillantzwerge",
+    "tiefzwerge": "tiefzwerge",
 }
 
 _SPECIES_MAP = {
     "auelfen": "elf",
+    "elfen_firnelfen": "elf",
+    "elfen_waldelfen": "elf",
+    "elfen_steppenelfen": "elf",
+    "elfen_hochelfen": "elf",
+    "elfen_shakagra": "elf",
     "ambosszwerge": "dwarf",
+    "huegelzwerge": "dwarf",
+    "brillantzwerge": "dwarf",
+    "tiefzwerge": "dwarf",
     "ctki_ssrr": "achaz",
+}
+
+_CULTURE_REGION_METADATA_MAP = {
+    "ambosszwerge": "ambosszwerge",
+    "auelfen": "auelfen",
+    "brillantzwerge": "brillantzwerge",
+    "firnelfen": "elfen_firnelfen",
+    "hochelfen": "elfen_hochelfen",
+    "huegelzwerge": "huegelzwerge",
+    "shakagra": "elfen_shakagra",
+    "steppenelfen": "elfen_steppenelfen",
+    "tiefzwerge": "tiefzwerge",
+    "waldelfen": "elfen_waldelfen",
+}
+_CULTURE_SPECIES_MAP = {
+    "ambosszwerge": "dwarf",
+    "auelfen": "elf",
+    "brillantzwerge": "dwarf",
+    "firnelfen": "elf",
+    "hochelfen": "elf",
+    "huegelzwerge": "dwarf",
+    "shakagra": "elf",
+    "steppenelfen": "elf",
+    "tiefzwerge": "dwarf",
+    "waldelfen": "elf",
 }
 
 
@@ -100,7 +144,7 @@ def _merge_parts(base: ComposeParts, override: ComposeParts) -> ComposeParts:
 def _merge_section(base: ComposeSection, override: ComposeSection) -> ComposeSection:
     return ComposeSection(
         infix_probability=override.infix_probability
-        if override.infix_probability != 0.3 or base.infix_probability == 0.3
+        if override.infix_probability is not None
         else base.infix_probability,
         male=_merge_parts(base.male, override.male),
         female=_merge_parts(base.female, override.female),
@@ -146,16 +190,7 @@ def _merge_character(base: CharacterConfig, override: CharacterConfig) -> Charac
 
 
 def _resolve_schema(base: NameSchema, override: NameSchema) -> NameSchema:
-    if (
-        override.type != NameSchemaType.GIVEN_FAMILY
-        or override.connector
-        or override.description
-        or override.male_patronym_pattern != "{parent}son"
-        or override.female_patronym_pattern != "{parent}dottir"
-        or override.neutral_patronym_pattern != "{parent}"
-    ):
-        return override
-    return base
+    return base if override.is_default() else override
 
 
 def _infer_species_id(origin_id: str) -> str:
@@ -179,6 +214,44 @@ def _load_raw_origin(origin_name: str) -> dict:
     raw["origin"].setdefault("culture_id", _infer_culture_id(origin_name))
     raw["origin"].setdefault("region_id", origin_name)
     return raw
+
+
+def _abbreviation_from_name(name: str) -> str:
+    letters = "".join(char for char in name.upper() if char.isalpha())
+    return (letters[:3] or "REG").ljust(3, "X")
+
+
+def _has_compose_parts(parts: ComposeParts) -> bool:
+    return bool(parts.prefix and parts.suffix)
+
+
+def _load_raw_culture_region(culture_id: str) -> dict:
+    raw_culture = _read_toml(f"cultures/{culture_id.lower()}.toml")
+    meta = raw_culture.get("meta", {})
+    metadata_id = _CULTURE_REGION_METADATA_MAP.get(culture_id)
+    region_meta = {}
+    if metadata_id is not None:
+        try:
+            region_meta = _read_toml(f"{metadata_id}.toml").get("meta", {})
+        except LoaderError:
+            region_meta = {}
+
+    region_name = region_meta.get("region", meta.get("name", culture_id))
+    notes = region_meta.get("notes", meta.get("notes", ""))
+    abbreviation = region_meta.get("abbreviation", _abbreviation_from_name(region_name))
+
+    return {
+        "meta": {
+            "region": region_name,
+            "abbreviation": abbreviation,
+            "notes": notes,
+        },
+        "origin": {
+            "species_id": _CULTURE_SPECIES_MAP.get(culture_id, "human"),
+            "culture_id": culture_id,
+            "region_id": culture_id,
+        },
+    }
 
 
 def _build_synthetic_culture(raw: dict) -> CultureData:
@@ -228,14 +301,14 @@ def list_regions() -> list[str]:
     )
 
 
-list_origins = list_regions
-
-
 @cache
 def load_region(region_name: str) -> RegionData:
-    """Load a resolved origin profile by its file stem (case-insensitive)."""
+    """Load a resolved region profile by ID (case-insensitive)."""
     origin_id = region_name.lower()
-    raw = _load_raw_origin(origin_id)
+    try:
+        raw = _load_raw_origin(origin_id)
+    except LoaderError:
+        raw = _load_raw_culture_region(origin_id)
     region = RegionData.model_validate(raw)
 
     species_id = region.origin.species_id
@@ -270,23 +343,3 @@ def load_region(region_name: str) -> RegionData:
         species=species,
         culture=culture,
     )
-
-
-load_origin = load_region
-
-
-def get_origin_catalog() -> list[dict[str, str]]:
-    catalog: list[dict[str, str]] = []
-    for origin_id in list_regions():
-        data = load_region(origin_id)
-        catalog.append(
-            {
-                "id": origin_id,
-                "name": data.meta.region,
-                "species_id": data.origin.species_id,
-                "species_name": data.species.meta.name if data.species else data.origin.species_id,
-                "culture_id": data.origin.culture_id,
-                "culture_name": data.culture.meta.name if data.culture else data.origin.culture_id,
-            }
-        )
-    return catalog

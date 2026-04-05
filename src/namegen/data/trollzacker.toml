@@ -1,0 +1,22 @@
+[meta]
+region = "Trollzacker"
+abbreviation = "TRZ"
+notes = "Hart klingende Stammesnamen aus den Trollzacken mit Ehren- und Schandnamen."
+
+[simple.first]
+male = ["Achzul", "Arachtoch", "Ashur", "Azzadh", "Drechan", "Ghonech", "Kcharron", "Rhazzar", "Shulman", "Trauchan", "Zuldar", "Zuldhamach"]
+female = ["Artun", "Chulye", "Draneth", "Greshira", "Hachinah", "Kcharra", "Maqtah", "R'Hana", "Shazzula", "Tash'ahra", "Zulecha", "Zul'artun"]
+
+[simple.last]
+neutral = ["Ul'Amad'rochan", "Ul'Charis'ramarh", "Ul'Gor'rohashim", "Ul'Koro'warh", "Ul'Mach'nahtul", "Ul'Zum'achan"]
+
+[simple.byname]
+neutral = ["Amadacht", "Ash'mudran", "Rohaschtu", "Shochazil", "Zul'rachtar"]
+
+[naming_schema]
+type = "given_byname"
+description = "Trollzacker führen häufig Ehren- oder Schandnamen statt Familiennamen."
+
+[character]
+professions = ["Schamane", "Krieger", "Kundschafter", "Stammesführer"]
+

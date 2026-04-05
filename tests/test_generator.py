@@ -125,6 +125,19 @@ def test_all_regions_generate_simple_any() -> None:
         assert result.full_name
 
 
+def test_generate_human_aggregate_resolves_to_concrete_human_regions() -> None:
+    result = generate("human", rng=random.Random(3))
+    assert result.species == "Mensch"
+    assert result.origin_id is not None
+    assert result.origin_id != "human"
+
+
+def test_generate_mittelreicher_aggregate_varies_across_subregions() -> None:
+    regions = {generate("mittelreicher", rng=random.Random(i)).region for i in range(30)}
+    assert "Kosch" in regions
+    assert len(regions) > 1
+
+
 # ── Nachname optional ─────────────────────────────────────────────────────────
 
 

@@ -1,0 +1,15 @@
+[meta]
+region = "Norbarden"
+abbreviation = "NBR"
+notes = "Sippenorientierte Namen mit weiblich geführten Meschpochen-Familiennamen."
+
+[simple.first]
+male = ["Adrej", "Aikul", "Aleks", "Banjew", "Barin", "Dagri", "Jenko", "Kergaj", "Matajew", "Mikail", "Mischajil", "Wlad"]
+female = ["Abra", "Agnitha", "Dalkeshja", "Dascha", "Girtinka", "Ismenka", "Katjenka", "Mischala", "Rasescha", "Talja", "Wlada", "Zerinka"]
+
+[simple.last]
+neutral = ["Abrinken", "Dagoneff", "Irgjeloff", "Jantareff", "Mandragjeff", "Reschgin", "Surjeloff", "Tsirkevist", "Walsajew", "Wodjadeff"]
+
+[character]
+professions = ["Händlerin", "Sippenältester", "Schausteller", "Wagenführer"]
+

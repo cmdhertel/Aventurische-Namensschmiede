@@ -1,0 +1,15 @@
+[meta]
+region = "Zyklopeninseln"
+abbreviation = "ZYK"
+notes = "Zyklopäische Inselnamen mit bosparanischem und horasischem Einschlag."
+
+[simple.first]
+male = ["Aisyphan", "Alrikos", "Andrios", "Avessander", "Horakles", "Kykeon", "Meneander", "Odenios", "Pra'iokles", "Thalanios", "Tyndareos", "Zephyros"]
+female = ["Aglaya", "Aldara", "Arakne", "Boronike", "Iokaste", "Korina", "Kyklania", "Liaiella", "Nautika", "Rahjandis", "Tsaedra", "Yppodamea"]
+
+[simple.last]
+neutral = ["Atholios", "Chyrikos", "Laikis", "Praiopoulos", "Tyrakis", "A'Layis", "dyll Atholios", "dylli Thaliyin", "a Palakar", "a Teremon"]
+
+[character]
+professions = ["Philosoph", "Schmied", "Seefahrer", "Hofgelehrte"]
+

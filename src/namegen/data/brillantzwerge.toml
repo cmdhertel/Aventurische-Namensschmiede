@@ -1,0 +1,23 @@
+[meta]
+region = "Brillantzwerge"
+abbreviation = "BRZ"
+notes = "Feinsinnige Zwergennamen mit Hang zu Edelstein- und Glanzassoziationen."
+
+[origin]
+species_id = "dwarf"
+culture_id = "brillantzwerge"
+region_id = "brillantzwerge"
+
+[simple.first]
+male = ["Calaman", "Adamantosch", "Auralm", "Cobaltosch", "Diamantosch", "Fergolosch", "Greifax", "Ordamon", "Sordolax", "Xenos"]
+female = ["Diamante", "Turmaline", "Aurescha", "Borascha", "Curima", "Gubara", "Norgalda", "Saphira", "Taloscha", "Xorda"]
+
+[simple.parent]
+male = ["Agam", "Calaman", "Garmosch", "Ordamon", "Rambosch"]
+female = ["Diamante", "Saphira", "Taloscha", "Turmaline"]
+
+[simple.last]
+neutral = ["Goldhand", "Gemmenschneider", "Silberhelm", "Feuerbart", "Runendeuter", "Steinspalter"]
+
+[character]
+professions = ["Juwelier", "Dieb", "Händler", "Objektkundiger"]

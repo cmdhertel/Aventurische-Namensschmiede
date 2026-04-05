@@ -1,0 +1,14 @@
+[meta]
+region = "Windhag"
+abbreviation = "WDH"
+notes = "Mischklang aus albernischen, nordmärkischen und horasischen Einflüssen."
+
+[simple.first]
+male = ["Aarwin", "Adalric", "Aedin", "Aureus", "Baldos", "Elko", "Hilberian", "Kalver", "Lucrann", "Pagol", "Rabanus", "Winfrid"]
+female = ["Adula", "Amadis", "Basilissa", "Calderine", "Elwene", "Gelda", "Imelda", "Isora", "Luassa", "Mafalda", "Roana", "Wiltrud"]
+
+[simple.last]
+neutral = ["Arsinger", "Drachenschlag", "Eisenblatt", "Harbener", "Kleibock", "Windrufer", "Drachenwacht", "Schattengrund", "Trutzburg", "Widdernhall"]
+
+[character]
+professions = ["Kadett", "Seesoldat", "Holzfäller", "Jäger"]

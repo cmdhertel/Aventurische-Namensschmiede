@@ -338,7 +338,7 @@ def _to_markdown(results: list[NameResult], show_components: bool) -> str:
     r0 = results[0]
     mode_label = "Einfach" if r0.mode == GenerationMode.SIMPLE else "Komposition"
 
-    cols = ["Name", "Geschlecht"]
+    cols = ["Name", "Geschlecht", "Spezies", "Kultur"]
     if show_components and r0.mode == GenerationMode.COMPOSE:
         cols.append("Bausteine")
 
@@ -350,7 +350,7 @@ def _to_markdown(results: list[NameResult], show_components: bool) -> str:
         "",
         (
             f"Spezies: **{r0.species or '–'}** · Kultur: **{r0.culture or '–'}**"
-            f" · Origin: **{r0.region}** · Modus: **{mode_label}** · {len(results)} Namen"
+            f" · Region: **{r0.region}** · Modus: **{mode_label}** · {len(results)} Namen"
         ),
         "",
         md_row(cols),
@@ -390,241 +390,58 @@ def _write_clipboard(results: list[NameResult]) -> None:
 
 def _write_pdf(results: list[NameResult], dest: Path | None, show_components: bool) -> None:
     try:
-        from reportlab.lib import colors
-        from reportlab.lib.pagesizes import A4
-        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-        from reportlab.lib.units import cm
-        from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+        from .pdf_builder import build_name_pdf
     except ImportError:
         console.print("[red]reportlab nicht gefunden.[/red] Installieren mit: uv add reportlab")
         return
-
-    _GENDER_SHORT = {"male": "M", "female": "W", "any": "–"}
 
     r0 = results[0]
     if dest is None:
         region_slug = r0.region.lower().replace(" ", "_")
         dest = Path(f"dsa_namen_{region_slug}.pdf")
 
-    BORDER = colors.HexColor("#999999")
-    HEADER_BG = colors.HexColor("#DDDDDD")
-    ROW_ALT = colors.HexColor("#F5F5F5")
-
-    doc = SimpleDocTemplate(
-        str(dest),
-        pagesize=A4,
-        leftMargin=2 * cm,
-        rightMargin=2 * cm,
-        topMargin=2.5 * cm,
-        bottomMargin=2 * cm,
-    )
-
-    styles = getSampleStyleSheet()
-    title_style = ParagraphStyle(
-        "DSATitle",
-        parent=styles["Heading1"],
-        textColor=colors.black,
-        fontSize=16,
-        spaceAfter=4,
-    )
-    subtitle_style = ParagraphStyle(
-        "DSASubtitle",
-        parent=styles["Normal"],
-        textColor=colors.HexColor("#555555"),
-        fontSize=9,
-        spaceAfter=14,
-    )
-
-    mode_label = "Einfach" if r0.mode == GenerationMode.SIMPLE else "Komposition"
-    story = [
-        Paragraph("Das Schwarze Auge – Namensliste", title_style),
-        Paragraph(
-            (
-                f"Spezies: {r0.species or '–'}  ·  Kultur: {r0.culture or '–'}"
-                f"  ·  Origin: {r0.region}  ·  Modus: {mode_label}  ·  {len(results)} Namen"
-            ),
-            subtitle_style,
-        ),
+    name_data = [
+        {
+            "full_name": r.full_name,
+            "gender": r.resolved_gender.value,
+            "region": r.region,
+            "region_abbr": r.region_abbreviation or "",
+        }
+        for r in results
     ]
-
-    # Zwei Namen pro Zeile: [Name1, G1, Name2, G2]
-    header = ["Name", "G", "Name", "G"]
-    table_data = [header]
-
-    for i in range(0, len(results), 2):
-        left = results[i]
-        right = results[i + 1] if i + 1 < len(results) else None
-        row = [
-            left.full_name,
-            _GENDER_SHORT[left.resolved_gender.value],
-            right.full_name if right else "",
-            _GENDER_SHORT[right.resolved_gender.value] if right else "",
-        ]
-        table_data.append(row)
-
-    # Seitenbreite A4 - Ränder = 17cm; Geschlechts-Spalten schmal
-    name_w = 7.25 * cm
-    g_w = 1.0 * cm
-    col_widths = [name_w, g_w, name_w, g_w]
-
-    tbl = Table(table_data, colWidths=col_widths, repeatRows=1)
-    tbl.setStyle(
-        TableStyle(
-            [
-                # Header
-                ("BACKGROUND", (0, 0), (-1, 0), HEADER_BG),
-                ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("FONTSIZE", (0, 0), (-1, 0), 9),
-                ("TOPPADDING", (0, 0), (-1, 0), 6),
-                ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
-                # Datenzeilen
-                ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
-                ("FONTSIZE", (0, 1), (-1, -1), 9),
-                ("TOPPADDING", (0, 1), (-1, -1), 4),
-                ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
-                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, ROW_ALT]),
-                # Trennlinie zwischen linker und rechter Namensspalte
-                ("LINEAFTER", (1, 0), (1, -1), 1.0, BORDER),
-                # Äußerer Rahmen + horizontale Linien
-                ("BOX", (0, 0), (-1, -1), 0.75, BORDER),
-                ("INNERGRID", (0, 0), (-1, -1), 0.25, BORDER),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                # Geschlechts-Spalten zentrieren
-                ("ALIGN", (1, 0), (1, -1), "CENTER"),
-                ("ALIGN", (3, 0), (3, -1), "CENTER"),
-            ]
-        )
-    )
-
-    story.append(tbl)
-    story.append(Spacer(1, 0.5 * cm))
-    doc.build(story)
-
+    build_name_pdf(name_data, dest=dest)
     console.print(f"[green]✓ PDF gespeichert:[/green] {dest}")
 
 
 def _write_pdf_characters(results: list[CharacterResult], dest: Path | None) -> None:
     try:
-        from reportlab.lib import colors
-        from reportlab.lib.pagesizes import A4
-        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-        from reportlab.lib.units import cm
-        from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+        from .pdf_builder import build_character_pdf
     except ImportError:
         console.print("[red]reportlab nicht gefunden.[/red] Installieren mit: uv add reportlab")
         return
-
-    _GENDER_SHORT = {"male": "M", "female": "W", "any": "–"}
 
     r0 = results[0]
     if dest is None:
         region_slug = r0.region.lower().replace(" ", "_")
         dest = Path(f"dsa_charaktere_{region_slug}.pdf")
 
-    BORDER = colors.HexColor("#999999")
-    HEADER_BG = colors.HexColor("#DDDDDD")
-    ROW_ALT = colors.HexColor("#F5F5F5")
-
-    doc = SimpleDocTemplate(
-        str(dest),
-        pagesize=A4,
-        leftMargin=2 * cm,
-        rightMargin=2 * cm,
-        topMargin=2.5 * cm,
-        bottomMargin=2 * cm,
-    )
-
-    styles = getSampleStyleSheet()
-    title_style = ParagraphStyle(
-        "DSATitle",
-        parent=styles["Heading1"],
-        textColor=colors.black,
-        fontSize=16,
-        spaceAfter=4,
-    )
-    subtitle_style = ParagraphStyle(
-        "DSASubtitle",
-        parent=styles["Normal"],
-        textColor=colors.HexColor("#555555"),
-        fontSize=9,
-        spaceAfter=14,
-    )
-    cell_style = ParagraphStyle(
-        "DSACell",
-        parent=styles["Normal"],
-        fontSize=8,
-        leading=10,
-    )
-
-    story = [
-        Paragraph("Das Schwarze Auge – Charakterliste", title_style),
-        Paragraph(
-            (
-                f"Spezies: {r0.species or '–'}  ·  Kultur: {r0.culture or '–'}"
-                f"  ·  Origin: {r0.region}  ·  {len(results)} Charaktere"
-            ),
-            subtitle_style,
-        ),
+    char_data = [
+        {
+            "full_name": r.full_name,
+            "gender": r.gender.value,
+            "region": r.region,
+            "age": r.age,
+            "profession": r.profession,
+            "hair": r.traits.physical.hair,
+            "eyes": r.traits.physical.eyes,
+            "build": r.traits.physical.build,
+            "personality": r.traits.personality,
+            "motivation": r.traits.motivation,
+            "quirk": r.traits.quirk,
+        }
+        for r in results
     ]
-
-    # Columns: Name | G | Alter | Beruf | Eigenschaften
-    name_w = 3.8 * cm
-    g_w = 0.6 * cm
-    age_w = 1.0 * cm
-    job_w = 3.0 * cm
-    traits_w = 8.6 * cm  # 17cm total - others
-
-    header = ["Name", "G", "Alter", "Beruf", "Eigenschaften"]
-    table_data = [header]
-
-    for r in results:
-        t = r.traits
-        traits_text = (
-            f"Haare {t.physical.hair}, Augen {t.physical.eyes}, {t.physical.build} · "
-            f"{t.personality} · {t.motivation} · {t.quirk}"
-        )
-        table_data.append(
-            [
-                Paragraph(f"<b>{r.full_name}</b>", cell_style),
-                _GENDER_SHORT.get(r.gender.value, "–"),
-                str(r.age),
-                Paragraph(r.profession, cell_style),
-                Paragraph(traits_text, cell_style),
-            ]
-        )
-
-    tbl = Table(
-        table_data,
-        colWidths=[name_w, g_w, age_w, job_w, traits_w],
-        repeatRows=1,
-    )
-    tbl.setStyle(
-        TableStyle(
-            [
-                ("BACKGROUND", (0, 0), (-1, 0), HEADER_BG),
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("FONTSIZE", (0, 0), (-1, 0), 9),
-                ("TOPPADDING", (0, 0), (-1, 0), 6),
-                ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
-                ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
-                ("FONTSIZE", (0, 1), (-1, -1), 8),
-                ("TOPPADDING", (0, 1), (-1, -1), 4),
-                ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
-                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, ROW_ALT]),
-                ("BOX", (0, 0), (-1, -1), 0.75, BORDER),
-                ("INNERGRID", (0, 0), (-1, -1), 0.25, BORDER),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("ALIGN", (1, 0), (1, -1), "CENTER"),
-                ("ALIGN", (2, 0), (2, -1), "CENTER"),
-            ]
-        )
-    )
-
-    story.append(tbl)
-    story.append(Spacer(1, 0.5 * cm))
-    doc.build(story)
-
+    build_character_pdf(char_data, dest=dest)
     console.print(f"[green]✓ PDF gespeichert:[/green] {dest}")
 
 

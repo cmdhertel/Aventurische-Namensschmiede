@@ -1,4 +1,4 @@
-"""Generator-Routen: Startseite, Namens-Generierung, PDF-Download."""
+"""Generator-Routen: Startseite, Namens-Generierung, PDF- und JSON-Import."""
 
 from __future__ import annotations
 
@@ -8,16 +8,21 @@ import logging
 from pathlib import Path
 from time import perf_counter
 
-from fastapi import APIRouter, Form, Query, Request
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Form, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from observability import AppMetrics
 from observability_utils import count_empty_names, name_length, safe_full_name
 from opentelemetry.trace import Tracer, get_tracer
+from result_transfer import parse_results_json
 
+from namegen.catalog import (
+    get_origin_catalog,
+    resolve_generation_targets,
+    selection_supports_compose,
+)
 from namegen.chargen import generate_character
 from namegen.generator import generate
-from namegen.loader import get_origin_catalog, load_region
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 
 router = APIRouter()
@@ -33,6 +38,7 @@ _GENDER_DE = {
 _logger = logging.getLogger("namenschmiede.observability")
 _tracer: Tracer = get_tracer("namenschmiede.web")
 _metrics: AppMetrics | None = None
+_TRUE_FORM_VALUES = {"1", "true", "on", "yes"}
 
 
 def configure_observability(
@@ -52,19 +58,36 @@ def _get_origins() -> list[dict]:
     return get_origin_catalog()
 
 
+def _parse_checkbox_value(value: str | None) -> bool:
+    if value is None:
+        return False
+    return value.strip().lower() in _TRUE_FORM_VALUES
+
+
+def _default_selected_region(origins: list[dict]) -> str:
+    for entry in origins:
+        if entry["id"] == "human":
+            return entry["id"]
+    for entry in origins:
+        if entry.get("species_id") == "human":
+            return entry["id"]
+    return origins[0]["id"] if origins else ""
+
+
 @router.get("/")
 async def index(
     request: Request,
     region: str | None = Query(default=None),
 ):
     origins = _get_origins()
-    selected = region or (origins[0]["id"] if origins else "")
+    selected = region or _default_selected_region(origins)
     return _TEMPLATES.TemplateResponse(
         request,
         "index.html",
         {
             "origins": origins,
             "selected_region": selected,
+            "compose_default_enabled": selection_supports_compose(selected),
         },
     )
 
@@ -81,23 +104,24 @@ async def generate_names(
     gender: str = Form("any"),
     mode: str = Form("simple"),
     count: int = Form(5),
-    character: bool = Form(False),
+    character: str | None = Form(None),
     profession_category: str = Form("alle"),
 ):
     with _tracer.start_as_current_span("namegen.generate") as span:
         count = max(1, min(count, 50))
+        character_enabled = _parse_checkbox_value(character)
 
         attrs = {
             "namegen.region": region,
             "namegen.mode": mode,
             "namegen.gender": gender,
-            "namegen.character": character,
+            "namegen.character": character_enabled,
             "namegen.profession_category": profession_category,
         }
 
         load_start = perf_counter()
         try:
-            region_data = load_region(region)
+            resolve_generation_targets(region, compose_only=mode == "compose")
             gmode = GenerationMode(mode)
             gend = Gender(gender)
             category = ProfessionCategory(profession_category)
@@ -116,7 +140,7 @@ async def generate_names(
                 _metrics.load_region_duration_ms.record((perf_counter() - load_start) * 1000, attrs)
 
         generate_start = perf_counter()
-        if character:
+        if character_enabled:
             results = [
                 generate_character(
                     region=region,
@@ -138,15 +162,15 @@ async def generate_names(
         input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
         empty_results = count_empty_names(results)
 
-        span.set_attribute("namegen.region", region)
-        span.set_attribute("namegen.mode", mode)
-        span.set_attribute("namegen.gender", gender)
-        span.set_attribute("namegen.character", character)
-        span.set_attribute("namegen.profession_category", profession_category)
-        span.set_attribute("namegen.requested_count", count)
-        span.set_attribute("namegen.input_chars", input_chars)
-        span.set_attribute("namegen.output_chars", output_chars)
-        span.set_attribute("namegen.empty_results", empty_results)
+        attrs.update(
+            {
+                "namegen.requested_count": count,
+                "namegen.input_chars": input_chars,
+                "namegen.output_chars": output_chars,
+                "namegen.empty_results": empty_results,
+            }
+        )
+        span.set_attributes(attrs)
 
         if _metrics:
             _metrics.generate_calls.add(1, attrs)
@@ -163,7 +187,7 @@ async def generate_names(
                 " character=%s empty_ratio=%.2f",
                 region,
                 mode,
-                character,
+                character_enabled,
                 empty_results / count,
             )
 
@@ -174,7 +198,7 @@ async def generate_names(
             region,
             mode,
             gender,
-            character,
+            character_enabled,
             profession_category,
             count,
             input_chars,
@@ -189,8 +213,6 @@ async def generate_names(
             {
                 "results": results,
                 "gender_de": _GENDER_DE,
-                "region_abbr": region_data.meta.abbreviation,
-                "origin_data": region_data,
             },
         )
 
@@ -203,15 +225,16 @@ async def generate_names(
 
 
 @router.post("/pdf")
-async def download_pdf(names: str = Form(...)):
+async def download_pdf(names: str = Form(...), kind: str = Form("name")):
     from pdf_utils import build_pdf_bytes  # noqa: PLC0415
 
     with _tracer.start_as_current_span("namegen.pdf.build") as span:
         name_data: list[dict] = json.loads(names)
         span.set_attribute("namegen.pdf.names_count", len(name_data))
+        span.set_attribute("namegen.pdf.kind", kind)
 
         start = perf_counter()
-        pdf_bytes = build_pdf_bytes(name_data)
+        pdf_bytes = build_pdf_bytes(name_data, kind=kind)
         elapsed_ms = (perf_counter() - start) * 1000
 
         if _metrics:
@@ -222,3 +245,21 @@ async def download_pdf(names: str = Form(...)):
             media_type="application/pdf",
             headers={"Content-Disposition": 'attachment; filename="dsa_namen.pdf"'},
         )
+
+
+@router.post("/import-json", response_class=HTMLResponse)
+async def import_results_json(request: Request):
+    payload = (await request.body()).decode("utf-8")
+    try:
+        results = parse_results_json(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return _TEMPLATES.TemplateResponse(
+        request,
+        "partials/imported_rows.html",
+        {
+            "results": results,
+            "gender_de": _GENDER_DE,
+        },
+    )

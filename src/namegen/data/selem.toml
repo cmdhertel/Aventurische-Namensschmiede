@@ -1,0 +1,15 @@
+[meta]
+region = "Selem"
+abbreviation = "SEL"
+notes = "Selemer Gegenwartsnamen mit zischenden, echsisch geprägten Lautverschiebungen."
+
+[simple.first]
+male = ["Ghulshev", "Hach'Nhbah", "Kazsim", "M'Hmud", "Naszirh", "Neszt'hario", "Om'Hrr", "Rafisz", "Szedhef", "Szelhim", "Yelmisz", "Z'Hir"]
+female = ["Chli'Bah", "Daszzareth", "Esmalda", "Ferusz'Han", "Heyeszhan", "M'Hiban", "N'Hma", "N'Sliha", "Sh'hane", "Sz'Hanja", "Yeszhinna", "Zz'Hrabeth"]
+
+[simple.last]
+neutral = ["al'Azzar", "Delassa", "Harlamuq", "Sayaladam", "Szelematih", "Zurshazs"]
+
+[character]
+professions = ["Echsenkultist", "Hafenhändler", "Alchimist", "Söldner"]
+

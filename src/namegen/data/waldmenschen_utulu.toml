@@ -1,0 +1,23 @@
+[meta]
+region = "Waldmenschenstämme & Utulu"
+abbreviation = "WUT"
+notes = "Mohisch geprägte Namen mit sprechender Bedeutung; geschlechtsübergreifend verwendet."
+
+[simple.first]
+male = ["Anhe", "Catka", "Hayatepe", "Huka", "Jebato", "Kauka-He", "Tapa", "Taihyako", "Tetaka", "Tiki-Ta"]
+female = ["Anhe", "Catka", "Hayatepe", "Huka", "Jebato", "Kauka-He", "Tapa", "Taihyako", "Tetaka", "Tiki-Ta"]
+neutral = ["Anhe", "Catka", "Hayatepe", "Huka", "Jebato", "Kauka-He", "Tapa", "Taihyako", "Tetaka", "Tiki-Ta"]
+
+[simple.last]
+neutral = ["Anhepa-Ha", "Chirakah", "Keke-Wanaq", "Miniwatu", "Tocamuyac", "Tschopukikuha"]
+
+[simple.byname]
+neutral = ["die guelden schimmernd", "flink", "Nabelschnur", "strahlende Sonne", "starker Geist", "Katze"]
+
+[naming_schema]
+type = "given_byname"
+description = "Waldmenschennamen funktionieren oft wie sprechende Namen mit Stammeszuordnung."
+
+[character]
+professions = ["Schamane", "Jäger", "Perlenfischer", "Stammeskrieger"]
+

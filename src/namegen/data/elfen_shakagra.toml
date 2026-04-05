@@ -1,0 +1,23 @@
+[meta]
+region = "Shakagra"
+abbreviation = "SHA"
+notes = "Nachtalbische Namen mit harschen Lauten und finsteren Beinamen."
+
+[origin]
+species_id = "elf"
+culture_id = "shakagra"
+region_id = "elfen_shakagra"
+
+[simple.first]
+male = ["Airai", "Athlorion", "Beryllisar", "Calherion", "Feyangola", "Kiren", "Mandrion", "Nathildur", "Sharazil", "Val'Ayar", "Zhayarh", "Zuul'ayar"]
+female = ["Al'ysaaria", "Anasasiel", "Callyna", "Dhar'ella", "Fey'Rathil", "Kashariel", "Lossyril", "Lyssareth", "Nindarreth", "Sal'ana-fey", "Yllaria", "Zil'Shath"]
+
+[simple.byname]
+neutral = ["Finsterblick", "Spinnenhaar", "Schwarzklinge", "Weißhaut", "Todesspeer", "verlacht-den-Tod"]
+
+[naming_schema]
+type = "given_byname"
+description = "Shakagra tragen meist Rufname plus finsteren Ehren- oder Schreckensnamen."
+
+[character]
+professions = ["Krieger", "Schattenpriesterin", "Späher", "Meuchelmörder"]

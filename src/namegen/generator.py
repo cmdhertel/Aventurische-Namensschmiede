@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import random
 
+from .catalog import pick_generation_target
 from .loader import load_region
 from .models import (
+    _DEFAULT_INFIX_PROBABILITY,
     ComposeParts,
     ComposeSection,
     Gender,
@@ -38,7 +40,7 @@ def _resolve_simple_pool(
 
     if not candidates:
         raise GeneratorError(
-            f"Origin '{region}' has no {slot} entries for gender='{gender}'. "
+            f"Region '{region}' has no {slot} entries for gender='{gender}'. "
             f"Add entries to the TOML file."
         )
     return candidates
@@ -73,7 +75,7 @@ def _pick(
     pool = primary if primary else fallback
     if not pool:
         raise GeneratorError(
-            f"Origin '{region}' compose mode: no '{component}' entries for {slot}."
+            f"Region '{region}' compose mode: no '{component}' entries for {slot}."
         )
     return rng.choice(pool)
 
@@ -90,7 +92,7 @@ def _pick_parent_name(data: RegionData, rng: random.Random) -> str:
         candidates = data.simple.first.male + data.simple.first.female + data.simple.first.neutral
 
     if not candidates:
-        raise GeneratorError(f"Origin '{data.meta.region}' has no parent-name pool.")
+        raise GeneratorError(f"Region '{data.meta.region}' has no parent-name pool.")
     return rng.choice(candidates)
 
 
@@ -144,6 +146,7 @@ def _apply_schema(
         region=data.meta.region,
         culture=data.culture.meta.name if data.culture else None,
         species=data.species.meta.name if data.species else None,
+        region_abbreviation=data.meta.abbreviation,
         origin_id=data.origin.region_id,
         mode=mode,
         name_schema=schema.type,
@@ -160,7 +163,8 @@ def generate(
     infix_probability_override: float | None = None,
 ) -> NameResult:
     _rng = rng if rng is not None else random
-    data: RegionData = load_region(region)
+    target_id = pick_generation_target(region, _rng, compose_only=mode == GenerationMode.COMPOSE)
+    data: RegionData = load_region(target_id)
 
     if mode == GenerationMode.SIMPLE:
         return _generate_simple(data, gender, _rng)
@@ -199,7 +203,7 @@ def _generate_compose(
     first_infix_probability = (
         infix_probability_override
         if infix_probability_override is not None
-        else first_section.infix_probability
+        else (first_section.infix_probability or _DEFAULT_INFIX_PROBABILITY)
     )
 
     prefix = _pick(fp.prefix, fn.prefix, "prefix", "first name", data.meta.region, rng)
@@ -222,7 +226,7 @@ def _generate_compose(
     last_infix_probability = (
         infix_probability_override
         if infix_probability_override is not None
-        else last_section.infix_probability
+        else (last_section.infix_probability or _DEFAULT_INFIX_PROBABILITY)
     )
     all_prefixes = lp.prefix + ln.prefix
     all_suffixes = lp.suffix + ln.suffix
@@ -244,6 +248,9 @@ def _generate_compose(
         last_suffix=last_suffix,
     )
 
+    # resolved_gender stays as-is (including ANY): compose mode merges all gender
+    # pools into one, so we can't determine which gender the syllables came from.
+    # In simple mode resolved_gender is set by whichever pool the name was drawn from.
     return _apply_schema(
         data=data,
         first=first,

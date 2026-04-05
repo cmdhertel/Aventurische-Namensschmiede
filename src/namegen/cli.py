@@ -11,9 +11,10 @@ from rich import box
 from rich.console import Console
 from rich.table import Table
 
+from .catalog import get_origin_catalog
 from .chargen import generate_character, get_profession_groups
 from .generator import GeneratorError, generate
-from .loader import LoaderError, get_origin_catalog, list_regions, load_region
+from .loader import LoaderError, list_regions, load_region
 from .models import ExperienceLevel, Gender, GenerationMode, ProfessionCategory
 from .output import OutputFormat
 from .output import write as output_write
@@ -41,7 +42,9 @@ def _default(ctx: typer.Context) -> None:
 
 RegionArg = Annotated[
     str,
-    typer.Argument(help="Origin ID (z.B. mittelreich_kosch, thorwal, auelfen)."),
+    typer.Argument(
+        help="Spezies-, Kultur- oder Region-ID (z.B. human, mittelreicher, mittelreich_kosch)."
+    ),
 ]
 GenderOpt = Annotated[
     Gender,
@@ -180,7 +183,7 @@ def cmd_menu() -> None:
 
 @app.command("regions")
 def cmd_regions() -> None:
-    """Alle verfügbaren Origins auflisten."""
+    """Alle verfügbaren Regionen auflisten."""
     try:
         list_regions()
     except Exception as exc:
@@ -188,7 +191,9 @@ def cmd_regions() -> None:
         raise typer.Exit(1) from None
 
     table = Table(
-        "Origin",
+        "ID",
+        "Typ",
+        "Region",
         "Anzeigename",
         "Spezies",
         "Kultur",
@@ -198,16 +203,30 @@ def cmd_regions() -> None:
     )
     for item in get_origin_catalog():
         try:
+            if item.get("is_aggregate") == "true":
+                table.add_row(
+                    item["id"],
+                    "Sammlung",
+                    item.get("region_name", "") or "–",
+                    item["name"],
+                    item["species_name"],
+                    item["culture_name"],
+                    item.get("notes", ""),
+                )
+                continue
+
             r = load_region(item["id"])
             table.add_row(
                 item["id"],
+                "Region" if item.get("has_region") == "true" else "Kultur",
+                item.get("region_name", "") or "–",
                 r.meta.region,
                 r.species.meta.name if r.species else "?",
                 r.culture.meta.name if r.culture else "?",
                 r.meta.notes,
             )
         except Exception:
-            table.add_row(item["id"], "?", "?", "?", "[red]Fehler beim Laden[/red]")
+            table.add_row(item["id"], "?", "?", "?", "?", "[red]Fehler beim Laden[/red]")
 
     console.print(table)
 

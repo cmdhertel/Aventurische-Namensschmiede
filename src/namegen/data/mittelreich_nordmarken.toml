@@ -1,0 +1,14 @@
+[meta]
+region = "Nordmarken"
+abbreviation = "NRD"
+notes = "Konservativ und altertümlich klingende Namen, oft mit Praios-Bezug."
+
+[simple.first]
+male = ["Aarwin", "Adalric", "Aedin", "Angrond", "Basin", "Hilberian", "Jast", "Koradin", "Leodegar", "Pagol", "Praiobold", "Yendan"]
+female = ["Adelgunde", "Adula", "Amadis", "Basilissa", "Daria", "Eilada", "Gelda", "Hemma", "Imelda", "Praialda", "Wiltrud", "Zaberga"]
+
+[simple.last]
+neutral = ["Andersin", "Bertenschlag", "Dernheim", "Engstrand", "Klippstein", "Runkler", "vom Großen Fluss", "Greifax", "Weiseprein", "Wolfsstein"]
+
+[character]
+professions = ["Lehnssoldat", "Praiosdiener", "Bauer", "Flusshändler"]

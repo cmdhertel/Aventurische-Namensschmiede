@@ -1,0 +1,31 @@
+[meta]
+name = "Brillantzwerge"
+notes = "Feinsinnige Zwergennamen mit Hang zu Edelstein- und Glanzassoziationen."
+
+[naming_schema]
+type = "given_family"
+description = "Brillantzwerge verbinden Rufnamen oft mit prestigeträchtigen Sippennamen."
+
+[simple.first]
+male = ["Calaman", "Adamantosch", "Auralm", "Cobaltosch", "Diamantosch", "Fergolosch", "Greifax", "Ordamon", "Sordolax", "Xenos"]
+female = ["Diamante", "Turmaline", "Aurescha", "Borascha", "Curima", "Gubara", "Norgalda", "Saphira", "Taloscha", "Xorda"]
+
+[simple.parent]
+male = ["Agam", "Calaman", "Garmosch", "Ordamon", "Rambosch"]
+female = ["Diamante", "Saphira", "Taloscha", "Turmaline"]
+
+[simple.last]
+neutral = ["Goldhand", "Gemmenschneider", "Silberhelm", "Feuerbart", "Runendeuter", "Steinspalter"]
+
+[character]
+languages = ["Rogolan"]
+scripts = ["Angram"]
+local_knowledge = ["Bingen, Schatzkammern und Edelsteinminen"]
+social_status = ["Frei"]
+professions = ["Juwelier", "Dieb", "Händler", "Objektkundiger"]
+typical_advantages = ["Zäher Hund"]
+typical_disadvantages = ["Eitelkeit", "Sturheit"]
+typical_talents = ["Schätzen", "Handel", "Steinbearbeitung", "Sinnesschärfe"]
+personality = ["präzise, ehrgeizig und vom Wert schöner Dinge überzeugt"]
+motivations = ["sucht seltene Schätze und makellose Handwerkskunst"]
+quirks = ["mustert Personen und Gegenstände zuerst nach Schliff, Glanz und Verarbeitung"]

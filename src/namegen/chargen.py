@@ -7,6 +7,7 @@ import tomllib
 from functools import lru_cache
 from importlib.resources import files
 
+from .catalog import pick_generation_target
 from .generator import generate
 from .loader import load_region
 from .models import (
@@ -110,6 +111,7 @@ def _pick_profession(
 
 
 def _weighted_pool(base: list[str], extra: list[str], multiplier: int = 3) -> list[str]:
+    # multiplier=3: regional entries appear 3× more often than generic pool entries
     if not extra:
         return base
     return base + extra * multiplier
@@ -143,10 +145,11 @@ def generate_character(
     rng: random.Random | None = None,
 ) -> CharacterResult:
     _rng = rng if rng is not None else random
-    data = load_region(region)
+    target_id = pick_generation_target(region, _rng, compose_only=mode == GenerationMode.COMPOSE)
+    data = load_region(target_id)
 
     name = generate(
-        region=region,
+        region=target_id,
         mode=mode,
         gender=gender,
         rng=_rng,
