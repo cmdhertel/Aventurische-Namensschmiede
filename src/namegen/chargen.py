@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import random
 import tomllib
+from collections.abc import Collection
 from functools import lru_cache
 from importlib.resources import files
 
@@ -142,6 +143,9 @@ def generate_character(
     profession_category: ProfessionCategory = ProfessionCategory.ALL,
     experience: ExperienceLevel = ExperienceLevel.GESELLE,
     infix_probability_override: float | None = None,
+    min_syllables: int = 2,
+    max_syllables: int = 4,
+    exclude_names: Collection[str] | None = None,
     rng: random.Random | None = None,
 ) -> CharacterResult:
     _rng = rng if rng is not None else random
@@ -154,6 +158,9 @@ def generate_character(
         gender=gender,
         rng=_rng,
         infix_probability_override=infix_probability_override,
+        min_syllables=min_syllables,
+        max_syllables=max_syllables,
+        exclude_names=exclude_names,
     )
     age = _generate_experience_age(experience, _rng)
     profession = _pick_profession(data, profession_category, _rng)

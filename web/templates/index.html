@@ -211,6 +211,9 @@
             <button type="button" onclick="downloadJson()" class="btn-secondary text-xs py-1 px-2.5">
               JSON
             </button>
+            <button type="button" onclick="downloadZip()" class="btn-secondary text-xs py-1 px-2.5">
+              ZIP
+            </button>
             <button type="button" onclick="downloadPdf()" class="btn-primary text-xs py-1 px-2.5">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -256,6 +259,7 @@
 <script>
   const ORIGINS = JSON.parse(document.getElementById('origin-catalog').textContent);
   const SELECTED_ORIGIN = {{ selected_region|tojson }};
+  const FAVOURITES_KEY = 'namenschmiede-favourites';
   let composeEnabled = {{ compose_default_enabled|tojson }};
 
   function fillSelect(select, options, selectedValue) {
@@ -347,6 +351,7 @@
   function onNamesGenerated(evt) {
     if (!evt.detail.successful) return;
     document.getElementById('name-list-empty').style.display = 'none';
+    refreshFavouriteButtons();
     updateCount();
   }
 
@@ -366,32 +371,81 @@
     updateCount();
   }
 
-  function collectEntries() {
-    return [...document.querySelectorAll('.name-entry')].map(el => {
-      const isCharacter = el.dataset.age !== undefined && el.dataset.age !== '';
-      const base = {
-        kind: isCharacter ? 'character' : 'name',
-        full_name: el.dataset.fullName,
-        gender: el.dataset.gender,
-        region: el.dataset.region,
-        culture: el.dataset.culture || null,
-        species: el.dataset.species || null,
-        region_abbr: el.dataset.regionAbbr || null,
-        mode: el.dataset.mode,
-      };
-      if (!isCharacter) return base;
-      return {
-        ...base,
-        age: Number(el.dataset.age),
-        profession: el.dataset.profession,
-        hair: el.dataset.hair,
-        eyes: el.dataset.eyes,
-        build: el.dataset.build,
-        personality: el.dataset.personality,
-        motivation: el.dataset.motivation,
-        quirk: el.dataset.quirk,
-      };
+  function loadFavourites() {
+    try {
+      const raw = localStorage.getItem(FAVOURITES_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveFavourites(entries) {
+    localStorage.setItem(FAVOURITES_KEY, JSON.stringify(entries));
+  }
+
+  function favouriteKey(entry) {
+    return JSON.stringify(entry);
+  }
+
+  function isFavourite(entry) {
+    return loadFavourites().some(saved => favouriteKey(saved) === favouriteKey(entry));
+  }
+
+  function updateFavouriteButton(button, active) {
+    button.textContent = active ? '★' : '☆';
+    button.style.color = active ? 'var(--color-accent)' : 'var(--color-text-faint)';
+    button.dataset.active = active ? 'true' : 'false';
+  }
+
+  function refreshFavouriteButtons(scope = document) {
+    scope.querySelectorAll('.favourite-toggle').forEach(button => {
+      const entry = collectEntry(button.closest('.name-entry'));
+      updateFavouriteButton(button, isFavourite(entry));
     });
+  }
+
+  function toggleFavourite(button) {
+    const entry = collectEntry(button.closest('.name-entry'));
+    const favourites = loadFavourites();
+    const key = favouriteKey(entry);
+    const next = favourites.filter(saved => favouriteKey(saved) !== key);
+    const active = next.length === favourites.length;
+    if (active) {
+      next.push(entry);
+    }
+    saveFavourites(next);
+    updateFavouriteButton(button, active);
+  }
+
+  function collectEntry(el) {
+    const isCharacter = el.dataset.age !== undefined && el.dataset.age !== '';
+    const base = {
+      kind: isCharacter ? 'character' : 'name',
+      full_name: el.dataset.fullName,
+      gender: el.dataset.gender,
+      region: el.dataset.region,
+      culture: el.dataset.culture || null,
+      species: el.dataset.species || null,
+      region_abbr: el.dataset.regionAbbr || null,
+      mode: el.dataset.mode,
+    };
+    if (!isCharacter) return base;
+    return {
+      ...base,
+      age: Number(el.dataset.age),
+      profession: el.dataset.profession,
+      hair: el.dataset.hair,
+      eyes: el.dataset.eyes,
+      build: el.dataset.build,
+      personality: el.dataset.personality,
+      motivation: el.dataset.motivation,
+      quirk: el.dataset.quirk,
+    };
+  }
+
+  function collectEntries() {
+    return [...document.querySelectorAll('.name-entry')].map(collectEntry);
   }
 
   function buildJsonExport() {
@@ -425,6 +479,28 @@
     document.getElementById('json-import-input').click();
   }
 
+  async function postExport(endpoint) {
+    const entries = collectEntries();
+    if (!entries.length) { alert('Keine Namen in der Liste.'); return; }
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildJsonExport()),
+    });
+    if (!response.ok) {
+      let message = 'Export fehlgeschlagen.';
+      try {
+        const data = await response.json();
+        message = data.detail || message;
+      } catch {
+        message = await response.text();
+      }
+      throw new Error(message);
+    }
+    return response.blob();
+  }
+
   async function importJsonFile(file) {
     const input = document.getElementById('json-import-input');
     if (!file) return;
@@ -455,6 +531,7 @@
       }
       document.getElementById('name-list').innerHTML = await response.text();
       document.getElementById('name-list-empty').style.display = 'none';
+      refreshFavouriteButtons(document.getElementById('name-list'));
       updateCount();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Import fehlgeschlagen.');
@@ -495,6 +572,22 @@
     document.body.removeChild(form);
   }
 
+  async function downloadZip() {
+    try {
+      const blob = await postExport('/export/zip');
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'namenschmiede_export.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'ZIP-Export fehlgeschlagen.');
+    }
+  }
+
   (() => {
     const speciesOptions = [...new Map(ORIGINS.map(o => [o.species_id, o.species_name])).entries()]
       .map(([value, label]) => ({ value, label }));
@@ -504,6 +597,7 @@
     document.getElementById('culture').value = selectedOrigin?.culture_id || document.getElementById('culture').value;
     syncOriginSelectors();
     syncModeAvailability(document.getElementById('region').value);
+    refreshFavouriteButtons();
   })();
 </script>
 {% endblock %}

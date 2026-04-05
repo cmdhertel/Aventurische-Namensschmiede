@@ -138,6 +138,22 @@ def test_generate_mittelreicher_aggregate_varies_across_subregions() -> None:
     assert len(regions) > 1
 
 
+def test_generate_comma_separated_selection_mixes_regions() -> None:
+    regions = {generate("nostria,thorwal", rng=random.Random(i)).region for i in range(40)}
+    assert "Nostria" in regions
+    assert "Thorwal" in regions
+
+
+def test_generate_respects_excluded_names() -> None:
+    excluded = generate("mittelreich_kosch", rng=random.Random(5)).full_name
+    result = generate(
+        "mittelreich_kosch",
+        rng=random.Random(5),
+        exclude_names={excluded},
+    )
+    assert result.full_name != excluded
+
+
 # ── Nachname optional ─────────────────────────────────────────────────────────
 
 
@@ -201,6 +217,38 @@ def test_compose_components_reconstruct_name() -> None:
         c = r.components
         expected_first = (c.first_prefix or "") + (c.first_infix or "") + (c.first_suffix or "")
         assert r.first_name == expected_first
+
+
+def test_compose_respects_syllable_limits() -> None:
+    r = generate(
+        "mittelreich_kosch",
+        mode=GenerationMode.COMPOSE,
+        rng=random.Random(11),
+        min_syllables=2,
+        max_syllables=2,
+    )
+    assert r.components is not None
+    first_parts = sum(
+        1
+        for value in (
+            r.components.first_prefix,
+            r.components.first_infix,
+            r.components.first_suffix,
+        )
+        if value
+    )
+    assert first_parts == 2
+    if any((r.components.last_prefix, r.components.last_infix, r.components.last_suffix)):
+        last_parts = sum(
+            1
+            for value in (
+                r.components.last_prefix,
+                r.components.last_infix,
+                r.components.last_suffix,
+            )
+            if value
+        )
+        assert last_parts == 2
 
 
 # ── Fehlerbehandlung ──────────────────────────────────────────────────────────
