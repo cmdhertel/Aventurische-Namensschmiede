@@ -10,7 +10,8 @@ from observability import (
     setup_logging,
     setup_telemetry,
 )
-from routes.generator import configure_observability, router as generator_router
+from routes.generator import configure_observability
+from routes.generator import router as generator_router
 from routes.regions import router as regions_router
 
 app = FastAPI(

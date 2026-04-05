@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-
 SCAN_DIRS = ("src", "web", "tests")
 SKIP_PARTS = {".venv", "node_modules", "__pycache__"}
 
