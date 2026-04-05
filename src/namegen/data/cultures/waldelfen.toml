@@ -1,0 +1,44 @@
+[meta]
+name = "Waldelfen"
+notes = "Naturverbundene Elfenkultur der tiefen Wälder. Namen tragen Tier- und Pflanzenbezüge."
+
+[naming_schema]
+type = "given_family"
+description = "Elfischer Rufname mit Sippenname aus der Waldsippe."
+
+[simple.first]
+male = [
+  "Sylvar", "Thorniel", "Felorin", "Bramael", "Aelun",
+  "Mirovar", "Sylwain", "Tandriel", "Dornath", "Elarion",
+]
+female = [
+  "Sylwaine", "Feloria", "Thornara", "Bramiel", "Aeluna",
+  "Mirova", "Thalwyne", "Dornira", "Elariel", "Linnara",
+]
+neutral = ["Sylain", "Felan", "Thornyn"]
+
+[simple.last]
+neutral = [
+  "aus dem Hochforst", "Eichenwacht", "Waldläufer",
+  "Silberlaub", "Moosgrund", "Wurzelpfad",
+  "Tiefenwald", "Blattfänger",
+]
+
+[character]
+languages = ["Isdira"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["Wälder und Wildnis Aventuriens"]
+social_status = ["Frei"]
+professions = [
+  "Waldläufer", "Jäger", "Kräuterkundiger",
+  "Bogenschütze", "Tierflüsterer", "Zauberweber",
+]
+typical_advantages = ["Richtungssinn", "Tierempathie"]
+typical_disadvantages = ["Weltfremd", "Schlechte Eigenschaft (Einzelgänger)"]
+typical_talents = [
+  "Wildnisleben", "Tierkunde", "Pflanzenkunde",
+  "Klettern", "Sinnesschärfe", "Schleichen",
+]
+personality = ["ruhig, beobachtend und tief mit dem Wald verwurzelt"]
+motivations = ["hütet den Wald und seine Geheimnisse"]
+quirks = ["spricht mit Tieren und Bäumen wie mit alten Bekannten"]

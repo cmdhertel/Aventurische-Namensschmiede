@@ -1,0 +1,82 @@
+[meta]
+name = "Nivesen"
+notes = "Nordische Stammesvolks-Namen. Kurze, schamanische Namen mit Natur-, Tier- und Eisbezügen."
+
+[naming_schema]
+type = "given_family"
+description = "Einzelner Rufname, oft ergänzt durch Totemtier oder Naturmerkmal."
+
+[simple.first]
+male = [
+  "Aionek", "Anuk", "Birnak", "Innuk", "Kajak",
+  "Kalaq", "Nanuq", "Sirnak", "Torvak", "Turvak",
+  "Ulnak", "Uvnak", "Yanek", "Yunak", "Angakok",
+  "Ikrak", "Nakuq", "Sirak", "Tornak", "Ulrak",
+]
+female = [
+  "Anja", "Birja", "Eirja", "Kirja", "Mirja",
+  "Naija", "Neja", "Saija", "Sirja", "Tunja",
+  "Ulrja", "Unja", "Ynja", "Ivja", "Kajja",
+  "Nanuqa", "Tirja", "Snavja", "Tornaja", "Ulnaja",
+]
+neutral = ["Aion", "Nanu", "Sirn"]
+
+[simple.last]
+neutral = [
+  "Weißwolf", "Eisbaer", "Schneeadler",
+  "Sturmkind", "Frosthaar", "Windläufer",
+  "Kältespur", "Tundrakind",
+]
+
+[compose.first]
+infix_probability = 0.15
+
+[compose.first.male]
+prefix = [
+  "Aion", "An", "Birn", "Inn", "Kaj",
+  "Kal", "Nan", "Sirn", "Torv", "Turv",
+  "Uln", "Uvn", "Yan", "Yun", "Ik",
+]
+infix = ["ak", "uq", "an", "in"]
+suffix = ["ek", "ak", "uq", "nak", "vak", "rak", "uk"]
+
+[compose.first.female]
+prefix = [
+  "An", "Birj", "Eirj", "Kirj", "Mirj",
+  "Naij", "Nej", "Saij", "Sirj", "Tunj",
+  "Ulrj", "Unj", "Ynj", "Ivj", "Kajj",
+]
+infix = ["in", "an", "aj"]
+suffix = ["a", "ja", "nja", "aja", "ija"]
+
+[compose.first.neutral]
+prefix = ["Aion", "Nan", "Sirn"]
+infix = []
+suffix = ["ak", "uq", "an"]
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Weiß", "Eis", "Schnee", "Sturm", "Frost", "Wind", "Kälte", "Tundra"]
+infix = []
+suffix = ["wolf", "bär", "adler", "kind", "haar", "läufer", "spur", "jäger"]
+
+[character]
+languages = ["Nujuka"]
+scripts = []
+local_knowledge = ["Tundra, Taiga und Jagdgründe des hohen Nordens"]
+social_status = ["Frei"]
+professions = [
+  "Jäger", "Schamane", "Stammesältester",
+  "Fährtenleser", "Eisläufer", "Tierpfleger",
+]
+typical_advantages = ["Richtungssinn", "Kälteresistenz"]
+typical_disadvantages = ["Weltfremd", "Schlechte Eigenschaft (Misstrauen gegenüber Fremden)"]
+typical_talents = [
+  "Wildnisleben", "Tierkunde", "Fährtensuche",
+  "Orientierung", "Klettern", "Sinnesschärfe",
+]
+personality = ["wortkarg und ausdauernd, vertraut den Geistern der Natur"]
+motivations = ["hält den Bund mit dem Totemgeist und schützt den Stamm"]
+quirks = ["trägt immer ein kleines Totemschnitzwerk als Schutzamulett bei sich"]

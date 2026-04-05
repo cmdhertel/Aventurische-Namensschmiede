@@ -1,0 +1,44 @@
+[meta]
+name = "Firnelfen"
+notes = "Elfenkultur der Hochlagen und Nordgebirge. Klingende Namen mit harten Konsonanten und nordischen Einflüssen."
+
+[naming_schema]
+type = "given_family"
+description = "Elfischer Rufname mit Sippenname aus dem Gletscherclan."
+
+[simple.first]
+male = [
+  "Eirand", "Fraelar", "Krioth", "Seirn", "Thaldin",
+  "Eindrath", "Frosiel", "Kaldrun", "Snariel", "Ymir",
+]
+female = [
+  "Eirynd", "Fraelwyn", "Kria", "Seirna", "Thalia",
+  "Einara", "Frosia", "Kaldra", "Snaryn", "Ymirel",
+]
+neutral = ["Eiryn", "Frael", "Kaldin"]
+
+[simple.last]
+neutral = [
+  "vom Gletscherkamm", "Eissingend", "Schneläufer",
+  "Frosthauch", "Eiswacht", "Sturmkind",
+  "Gipfelruf", "Kaltlicht",
+]
+
+[character]
+languages = ["Isdira", "Nujuka"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["Hochgebirge und Firnfelder des Nordens"]
+social_status = ["Frei"]
+professions = [
+  "Eisjäger", "Gletscherpfadfinder", "Schamane",
+  "Bogenschütze", "Sturmrufer", "Zauberweber",
+]
+typical_advantages = ["Richtungssinn", "Kälteresistenz"]
+typical_disadvantages = ["Weltfremd", "Hitzeempfindlich"]
+typical_talents = [
+  "Wildnisleben", "Klettern", "Sinnesschärfe",
+  "Orientierung", "Überlebenskunst", "Körperbeherrschung",
+]
+personality = ["still, hart wie Eis und von großer innerer Stärke"]
+motivations = ["folgt dem Ruf des Sturms und der ewigen Gletscher"]
+quirks = ["misst alles in Überlebenschancen und bleibt bei Kälte am ruhigsten"]

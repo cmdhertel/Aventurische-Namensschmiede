@@ -1,0 +1,12 @@
+[meta]
+region = "Firnelfen"
+abbreviation = "FEL"
+notes = "Firnelf-Kulturen in den eisigen Hochlagen und Nordgebirgen. Klingende Namen mit harten nordischen Einflüssen."
+
+[origin]
+species_id = "elf"
+culture_id = "firnelfen"
+region_id = "elfen_firnelfen"
+
+[character]
+professions = ["Eisjäger", "Gletscherwächter", "Sturmrufer"]

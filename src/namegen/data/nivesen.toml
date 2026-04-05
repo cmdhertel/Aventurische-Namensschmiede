@@ -1,0 +1,12 @@
+[meta]
+region = "Nivesen"
+abbreviation = "NIV"
+notes = "Nordische Stammesvolks-Namen der Nivesen. Schamanisch, naturverbunden mit Tier-, Wind- und Eisbezügen."
+
+[origin]
+species_id = "human"
+culture_id = "nivesen"
+region_id = "nivesen"
+
+[character]
+professions = ["Schamane", "Jäger", "Stammesführer"]

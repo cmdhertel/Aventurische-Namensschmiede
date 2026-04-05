@@ -1,0 +1,78 @@
+[meta]
+name = "Amazonen"
+notes = "Matriarchalische Kriegerinnen-Gesellschaft. Ausschließlich weibliche Namen, kriegerisch und hart klingend."
+
+[naming_schema]
+type = "given_family"
+description = "Einzelner Rufname, optional mit Matronyme (Tochter der ...) oder Kampftitel."
+
+[simple.first]
+male = []
+female = [
+  "Dessa", "Kaela", "Kessa", "Mira", "Rhelys",
+  "Rhela", "Thira", "Tyra", "Vandara", "Vandra",
+  "Aldra", "Brysa", "Carya", "Dyra", "Elsa",
+  "Ferya", "Grysa", "Harya", "Ilara", "Jyra",
+  "Kara", "Lyra", "Mirra", "Nyra", "Orra",
+  "Pyrra", "Rylsa", "Syrra", "Tarra", "Ursa",
+]
+neutral = []
+
+[simple.last]
+neutral = [
+  "Schwertarm", "Eisenschild", "Blutpfeil",
+  "Sturmfaust", "Donnerschritt", "Stahlfeder",
+  "Kriegstochter", "Schildträgerin",
+]
+
+[compose.first]
+infix_probability = 0.15
+
+[compose.first.male]
+prefix = []
+infix = []
+suffix = []
+
+[compose.first.female]
+prefix = [
+  "Al", "Bry", "Car", "Des", "Dyr",
+  "El", "Fer", "Gry", "Har", "Il",
+  "Jyr", "Kae", "Kar", "Kes", "Lyr",
+  "Mir", "Nyr", "Orr", "Pyr", "Rhel",
+  "Ryl", "Syr", "Tar", "Thir", "Tyr",
+  "Urs", "Van", "Vand",
+]
+infix = ["ar", "ys", "yr", "el", "al"]
+suffix = ["a", "ra", "sa", "ya", "da", "lys", "rys", "ys", "ara"]
+
+[compose.first.neutral]
+prefix = []
+infix = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Schwert", "Eisen", "Blut", "Sturm", "Donner", "Stahl", "Kriegs"]
+infix = []
+suffix = ["arm", "schild", "pfeil", "faust", "schritt", "feder", "tochter"]
+
+[character]
+languages = ["Garethi"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["Amazonen-Siedlungen und Kampfausbildungsstätten"]
+social_status = ["Frei"]
+professions = [
+  "Kriegerin", "Bogenschützin", "Älteste",
+  "Spähterin", "Hüterin der Halle", "Wandererin",
+]
+typical_advantages = ["Kampfreflexe", "Beidhändiger Kampf"]
+typical_disadvantages = ["Misstrauen gegenüber Männern", "Eidesverpflichtung"]
+typical_talents = [
+  "Kämpfen", "Körperbeherrschung", "Athletik",
+  "Einschüchtern", "Sinnesschärfe", "Klettern",
+]
+personality = ["stolz, unabhängig und kampferprobt"]
+motivations = ["beweist sich als Kriegerin und schützt die Schwesternschaft"]
+quirks = ["überprüft jeden Fremden mit einem abschätzenden Kampfkraft-Blick"]

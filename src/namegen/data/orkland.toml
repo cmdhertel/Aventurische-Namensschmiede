@@ -1,0 +1,12 @@
+[meta]
+region = "Orkland"
+abbreviation = "ORK"
+notes = "Orkische Stämme im Nordosten. Kurze, harte Namen mit wenig Vokalen und Clan-Zusatz."
+
+[origin]
+species_id = "ork"
+culture_id = "orkland"
+region_id = "orkland"
+
+[character]
+professions = ["Krieger", "Plünderer", "Stammesschamane"]
