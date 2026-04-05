@@ -1,0 +1,32 @@
+[meta]
+name = "Ambosszwerge"
+notes = "Sippenorientierte Zwergenkultur."
+
+[naming_schema]
+type = "given_patronym"
+male_patronym_pattern = "Sohn des {parent}"
+female_patronym_pattern = "Tochter des {parent}"
+neutral_patronym_pattern = "Kind des {parent}"
+description = "Vorname plus Abstammungsname."
+
+[simple.first]
+male = ["Angrax", "Balrik", "Dromil", "Gimrak", "Ordan", "Tosch", "Ungrimm", "Xorlosch"]
+female = ["Ardaxa", "Balgra", "Dorgria", "Falgra", "Gilia", "Rondraxa", "Toscha", "Xindra"]
+
+[simple.parent]
+male = ["Angrax", "Balrik", "Dromil", "Gorax", "Ungrimm"]
+female = ["Ardaxa", "Dorgria", "Falgra", "Gilia", "Toscha"]
+
+[character]
+languages = ["Rogolan"]
+scripts = ["Angram"]
+local_knowledge = ["Binge, Mine oder Passstraße"]
+social_status = ["Frei"]
+professions = ["Bergmann", "Schmied", "Steinmetz", "Krieger", "Prospektor"]
+typical_advantages = ["Zäher Hund"]
+typical_disadvantages = ["Sturheit", "Hitzeempfindlich"]
+typical_talents = ["Metallbearbeitung", "Steinbearbeitung", "Kraftakt", "Zechen"]
+personality = ["wortkarg, stolz und handwerksverliebt"]
+motivations = ["will Ahnensippe und Binge würdig vertreten"]
+quirks = ["bewertet fast alles nach Qualität von Stahl und Stein"]
+

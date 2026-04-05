@@ -1,0 +1,23 @@
+[meta]
+name = "Achaz"
+notes = "Echsenwesen mit starker kultureller Prägung."
+
+[stats]
+ap_value = 25
+life_points = 5
+soul_power = -4
+toughness = -5
+speed = 8
+adult_age = 16
+max_age = 70
+attribute_modifiers = ["IN und KO +1", "MU oder KK -1"]
+automatic_advantages = ["Dunkelsicht I", "Zusätzliche Gliedmaße (Schwanz)"]
+automatic_disadvantages = ["Kältestarre"]
+
+[character]
+typical_advantages = ["Zeitgefühl", "Greifschwanz"]
+typical_disadvantages = ["Nachtblind"]
+personality = ["beobachtet warmblütige Wesen mit kühler Distanz"]
+motivations = ["will die Ehre des Geleges oder Tempels mehren"]
+quirks = ["verharrt in völliger Regungslosigkeit, wenn es nachdenkt"]
+

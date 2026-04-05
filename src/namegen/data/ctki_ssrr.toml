@@ -1,0 +1,12 @@
+[meta]
+region = "Ctki’Ssrr"
+abbreviation = "CTK"
+notes = "Achaz-Siedlungen mit Rufnamen-Tradition."
+
+[origin]
+species_id = "achaz"
+culture_id = "ctki_ssrr"
+region_id = "ctki_ssrr"
+
+[character]
+professions = ["Tempelwächter", "Brutpfleger", "Sumpfkundiger"]

@@ -4,14 +4,14 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-
 from observability import (
     create_metrics_middleware,
     instrument_fastapi,
     setup_logging,
     setup_telemetry,
 )
-from routes.generator import configure_observability, router as generator_router
+from routes.generator import configure_observability
+from routes.generator import router as generator_router
 from routes.regions import router as regions_router
 
 app = FastAPI(

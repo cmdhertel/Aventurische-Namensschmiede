@@ -1,0 +1,28 @@
+[meta]
+name = "Ferkinas"
+notes = "Hartes Stammesleben mit urtulamidischen Namensmustern."
+
+[naming_schema]
+type = "given_family"
+description = "Ferkina-Namen führen oft Stammesbezüge wie Ban, Ulad oder Bern."
+
+[simple.first]
+male = ["Abtuul", "Ardavan", "Faruch", "Feridun", "Haydar", "Rashuul", "Rustam", "Zhandur"]
+female = ["Ashu", "Belkhara", "Chorjan", "Farah", "Nuraya", "Peribanu", "Shiringol", "Zuleycha"]
+
+[simple.last]
+neutral = ["Ban Anghrachan", "Ban Hadarri", "Ban Khalil", "Ulad Asuban", "Ulad Yerkash", "Bern Chalif"]
+
+[character]
+languages = ["Tulamidya"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["je nach Stamm und Bergregion"]
+social_status = ["Frei"]
+professions = ["Jäger", "Söldner", "Stammeskrieger", "Fallensteller", "Wildniskundiger"]
+typical_advantages = ["Zäher Hund", "Richtungssinn"]
+typical_disadvantages = ["Jähzorn", "Vorurteile gegen Städter"]
+typical_talents = ["Klettern", "Orientierung", "Wildnisleben", "Einschüchtern"]
+personality = ["zäh, misstrauisch und stammesbewusst"]
+motivations = ["will Stamm, Sippe oder Blutschwur gerecht werden"]
+quirks = ["misst Fremde an ihrer Tauglichkeit für das Gebirge"]
+

@@ -1,0 +1,34 @@
+[meta]
+name = "Thorwaler"
+notes = "Seefahrerkultur mit Patronymen."
+
+[naming_schema]
+type = "given_patronym"
+male_patronym_pattern = "{parent}son"
+female_patronym_pattern = "{parent}sdottir"
+neutral_patronym_pattern = "{parent}kind"
+description = "Vorname plus Patronym oder Matronym."
+
+[simple.first]
+male = ["Asleif", "Eirik", "Frenjar", "Garald", "Halmar", "Norri", "Thorwulf", "Wulfgrimm"]
+female = ["Askra", "Branda", "Eilif", "Frenja", "Korja", "Ragna", "Sigrun", "Thora"]
+
+[simple.parent]
+male = ["Halmar", "Garald", "Eirik", "Raskir", "Thorwulf"]
+female = ["Frenja", "Branda", "Ragna", "Sigrun", "Thora"]
+
+[character]
+languages = ["Thorwalsch"]
+scripts = ["Thorwalsche Runen", "Kusliker Zeichen"]
+local_knowledge = ["je nach Hafen oder Sippe"]
+social_status = ["Adel"]
+professions = ["Seefahrer", "Fischer", "Holzarbeiter", "Krieger", "Skalde"]
+typical_advantages = ["Entfernungssinn", "Glück", "Richtungssinn", "Zäher Hund"]
+typical_disadvantages = ["Blutrausch", "Aberglaube", "Rachsucht"]
+typical_talents = ["Boote & Schiffe", "Einschüchtern", "Fischen & Angeln", "Kraftakt", "Zechen"]
+personality = ["laut, stolz und freiheitsliebend"]
+motivations = ["will auf Fahrt Ruhm erringen"]
+quirks = ["misst Geschichten an ihrer Tauglichkeit fürs Langhaus"]
+
+package_ap = 24
+

@@ -1,0 +1,28 @@
+[meta]
+name = "Ctki’Ssrr"
+notes = "Achaz-Kultur mit nicht geschlechtsspezifischen Namen und Rufnamen."
+
+[naming_schema]
+type = "given_byname"
+description = "Achazname, oft ergänzt durch einen Rufnamen."
+
+[simple.first]
+neutral = ["Ak’Har", "Chriazzl", "G’lizss", "Isz’Hff", "K’zzhe", "Ls’tass", "Mhks", "Nga’Chrir"]
+
+[simple.byname]
+neutral = ["Azl’Tkar", "Jirr’Kssh Ksi’Iss", "Nry’ssath Kz", "Rim H’Rim", "Xchl’krsh"]
+
+[character]
+languages = ["Rssahh"]
+scripts = ["Chrmk"]
+local_knowledge = ["Dorf und angrenzendes Gebiet"]
+social_status = ["Adel", "Unfrei"]
+professions = ["Echsenreiter", "Fallensteller", "Händler", "Heiler", "Stammeskrieger"]
+typical_disadvantages = ["Arroganz", "Vorurteile gegenüber Nicht-Achaz"]
+typical_talents = ["Schwimmen", "Sinnesschärfe", "Verbergen", "Wildnisleben"]
+personality = ["spricht knapp und mit reptilischer Ruhe"]
+motivations = ["dient Gelege, Tempel oder Siedlung"]
+quirks = ["gibt Menschen zur Verwirrung wechselnde Rufnamen"]
+
+package_ap = 49
+

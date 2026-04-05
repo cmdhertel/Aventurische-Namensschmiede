@@ -11,20 +11,18 @@ from time import perf_counter
 from fastapi import APIRouter, Form, Query, Request
 from fastapi.responses import StreamingResponse
 from fastapi.templating import Jinja2Templates
+from observability import AppMetrics
+from observability_utils import count_empty_names, name_length, safe_full_name
 from opentelemetry.trace import Tracer, get_tracer
 
 from namegen.chargen import generate_character
 from namegen.generator import generate
-from namegen.loader import list_regions, load_region
+from namegen.loader import get_origin_catalog, load_region
 from namegen.models import Gender, GenerationMode, ProfessionCategory
-from observability import AppMetrics
-from observability_utils import count_empty_names, name_length, safe_full_name
 
 router = APIRouter()
 
-_TEMPLATES = Jinja2Templates(
-    directory=str(Path(__file__).parent.parent / "templates")
-)
+_TEMPLATES = Jinja2Templates(directory=str(Path(__file__).parent.parent / "templates"))
 
 _GENDER_DE = {
     "male": "♂ Männlich",
@@ -50,15 +48,8 @@ def configure_observability(
     _metrics = app_metrics
 
 
-def _get_regions() -> list[dict]:
-    result = []
-    for rid in list_regions():
-        try:
-            rd = load_region(rid)
-            result.append({"id": rid, "name": rd.meta.region})
-        except Exception:
-            pass
-    return result
+def _get_origins() -> list[dict]:
+    return get_origin_catalog()
 
 
 @router.get("/")
@@ -66,12 +57,16 @@ async def index(
     request: Request,
     region: str | None = Query(default=None),
 ):
-    regions = _get_regions()
-    selected = region or (regions[0]["id"] if regions else "")
-    return _TEMPLATES.TemplateResponse(request, "index.html", {
-        "regions": regions,
-        "selected_region": selected,
-    })
+    origins = _get_origins()
+    selected = region or (origins[0]["id"] if origins else "")
+    return _TEMPLATES.TemplateResponse(
+        request,
+        "index.html",
+        {
+            "origins": origins,
+            "selected_region": selected,
+        },
+    )
 
 
 @router.get("/rechtliches")
@@ -134,10 +129,7 @@ async def generate_names(
             template = "partials/character_row.html"
             output_chars = sum(len(f"{safe_full_name(c)} {c.profession}".strip()) for c in results)
         else:
-            results = [
-                generate(region=region, mode=gmode, gender=gend)
-                for _ in range(count)
-            ]
+            results = [generate(region=region, mode=gmode, gender=gend) for _ in range(count)]
             template = "partials/name_row.html"
             output_chars = sum(len(safe_full_name(n)) for n in results)
 
@@ -167,7 +159,8 @@ async def generate_names(
 
         if count > 0 and (empty_results / count) > 0.1:
             _logger.warning(
-                "event=namegen.data_quality.warning region=%s mode=%s character=%s empty_ratio=%.2f",
+                "event=namegen.data_quality.warning region=%s mode=%s"
+                " character=%s empty_ratio=%.2f",
                 region,
                 mode,
                 character,
@@ -175,7 +168,9 @@ async def generate_names(
             )
 
         _logger.info(
-            "event=namegen.generate region=%s mode=%s gender=%s character=%s profession_category=%s count=%s input_chars=%s output_chars=%s empty_results=%s",
+            "event=namegen.generate region=%s mode=%s gender=%s"
+            " character=%s profession_category=%s count=%s"
+            " input_chars=%s output_chars=%s empty_results=%s",
             region,
             mode,
             gender,
@@ -195,11 +190,14 @@ async def generate_names(
                 "results": results,
                 "gender_de": _GENDER_DE,
                 "region_abbr": region_data.meta.abbreviation,
+                "origin_data": region_data,
             },
         )
 
         if _metrics:
-            _metrics.template_render_duration_ms.record((perf_counter() - render_start) * 1000, attrs)
+            _metrics.template_render_duration_ms.record(
+                (perf_counter() - render_start) * 1000, attrs
+            )
 
         return response
 

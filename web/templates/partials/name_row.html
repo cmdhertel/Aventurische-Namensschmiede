@@ -4,6 +4,8 @@
      data-full-name="{{ r.full_name }}"
      data-gender="{{ gv }}"
      data-region="{{ r.region }}"
+     data-culture="{{ r.culture or '' }}"
+     data-species="{{ r.species or '' }}"
      data-region-abbr="{{ region_abbr }}"
      data-mode="{{ r.mode.value }}">
 
@@ -16,7 +18,7 @@
     </p>
     <p class="text-xs mt-0.5"
        style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
-      {{ r.region }}
+      {{ r.species or 'Unbekannt' }} · {{ r.culture or 'Unbekannt' }} · {{ r.region }}
     </p>
   </div>
 
