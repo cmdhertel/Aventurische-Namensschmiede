@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import tomllib
-from functools import lru_cache
+from functools import cache
 from importlib.resources import files
 
 from .models import (
@@ -18,11 +18,8 @@ from .models import (
     NameSchemaType,
     OriginRef,
     RegionData,
-    RegionMeta,
     SimpleConfig,
     SpeciesData,
-    SpeciesMeta,
-    SpeciesStats,
 )
 
 
@@ -135,7 +132,9 @@ def _merge_character(base: CharacterConfig, override: CharacterConfig) -> Charac
         local_knowledge=_concat_unique(base.local_knowledge, override.local_knowledge),
         social_status=_concat_unique(base.social_status, override.social_status),
         typical_advantages=_concat_unique(base.typical_advantages, override.typical_advantages),
-        typical_disadvantages=_concat_unique(base.typical_disadvantages, override.typical_disadvantages),
+        typical_disadvantages=_concat_unique(
+            base.typical_disadvantages, override.typical_disadvantages
+        ),
         typical_talents=_concat_unique(base.typical_talents, override.typical_talents),
         personality=_concat_unique(base.personality, override.personality),
         motivations=_concat_unique(base.motivations, override.motivations),
@@ -193,13 +192,13 @@ def _build_synthetic_culture(raw: dict) -> CultureData:
     )
 
 
-@lru_cache(maxsize=None)
+@cache
 def load_species(species_id: str) -> SpeciesData:
     raw = _read_toml(f"species/{species_id.lower()}.toml")
     return SpeciesData.model_validate(raw)
 
 
-@lru_cache(maxsize=None)
+@cache
 def load_culture(culture_id: str) -> CultureData:
     raw = _read_toml(f"cultures/{culture_id.lower()}.toml")
     return CultureData.model_validate(raw)
@@ -208,18 +207,14 @@ def load_culture(culture_id: str) -> CultureData:
 def list_species() -> list[str]:
     data_dir = files(_DATA_PACKAGE).joinpath("species")
     return sorted(
-        p.name.removesuffix(".toml")
-        for p in data_dir.iterdir()
-        if p.name.endswith(".toml")
+        p.name.removesuffix(".toml") for p in data_dir.iterdir() if p.name.endswith(".toml")
     )
 
 
 def list_cultures() -> list[str]:
     data_dir = files(_DATA_PACKAGE).joinpath("cultures")
     return sorted(
-        p.name.removesuffix(".toml")
-        for p in data_dir.iterdir()
-        if p.name.endswith(".toml")
+        p.name.removesuffix(".toml") for p in data_dir.iterdir() if p.name.endswith(".toml")
     )
 
 
@@ -236,7 +231,7 @@ def list_regions() -> list[str]:
 list_origins = list_regions
 
 
-@lru_cache(maxsize=None)
+@cache
 def load_region(region_name: str) -> RegionData:
     """Load a resolved origin profile by its file stem (case-insensitive)."""
     origin_id = region_name.lower()
@@ -284,12 +279,14 @@ def get_origin_catalog() -> list[dict[str, str]]:
     catalog: list[dict[str, str]] = []
     for origin_id in list_regions():
         data = load_region(origin_id)
-        catalog.append({
-            "id": origin_id,
-            "name": data.meta.region,
-            "species_id": data.origin.species_id,
-            "species_name": data.species.meta.name if data.species else data.origin.species_id,
-            "culture_id": data.origin.culture_id,
-            "culture_name": data.culture.meta.name if data.culture else data.origin.culture_id,
-        })
+        catalog.append(
+            {
+                "id": origin_id,
+                "name": data.meta.region,
+                "species_id": data.origin.species_id,
+                "species_name": data.species.meta.name if data.species else data.origin.species_id,
+                "culture_id": data.origin.culture_id,
+                "culture_name": data.culture.meta.name if data.culture else data.origin.culture_id,
+            }
+        )
     return catalog

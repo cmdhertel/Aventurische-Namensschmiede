@@ -7,6 +7,8 @@ from typing import Annotated
 
 from pydantic import BaseModel, Field
 
+# ── Enums ─────────────────────────────────────────────────────────────────────
+
 
 class Gender(StrEnum):
     MALE = "male"
@@ -23,8 +25,15 @@ class ProfessionCategory(StrEnum):
     ALL = "alle"
     GEWEIHTE = "geweihte"
     ZAUBERER = "zauberer"
-    KAEMPFER = "kaempfer"
-    PROFAN = "profan"
+    KAEMPFER = "kaempfer"  # weltliche.kaempfer + weltliche.ordensleute
+    PROFAN = "profan"  # weltliche.profane
+
+
+class ExperienceLevel(StrEnum):
+    LEHRLING = "lehrling"
+    GESELLE = "geselle"
+    MEISTER = "meister"
+    VETERAN = "veteran"
 
 
 class NameSchemaType(StrEnum):
@@ -36,7 +45,8 @@ class NameSchemaType(StrEnum):
 
 
 class GenderedStringPool(BaseModel):
-    """Plain string lists split by gender."""
+    """Plain string lists split by gender. Used in [simple.first] and [simple.last]."""
+
     male: list[str] = Field(default_factory=list)
     female: list[str] = Field(default_factory=list)
     neutral: list[str] = Field(default_factory=list)
@@ -44,13 +54,15 @@ class GenderedStringPool(BaseModel):
 
 class ComposeParts(BaseModel):
     """Syllable building blocks for one gender within compose mode."""
+
     prefix: list[str] = Field(default_factory=list)
     infix: list[str] = Field(default_factory=list)
     suffix: list[str] = Field(default_factory=list)
 
 
 class ComposeSection(BaseModel):
-    """Gendered ComposeParts plus infix probability for one name slot."""
+    """Gendered ComposeParts plus infix probability for one name slot (first or last)."""
+
     infix_probability: Annotated[float, Field(ge=0.0, le=1.0)] = 0.3
     male: ComposeParts = Field(default_factory=ComposeParts)
     female: ComposeParts = Field(default_factory=ComposeParts)
@@ -59,6 +71,7 @@ class ComposeSection(BaseModel):
 
 class NameSchema(BaseModel):
     """Describes how a generated full name is assembled."""
+
     type: NameSchemaType = NameSchemaType.GIVEN_FAMILY
     connector: str | None = None
     male_patronym_pattern: str = "{parent}son"
@@ -111,6 +124,7 @@ class SpeciesStats(BaseModel):
 
 class CharacterConfig(BaseModel):
     """Character-relevant data from species, culture, and origin."""
+
     professions: list[str] = Field(default_factory=list)
     languages: list[str] = Field(default_factory=list)
     scripts: list[str] = Field(default_factory=list)
@@ -152,6 +166,7 @@ class OriginRef(BaseModel):
 
 class RegionData(BaseModel):
     """Resolved origin profile representing one playable naming origin."""
+
     meta: RegionMeta
     origin: OriginRef = Field(default_factory=OriginRef)
     naming_schema: NameSchema = Field(default_factory=NameSchema)
@@ -164,6 +179,7 @@ class RegionData(BaseModel):
 
 class NameComponents(BaseModel):
     """Syllable breakdown of a composed name. Only populated in compose mode."""
+
     first_prefix: str | None = None
     first_infix: str | None = None
     first_suffix: str | None = None
@@ -187,7 +203,9 @@ class CharacterTraits(BaseModel):
 
 class CharacterResult(BaseModel):
     """Full fluff character sheet wrapping a NameResult."""
-    name: "NameResult"
+
+    experience: ExperienceLevel
+    name: NameResult
     age: int
     profession: str
     traits: CharacterTraits
@@ -204,7 +222,7 @@ class CharacterResult(BaseModel):
         return self.name.full_name
 
     @property
-    def gender(self) -> "Gender":
+    def gender(self) -> Gender:
         return self.name.gender
 
     @property
@@ -222,11 +240,12 @@ class CharacterResult(BaseModel):
 
 class NameResult(BaseModel):
     """Structured result returned by the generator."""
+
     first_name: str
     last_name: str | None
     full_name: str
-    gender: Gender
-    resolved_gender: Gender
+    gender: Gender  # angefordertes Geschlecht
+    resolved_gender: Gender  # tatsächlicher Pool des Vornamens
     region: str
     culture: str | None = None
     species: str | None = None
@@ -252,7 +271,7 @@ class NameResult(BaseModel):
         name_schema: NameSchemaType = NameSchemaType.GIVEN_FAMILY,
         connector: str | None = None,
         full_name_override: str | None = None,
-    ) -> "NameResult":
+    ) -> NameResult:
         if full_name_override is not None:
             full = full_name_override
         elif last and connector:

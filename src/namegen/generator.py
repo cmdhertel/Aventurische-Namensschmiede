@@ -9,11 +9,10 @@ from .models import (
     ComposeParts,
     ComposeSection,
     Gender,
-    GenerationMode,
     GenderedStringPool,
+    GenerationMode,
     NameComponents,
     NameResult,
-    NameSchema,
     NameSchemaType,
     RegionData,
 )
@@ -86,17 +85,9 @@ def _has_any_simple(pool: GenderedStringPool) -> bool:
 def _pick_parent_name(data: RegionData, rng: random.Random) -> str:
     parent_pool = data.simple.parent
     if _has_any_simple(parent_pool):
-        candidates = (
-            parent_pool.male
-            + parent_pool.female
-            + parent_pool.neutral
-        )
+        candidates = parent_pool.male + parent_pool.female + parent_pool.neutral
     else:
-        candidates = (
-            data.simple.first.male
-            + data.simple.first.female
-            + data.simple.first.neutral
-        )
+        candidates = data.simple.first.male + data.simple.first.female + data.simple.first.neutral
 
     if not candidates:
         raise GeneratorError(f"Origin '{data.meta.region}' has no parent-name pool.")
@@ -166,13 +157,14 @@ def generate(
     mode: GenerationMode = GenerationMode.SIMPLE,
     gender: Gender = Gender.ANY,
     rng: random.Random | None = None,
+    infix_probability_override: float | None = None,
 ) -> NameResult:
     _rng = rng if rng is not None else random
     data: RegionData = load_region(region)
 
     if mode == GenerationMode.SIMPLE:
         return _generate_simple(data, gender, _rng)
-    return _generate_compose(data, gender, _rng)
+    return _generate_compose(data, gender, _rng, infix_probability_override)
 
 
 def _generate_simple(data: RegionData, gender: Gender, rng: random.Random) -> NameResult:
@@ -196,16 +188,26 @@ def _generate_simple(data: RegionData, gender: Gender, rng: random.Random) -> Na
     )
 
 
-def _generate_compose(data: RegionData, gender: Gender, rng: random.Random) -> NameResult:
+def _generate_compose(
+    data: RegionData,
+    gender: Gender,
+    rng: random.Random,
+    infix_probability_override: float | None = None,
+) -> NameResult:
     first_section = data.compose.first
     fp, fn = _resolve_compose_parts(first_section, gender)
+    first_infix_probability = (
+        infix_probability_override
+        if infix_probability_override is not None
+        else first_section.infix_probability
+    )
 
     prefix = _pick(fp.prefix, fn.prefix, "prefix", "first name", data.meta.region, rng)
     suffix = _pick(fp.suffix, fn.suffix, "suffix", "first name", data.meta.region, rng)
 
     infix: str | None = None
     infix_pool = fp.infix or fn.infix
-    if infix_pool and rng.random() < first_section.infix_probability:
+    if infix_pool and rng.random() < first_infix_probability:
         infix = rng.choice(infix_pool)
 
     first = prefix + (infix or "") + suffix
@@ -217,6 +219,11 @@ def _generate_compose(data: RegionData, gender: Gender, rng: random.Random) -> N
 
     last_section = data.compose.last
     lp, ln = _resolve_compose_parts(last_section, gender)
+    last_infix_probability = (
+        infix_probability_override
+        if infix_probability_override is not None
+        else last_section.infix_probability
+    )
     all_prefixes = lp.prefix + ln.prefix
     all_suffixes = lp.suffix + ln.suffix
 
@@ -224,7 +231,7 @@ def _generate_compose(data: RegionData, gender: Gender, rng: random.Random) -> N
         last_prefix = rng.choice(all_prefixes)
         last_suffix = rng.choice(all_suffixes)
         last_infix_pool = lp.infix + ln.infix
-        if last_infix_pool and rng.random() < last_section.infix_probability:
+        if last_infix_pool and rng.random() < last_infix_probability:
             last_infix = rng.choice(last_infix_pool)
         last_candidate = last_prefix + (last_infix or "") + last_suffix
 

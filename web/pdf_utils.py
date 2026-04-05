@@ -23,15 +23,17 @@ def _build_name_pdf_bytes(name_data: list[dict]) -> bytes:
 
     buf = io.BytesIO()
 
-    BORDER    = colors.HexColor("#999999")
+    BORDER = colors.HexColor("#999999")
     HEADER_BG = colors.HexColor("#DDDDDD")
-    ROW_ALT   = colors.HexColor("#F5F5F5")
+    ROW_ALT = colors.HexColor("#F5F5F5")
 
     doc = SimpleDocTemplate(
         buf,
         pagesize=A4,
-        leftMargin=2*cm, rightMargin=2*cm,
-        topMargin=2.5*cm, bottomMargin=2*cm,
+        leftMargin=2 * cm,
+        rightMargin=2 * cm,
+        topMargin=2.5 * cm,
+        bottomMargin=2 * cm,
     )
 
     styles = getSampleStyleSheet()
@@ -67,7 +69,7 @@ def _build_name_pdf_bytes(name_data: list[dict]) -> bytes:
         abbr = str(entry.get("region_abbr", "")).strip().upper()
         if len(abbr) != 3:
             cleaned = "".join(ch for ch in region if ch.isalpha()).upper()
-            abbr = (cleaned[:3] if cleaned else "???")
+            abbr = cleaned[:3] if cleaned else "???"
         region_to_abbr.setdefault(region, abbr)
 
     regions = sorted(region_to_abbr.keys())
@@ -89,24 +91,28 @@ def _build_name_pdf_bytes(name_data: list[dict]) -> bytes:
     table_data = [header]
 
     for i in range(0, len(name_data), 2):
-        left  = name_data[i]
+        left = name_data[i]
         right = name_data[i + 1] if i + 1 < len(name_data) else None
         if has_multiple_regions:
-            table_data.append([
-                left["full_name"],
-                _GENDER_SHORT.get(left.get("gender", "any"), "–"),
-                region_to_abbr.get(left.get("region", ""), "–"),
-                right["full_name"] if right else "",
-                _GENDER_SHORT.get(right.get("gender", "any"), "–") if right else "",
-                region_to_abbr.get(right.get("region", ""), "–") if right else "",
-            ])
+            table_data.append(
+                [
+                    left["full_name"],
+                    _GENDER_SHORT.get(left.get("gender", "any"), "–"),
+                    region_to_abbr.get(left.get("region", ""), "–"),
+                    right["full_name"] if right else "",
+                    _GENDER_SHORT.get(right.get("gender", "any"), "–") if right else "",
+                    region_to_abbr.get(right.get("region", ""), "–") if right else "",
+                ]
+            )
         else:
-            table_data.append([
-                left["full_name"],
-                _GENDER_SHORT.get(left.get("gender", "any"), "–"),
-                right["full_name"] if right else "",
-                _GENDER_SHORT.get(right.get("gender", "any"), "–") if right else "",
-            ])
+            table_data.append(
+                [
+                    left["full_name"],
+                    _GENDER_SHORT.get(left.get("gender", "any"), "–"),
+                    right["full_name"] if right else "",
+                    _GENDER_SHORT.get(right.get("gender", "any"), "–") if right else "",
+                ]
+            )
 
     if has_multiple_regions:
         name_w = 6.5 * cm
@@ -124,20 +130,20 @@ def _build_name_pdf_bytes(name_data: list[dict]) -> bytes:
 
     tbl = Table(table_data, colWidths=col_widths, repeatRows=1)
     styles = [
-        ("BACKGROUND",    (0, 0), (-1, 0),  HEADER_BG),
-        ("TEXTCOLOR",     (0, 0), (-1, 0),  colors.black),
-        ("FONTNAME",      (0, 0), (-1, 0),  "Helvetica-Bold"),
-        ("FONTSIZE",      (0, 0), (-1, 0),  9),
-        ("TOPPADDING",    (0, 0), (-1, 0),  6),
-        ("BOTTOMPADDING", (0, 0), (-1, 0),  6),
-        ("FONTNAME",      (0, 1), (-1, -1), "Helvetica"),
-        ("FONTSIZE",      (0, 1), (-1, -1), 9),
-        ("TOPPADDING",    (0, 1), (-1, -1), 4),
+        ("BACKGROUND", (0, 0), (-1, 0), HEADER_BG),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), 9),
+        ("TOPPADDING", (0, 0), (-1, 0), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE", (0, 1), (-1, -1), 9),
+        ("TOPPADDING", (0, 1), (-1, -1), 4),
         ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
-        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [colors.white, ROW_ALT]),
-        ("BOX",           (0, 0), (-1, -1), 0.75, BORDER),
-        ("INNERGRID",     (0, 0), (-1, -1), 0.25, BORDER),
-        ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, ROW_ALT]),
+        ("BOX", (0, 0), (-1, -1), 0.75, BORDER),
+        ("INNERGRID", (0, 0), (-1, -1), 0.25, BORDER),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
     ]
     for col in center_columns:
         styles.append(("ALIGN", (col, 0), (col, -1), "CENTER"))
@@ -154,7 +160,7 @@ def _build_name_pdf_bytes(name_data: list[dict]) -> bytes:
     tbl.setStyle(TableStyle(styles))
 
     story.append(tbl)
-    story.append(Spacer(1, 0.5*cm))
+    story.append(Spacer(1, 0.5 * cm))
     doc.build(story)
 
     return buf.getvalue()
@@ -171,9 +177,9 @@ def _build_character_pdf_bytes(char_data: list[dict]) -> bytes:
 
     buf = io.BytesIO()
 
-    BORDER    = colors.HexColor("#999999")
+    BORDER = colors.HexColor("#999999")
     HEADER_BG = colors.HexColor("#DDDDDD")
-    ROW_ALT   = colors.HexColor("#F5F5F5")
+    ROW_ALT = colors.HexColor("#F5F5F5")
 
     regions = sorted({e.get("region", "") for e in char_data if e.get("region")})
     region_label = ", ".join(regions) if regions else "–"
@@ -181,22 +187,32 @@ def _build_character_pdf_bytes(char_data: list[dict]) -> bytes:
     doc = SimpleDocTemplate(
         buf,
         pagesize=A4,
-        leftMargin=2*cm, rightMargin=2*cm,
-        topMargin=2.5*cm, bottomMargin=2*cm,
+        leftMargin=2 * cm,
+        rightMargin=2 * cm,
+        topMargin=2.5 * cm,
+        bottomMargin=2 * cm,
     )
 
     base_styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
-        "DSATitle", parent=base_styles["Heading1"],
-        textColor=colors.black, fontSize=16, spaceAfter=4,
+        "DSATitle",
+        parent=base_styles["Heading1"],
+        textColor=colors.black,
+        fontSize=16,
+        spaceAfter=4,
     )
     subtitle_style = ParagraphStyle(
-        "DSASubtitle", parent=base_styles["Normal"],
-        textColor=colors.HexColor("#555555"), fontSize=9, spaceAfter=14,
+        "DSASubtitle",
+        parent=base_styles["Normal"],
+        textColor=colors.HexColor("#555555"),
+        fontSize=9,
+        spaceAfter=14,
     )
     cell_style = ParagraphStyle(
-        "DSACell", parent=base_styles["Normal"],
-        fontSize=8, leading=10,
+        "DSACell",
+        parent=base_styles["Normal"],
+        fontSize=8,
+        leading=10,
     )
 
     story = [
@@ -205,10 +221,10 @@ def _build_character_pdf_bytes(char_data: list[dict]) -> bytes:
     ]
 
     # Columns: Name | G | Alter | Beruf | Eigenschaften
-    name_w   = 3.8 * cm
-    g_w      = 0.6 * cm
-    age_w    = 1.0 * cm
-    job_w    = 3.0 * cm
+    name_w = 3.8 * cm
+    g_w = 0.6 * cm
+    age_w = 1.0 * cm
+    job_w = 3.0 * cm
     traits_w = 8.6 * cm
 
     header = ["Name", "G", "Alter", "Beruf", "Eigenschaften"]
@@ -216,39 +232,45 @@ def _build_character_pdf_bytes(char_data: list[dict]) -> bytes:
 
     for e in char_data:
         traits_text = (
-            f"Haare {e.get('hair','–')}, Augen {e.get('eyes','–')}, {e.get('build','–')} · "
-            f"{e.get('personality','–')} · {e.get('motivation','–')} · {e.get('quirk','–')}"
+            f"Haare {e.get('hair', '–')}, Augen {e.get('eyes', '–')}, {e.get('build', '–')} · "
+            f"{e.get('personality', '–')} · {e.get('motivation', '–')} · {e.get('quirk', '–')}"
         )
-        table_data.append([
-            Paragraph(f"<b>{e.get('full_name','')}</b>", cell_style),
-            _GENDER_SHORT.get(e.get("gender", "any"), "–"),
-            str(e.get("age", "–")),
-            Paragraph(e.get("profession", "–"), cell_style),
-            Paragraph(traits_text, cell_style),
-        ])
+        table_data.append(
+            [
+                Paragraph(f"<b>{e.get('full_name', '')}</b>", cell_style),
+                _GENDER_SHORT.get(e.get("gender", "any"), "–"),
+                str(e.get("age", "–")),
+                Paragraph(e.get("profession", "–"), cell_style),
+                Paragraph(traits_text, cell_style),
+            ]
+        )
 
     tbl = Table(
         table_data,
         colWidths=[name_w, g_w, age_w, job_w, traits_w],
         repeatRows=1,
     )
-    tbl.setStyle(TableStyle([
-        ("BACKGROUND",    (0, 0), (-1, 0),  HEADER_BG),
-        ("FONTNAME",      (0, 0), (-1, 0),  "Helvetica-Bold"),
-        ("FONTSIZE",      (0, 0), (-1, 0),  9),
-        ("TOPPADDING",    (0, 0), (-1, 0),  6),
-        ("BOTTOMPADDING", (0, 0), (-1, 0),  6),
-        ("FONTNAME",      (0, 1), (-1, -1), "Helvetica"),
-        ("FONTSIZE",      (0, 1), (-1, -1), 8),
-        ("TOPPADDING",    (0, 1), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
-        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [colors.white, ROW_ALT]),
-        ("BOX",           (0, 0), (-1, -1), 0.75, BORDER),
-        ("INNERGRID",     (0, 0), (-1, -1), 0.25, BORDER),
-        ("VALIGN",        (0, 0), (-1, -1), "TOP"),
-        ("ALIGN",         (1, 0), (1, -1),  "CENTER"),
-        ("ALIGN",         (2, 0), (2, -1),  "CENTER"),
-    ]))
+    tbl.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), HEADER_BG),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, 0), 9),
+                ("TOPPADDING", (0, 0), (-1, 0), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+                ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+                ("FONTSIZE", (0, 1), (-1, -1), 8),
+                ("TOPPADDING", (0, 1), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, ROW_ALT]),
+                ("BOX", (0, 0), (-1, -1), 0.75, BORDER),
+                ("INNERGRID", (0, 0), (-1, -1), 0.25, BORDER),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("ALIGN", (1, 0), (1, -1), "CENTER"),
+                ("ALIGN", (2, 0), (2, -1), "CENTER"),
+            ]
+        )
+    )
 
     story.append(tbl)
     story.append(Spacer(1, 0.5 * cm))

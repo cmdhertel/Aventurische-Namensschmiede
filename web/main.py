@@ -4,7 +4,6 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-
 from routes.generator import router as generator_router
 from routes.regions import router as regions_router
 

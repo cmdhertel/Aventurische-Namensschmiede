@@ -12,6 +12,7 @@ from .loader import load_region
 from .models import (
     CharacterResult,
     CharacterTraits,
+    ExperienceLevel,
     Gender,
     GenerationMode,
     PhysicalTraits,
@@ -46,10 +47,23 @@ def _load_professions_by_category(category: ProfessionCategory) -> list[str]:
             return raw["weltliche"]["profane"]
         case _:
             w = raw["weltliche"]
-            return raw["geweihte"] + raw["zauberer"] + w["kaempfer"] + w["ordensleute"] + w["profane"]
+            return (
+                raw["geweihte"] + raw["zauberer"] + w["kaempfer"] + w["ordensleute"] + w["profane"]
+            )
+
+
+def get_profession_groups() -> list[tuple[str, list[str]]]:
+    """Return professions grouped for CLI display and user-facing filtering."""
+    return [
+        ("Geweihte", _load_professions_by_category(ProfessionCategory.GEWEIHTE)),
+        ("Zauberer", _load_professions_by_category(ProfessionCategory.ZAUBERER)),
+        ("Kämpfer & Ordensleute", _load_professions_by_category(ProfessionCategory.KAEMPFER)),
+        ("Profane", _load_professions_by_category(ProfessionCategory.PROFAN)),
+    ]
 
 
 def _generate_age(data: RegionData, rng: random.Random) -> int:
+    """Generate an age within the species' adult range, with soft cap near the upper end."""
     adult_age = data.species.stats.adult_age if data.species else 18
     max_age = data.species.stats.max_age if data.species else 80
 
@@ -100,27 +114,41 @@ def _generate_traits(data: RegionData, rng: random.Random) -> CharacterTraits:
     )
 
 
+# ── Public API ─────────────────────────────────────────────────────────────────
+
+
 def generate_character(
     region: str,
     mode: GenerationMode = GenerationMode.SIMPLE,
     gender: Gender = Gender.ANY,
     profession_category: ProfessionCategory = ProfessionCategory.ALL,
+    experience: ExperienceLevel = ExperienceLevel.GESELLE,
+    infix_probability_override: float | None = None,
     rng: random.Random | None = None,
 ) -> CharacterResult:
     _rng = rng if rng is not None else random
     data = load_region(region)
 
-    name = generate(region=region, mode=mode, gender=gender, rng=_rng)
+    name = generate(
+        region=region,
+        mode=mode,
+        gender=gender,
+        rng=_rng,
+        infix_probability_override=infix_probability_override,
+    )
     age = _generate_age(data, _rng)
     profession = _pick_profession(data, profession_category, _rng)
     traits = _generate_traits(data, _rng)
 
     language = _rng.choice(data.character.languages) if data.character.languages else None
     script = _rng.choice(data.character.scripts) if data.character.scripts else None
-    social_status = _rng.choice(data.character.social_status) if data.character.social_status else None
+    social_status = (
+        _rng.choice(data.character.social_status) if data.character.social_status else None
+    )
 
     return CharacterResult(
         name=name,
+        experience=experience,
         age=age,
         profession=profession,
         traits=traits,
