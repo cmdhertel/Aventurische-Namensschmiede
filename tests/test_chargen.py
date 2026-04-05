@@ -35,6 +35,19 @@ def test_generate_character_has_context() -> None:
     assert result.species_stats is not None
 
 
+def test_generate_character_human_aggregate_uses_concrete_region_context() -> None:
+    result = generate_character("human", rng=random.Random(5))
+    assert result.species == "Mensch"
+    assert result.name.origin_id is not None
+    assert result.name.origin_id != "human"
+
+
+def test_generate_character_mittelreicher_aggregate_uses_subregion_context() -> None:
+    result = generate_character("mittelreicher", rng=random.Random(8))
+    assert result.culture == "Mittelreicher"
+    assert result.region != "Mittelreicher"
+
+
 def test_generate_character_has_traits_and_profession() -> None:
     result = generate_character("thorwal", rng=random.Random(1))
     assert result.profession

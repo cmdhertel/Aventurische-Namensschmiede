@@ -1,5 +1,5 @@
 [meta]
-region = "Mittelreich: Warunk"
+region = "Warunk"
 abbreviation = "WAR"
 notes = "Tobrische Grundschicht mit rondrianischen Namen und Nachhall der Schattenlandzeit."
 
@@ -12,4 +12,3 @@ neutral = ["Angerling", "Altschulz", "Bitterwein", "Erlingsen", "Kleinbrück", "
 
 [character]
 professions = ["Krämer", "Stadtsoldat", "Pflanzenkundiger", "Grenzreiter"]
-

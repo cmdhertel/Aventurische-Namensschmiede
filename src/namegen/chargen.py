@@ -8,7 +8,7 @@ from functools import lru_cache
 from importlib.resources import files
 
 from .generator import generate
-from .loader import load_region
+from .loader import load_region, pick_generation_target
 from .models import (
     CharacterResult,
     CharacterTraits,
@@ -143,10 +143,11 @@ def generate_character(
     rng: random.Random | None = None,
 ) -> CharacterResult:
     _rng = rng if rng is not None else random
-    data = load_region(region)
+    target_id = pick_generation_target(region, _rng)
+    data = load_region(target_id)
 
     name = generate(
-        region=region,
+        region=target_id,
         mode=mode,
         gender=gender,
         rng=_rng,

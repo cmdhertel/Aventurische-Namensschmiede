@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 
-from .loader import load_region
+from .loader import load_region, pick_generation_target
 from .models import (
     ComposeParts,
     ComposeSection,
@@ -144,6 +144,7 @@ def _apply_schema(
         region=data.meta.region,
         culture=data.culture.meta.name if data.culture else None,
         species=data.species.meta.name if data.species else None,
+        region_abbreviation=data.meta.abbreviation,
         origin_id=data.origin.region_id,
         mode=mode,
         name_schema=schema.type,
@@ -160,7 +161,8 @@ def generate(
     infix_probability_override: float | None = None,
 ) -> NameResult:
     _rng = rng if rng is not None else random
-    data: RegionData = load_region(region)
+    target_id = pick_generation_target(region, _rng)
+    data: RegionData = load_region(target_id)
 
     if mode == GenerationMode.SIMPLE:
         return _generate_simple(data, gender, _rng)
