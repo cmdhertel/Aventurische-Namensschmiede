@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import random
+from collections.abc import Collection
 
 from .catalog import pick_generation_target
 from .loader import load_region
@@ -22,6 +23,11 @@ from .models import (
 
 class GeneratorError(Exception):
     pass
+
+
+_DEFAULT_MIN_SYLLABLES = 2
+_DEFAULT_MAX_SYLLABLES = 4
+_MAX_GENERATION_ATTEMPTS = 200
 
 
 def _resolve_simple_pool(
@@ -161,14 +167,53 @@ def generate(
     gender: Gender = Gender.ANY,
     rng: random.Random | None = None,
     infix_probability_override: float | None = None,
+    min_syllables: int = _DEFAULT_MIN_SYLLABLES,
+    max_syllables: int = _DEFAULT_MAX_SYLLABLES,
+    exclude_names: Collection[str] | None = None,
 ) -> NameResult:
     _rng = rng if rng is not None else random
-    target_id = pick_generation_target(region, _rng, compose_only=mode == GenerationMode.COMPOSE)
-    data: RegionData = load_region(target_id)
+    _validate_generation_constraints(mode, min_syllables, max_syllables)
+    excluded = {name.strip().casefold() for name in (exclude_names or ()) if name.strip()}
 
-    if mode == GenerationMode.SIMPLE:
-        return _generate_simple(data, gender, _rng)
-    return _generate_compose(data, gender, _rng, infix_probability_override)
+    for _ in range(_MAX_GENERATION_ATTEMPTS):
+        target_id = pick_generation_target(
+            region,
+            _rng,
+            compose_only=mode == GenerationMode.COMPOSE,
+        )
+        data: RegionData = load_region(target_id)
+
+        if mode == GenerationMode.SIMPLE:
+            result = _generate_simple(data, gender, _rng)
+        else:
+            result = _generate_compose(
+                data,
+                gender,
+                _rng,
+                infix_probability_override,
+                min_syllables=min_syllables,
+                max_syllables=max_syllables,
+            )
+
+        if result.full_name.casefold() not in excluded:
+            return result
+
+    raise GeneratorError("No unique name could be generated within the retry limit.")
+
+
+def _validate_generation_constraints(
+    mode: GenerationMode,
+    min_syllables: int,
+    max_syllables: int,
+) -> None:
+    if min_syllables < 1 or max_syllables < 1:
+        raise GeneratorError("Syllable limits must be positive integers.")
+    if min_syllables > max_syllables:
+        raise GeneratorError("min_syllables cannot be greater than max_syllables.")
+    if mode != GenerationMode.COMPOSE and (
+        min_syllables != _DEFAULT_MIN_SYLLABLES or max_syllables != _DEFAULT_MAX_SYLLABLES
+    ):
+        raise GeneratorError("Syllable limits are only available in compose mode.")
 
 
 def _generate_simple(data: RegionData, gender: Gender, rng: random.Random) -> NameResult:
@@ -197,67 +242,103 @@ def _generate_compose(
     gender: Gender,
     rng: random.Random,
     infix_probability_override: float | None = None,
+    *,
+    min_syllables: int = _DEFAULT_MIN_SYLLABLES,
+    max_syllables: int = _DEFAULT_MAX_SYLLABLES,
 ) -> NameResult:
-    first_section = data.compose.first
-    fp, fn = _resolve_compose_parts(first_section, gender)
-    first_infix_probability = (
-        infix_probability_override
-        if infix_probability_override is not None
-        else (first_section.infix_probability or _DEFAULT_INFIX_PROBABILITY)
+    for _ in range(_MAX_GENERATION_ATTEMPTS):
+        first_section = data.compose.first
+        fp, fn = _resolve_compose_parts(first_section, gender)
+        first_infix_probability = (
+            infix_probability_override
+            if infix_probability_override is not None
+            else (first_section.infix_probability or _DEFAULT_INFIX_PROBABILITY)
+        )
+
+        prefix = _pick(fp.prefix, fn.prefix, "prefix", "first name", data.meta.region, rng)
+        suffix = _pick(fp.suffix, fn.suffix, "suffix", "first name", data.meta.region, rng)
+
+        infix: str | None = None
+        infix_pool = fp.infix or fn.infix
+        if infix_pool and rng.random() < first_infix_probability:
+            infix = rng.choice(infix_pool)
+
+        first = prefix + (infix or "") + suffix
+
+        last_candidate: str | None = None
+        last_prefix: str | None = None
+        last_infix: str | None = None
+        last_suffix: str | None = None
+
+        last_section = data.compose.last
+        lp, ln = _resolve_compose_parts(last_section, gender)
+        last_infix_probability = (
+            infix_probability_override
+            if infix_probability_override is not None
+            else (last_section.infix_probability or _DEFAULT_INFIX_PROBABILITY)
+        )
+        all_prefixes = lp.prefix + ln.prefix
+        all_suffixes = lp.suffix + ln.suffix
+
+        if all_prefixes and all_suffixes:
+            last_prefix = rng.choice(all_prefixes)
+            last_suffix = rng.choice(all_suffixes)
+            last_infix_pool = lp.infix + ln.infix
+            if last_infix_pool and rng.random() < last_infix_probability:
+                last_infix = rng.choice(last_infix_pool)
+            last_candidate = last_prefix + (last_infix or "") + last_suffix
+
+        components = NameComponents(
+            first_prefix=prefix,
+            first_infix=infix,
+            first_suffix=suffix,
+            last_prefix=last_prefix,
+            last_infix=last_infix,
+            last_suffix=last_suffix,
+        )
+
+        if not _components_within_syllable_limits(components, min_syllables, max_syllables):
+            continue
+
+        # resolved_gender stays as-is (including ANY): compose mode merges all gender
+        # pools into one, so we can't determine which gender the syllables came from.
+        # In simple mode resolved_gender is set by whichever pool the name was drawn from.
+        return _apply_schema(
+            data=data,
+            first=first,
+            gender=gender,
+            resolved_gender=gender,
+            rng=rng,
+            mode=GenerationMode.COMPOSE,
+            components=components,
+            last_candidate=last_candidate,
+        )
+
+    raise GeneratorError("No compose name matched the requested syllable limits.")
+
+
+def _count_name_parts(*parts: str | None) -> int:
+    return sum(1 for part in parts if part)
+
+
+def _components_within_syllable_limits(
+    components: NameComponents,
+    min_syllables: int,
+    max_syllables: int,
+) -> bool:
+    first_count = _count_name_parts(
+        components.first_prefix,
+        components.first_infix,
+        components.first_suffix,
     )
+    if not (min_syllables <= first_count <= max_syllables):
+        return False
 
-    prefix = _pick(fp.prefix, fn.prefix, "prefix", "first name", data.meta.region, rng)
-    suffix = _pick(fp.suffix, fn.suffix, "suffix", "first name", data.meta.region, rng)
-
-    infix: str | None = None
-    infix_pool = fp.infix or fn.infix
-    if infix_pool and rng.random() < first_infix_probability:
-        infix = rng.choice(infix_pool)
-
-    first = prefix + (infix or "") + suffix
-
-    last_candidate: str | None = None
-    last_prefix: str | None = None
-    last_infix: str | None = None
-    last_suffix: str | None = None
-
-    last_section = data.compose.last
-    lp, ln = _resolve_compose_parts(last_section, gender)
-    last_infix_probability = (
-        infix_probability_override
-        if infix_probability_override is not None
-        else (last_section.infix_probability or _DEFAULT_INFIX_PROBABILITY)
+    last_count = _count_name_parts(
+        components.last_prefix,
+        components.last_infix,
+        components.last_suffix,
     )
-    all_prefixes = lp.prefix + ln.prefix
-    all_suffixes = lp.suffix + ln.suffix
-
-    if all_prefixes and all_suffixes:
-        last_prefix = rng.choice(all_prefixes)
-        last_suffix = rng.choice(all_suffixes)
-        last_infix_pool = lp.infix + ln.infix
-        if last_infix_pool and rng.random() < last_infix_probability:
-            last_infix = rng.choice(last_infix_pool)
-        last_candidate = last_prefix + (last_infix or "") + last_suffix
-
-    components = NameComponents(
-        first_prefix=prefix,
-        first_infix=infix,
-        first_suffix=suffix,
-        last_prefix=last_prefix,
-        last_infix=last_infix,
-        last_suffix=last_suffix,
-    )
-
-    # resolved_gender stays as-is (including ANY): compose mode merges all gender
-    # pools into one, so we can't determine which gender the syllables came from.
-    # In simple mode resolved_gender is set by whichever pool the name was drawn from.
-    return _apply_schema(
-        data=data,
-        first=first,
-        gender=gender,
-        resolved_gender=gender,
-        rng=rng,
-        mode=GenerationMode.COMPOSE,
-        components=components,
-        last_candidate=last_candidate,
-    )
+    if last_count == 0:
+        return True
+    return min_syllables <= last_count <= max_syllables

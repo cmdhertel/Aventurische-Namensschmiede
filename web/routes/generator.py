@@ -1,4 +1,4 @@
-"""Generator-Routen: Startseite, Namens-Generierung, PDF- und JSON-Import."""
+"""Generator-Routen: Startseite, Namens-Generierung und Web-Exporte."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from fastapi.templating import Jinja2Templates
 from observability import AppMetrics
 from observability_utils import count_empty_names, name_length, safe_full_name
 from opentelemetry.trace import Tracer, get_tracer
-from result_transfer import parse_results_json
+from result_transfer import load_results_export, parse_results_json
 
 from namegen.catalog import (
     get_origin_catalog,
@@ -95,6 +95,11 @@ async def index(
 @router.get("/rechtliches")
 async def legal_page(request: Request):
     return _TEMPLATES.TemplateResponse(request, "rechtliches.html", {})
+
+
+@router.get("/favourites")
+async def favourites_page(request: Request):
+    return _TEMPLATES.TemplateResponse(request, "favourites.html", {})
 
 
 @router.post("/generate")
@@ -262,4 +267,22 @@ async def import_results_json(request: Request):
             "results": results,
             "gender_de": _GENDER_DE,
         },
+    )
+
+
+@router.post("/export/zip")
+async def export_zip(request: Request):
+    from export_bundle import build_export_zip  # noqa: PLC0415
+
+    payload = (await request.body()).decode("utf-8")
+    try:
+        export = load_results_export(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    zip_bytes = build_export_zip(export)
+    return StreamingResponse(
+        io.BytesIO(zip_bytes),
+        media_type="application/zip",
+        headers={"Content-Disposition": 'attachment; filename="namenschmiede_export.zip"'},
     )

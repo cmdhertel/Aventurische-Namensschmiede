@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from typer.testing import CliRunner
 
 from namegen.cli import app
+from namegen.models import Gender, GenerationMode, NameResult
 
 runner = CliRunner()
 
@@ -83,3 +86,125 @@ def test_compose_rejects_selection_without_syllable_data() -> None:
     result = runner.invoke(app, ["compose", "thorwal"])
     assert result.exit_code == 1
     assert "Silbenbausteine" in result.stdout
+
+
+def test_compose_accepts_syllable_limits() -> None:
+    result = runner.invoke(
+        app,
+        [
+            "compose",
+            "mittelreich_kosch",
+            "--min-syllables",
+            "2",
+            "--max-syllables",
+            "2",
+            "--format",
+            "json",
+        ],
+    )
+    assert result.exit_code == 0
+    assert '"components"' in result.stdout
+
+
+def test_simple_exclude_file_omits_used_name(tmp_path: Path) -> None:
+    used = tmp_path / "used_names.txt"
+    used.write_text("Yppolita di Marcia\n", encoding="utf-8")
+
+    captured = {}
+
+    def fake_generate(*, region, mode=GenerationMode.SIMPLE, gender=Gender.ANY, **kwargs):
+        captured["exclude_names"] = kwargs.get("exclude_names")
+        return NameResult.build(
+            first="Test",
+            last="Name",
+            gender=gender,
+            region=region,
+            mode=mode,
+        )
+
+    import namegen.cli as cli_module
+
+    original_generate = cli_module.generate
+    cli_module.generate = fake_generate
+    try:
+        result = runner.invoke(
+            app,
+            [
+                "simple",
+                "horasreich",
+                "--exclude-file",
+                str(used),
+                "--format",
+                "plain",
+            ],
+        )
+    finally:
+        cli_module.generate = original_generate
+
+    assert result.exit_code == 0
+    assert captured["exclude_names"] == {"yppolita di marcia"}
+
+
+def test_config_profile_save_and_load(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
+
+    save_result = runner.invoke(
+        app,
+        [
+            "config",
+            "save",
+            "testprofil",
+            "--region",
+            "mittelreich_kosch",
+            "--mode",
+            "compose",
+            "--gender",
+            "female",
+            "--count",
+            "3",
+            "--format",
+            "json",
+            "--min-syllables",
+            "2",
+            "--max-syllables",
+            "2",
+        ],
+    )
+    assert save_result.exit_code == 0
+
+    load_result = runner.invoke(app, ["config", "load", "testprofil"])
+    assert load_result.exit_code == 0
+    assert '"region": "mittelreich_kosch"' in load_result.stdout
+    assert '"mode": "compose"' in load_result.stdout
+
+
+def test_compose_can_use_profile_defaults(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
+
+    save_result = runner.invoke(
+        app,
+        [
+            "config",
+            "save",
+            "kurz",
+            "--region",
+            "mittelreich_kosch",
+            "--mode",
+            "compose",
+            "--gender",
+            "male",
+            "--count",
+            "1",
+            "--format",
+            "json",
+            "--min-syllables",
+            "2",
+            "--max-syllables",
+            "2",
+        ],
+    )
+    assert save_result.exit_code == 0
+
+    run_result = runner.invoke(app, ["compose", "--profile", "kurz"])
+    assert run_result.exit_code == 0
+    assert '"mode": "compose"' in run_result.stdout

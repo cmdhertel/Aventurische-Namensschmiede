@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% block title %}Favoriten – Aventurische Namensschmiede{% endblock %}
+
+{% block content %}
+<div class="space-y-10">
+  <div class="text-center space-y-3 pt-2">
+    <p class="text-xs tracking-[0.35em] uppercase"
+       style="font-family: 'Inter', sans-serif; color: var(--color-accent); opacity: 0.6;">
+      Das Schwarze Auge
+    </p>
+    <h1 class="font-display text-4xl sm:text-5xl font-semibold tracking-wide"
+        style="color: var(--color-text);">
+      Gespeicherte&nbsp;<span style="color: var(--color-accent);">Favoriten</span>
+    </h1>
+    <p class="text-lg italic max-w-md mx-auto"
+       style="font-family: 'Crimson Text', serif; color: var(--color-text-muted);">
+      Lokal im Browser gespeichert, ohne Serverzustand
+    </p>
+    <div class="ornament max-w-xs mx-auto pt-2"><span>✦</span></div>
+  </div>
+
+  <div class="card p-6 min-h-64">
+    <div class="flex items-center justify-between mb-5 pb-3 border-b"
+         style="border-color: var(--color-divider);">
+      <div class="section-header flex items-center gap-2">
+        <span>Favoritenliste</span>
+        <span id="favourites-count" class="text-xs font-normal normal-case tracking-normal"
+              style="font-family: 'Inter', sans-serif; color: var(--color-text-faint); opacity: 1;">
+          (0)
+        </span>
+      </div>
+      <div class="flex gap-2">
+        <button type="button" onclick="clearFavourites()" class="btn-secondary text-xs py-1 px-2.5">
+          Leeren
+        </button>
+        <button type="button" onclick="downloadFavouritesCsv()" class="btn-secondary text-xs py-1 px-2.5">
+          CSV
+        </button>
+        <button type="button" onclick="downloadFavouritesJson()" class="btn-secondary text-xs py-1 px-2.5">
+          JSON
+        </button>
+      </div>
+    </div>
+
+    <div id="favourites-empty"
+         class="flex flex-col items-center justify-center py-16 text-sm">
+      <p class="italic text-base" style="font-family: 'Crimson Text', serif; color: var(--color-text-muted);">
+        Noch keine Favoriten gespeichert
+      </p>
+      <p class="text-xs mt-1" style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
+        Nutze im Generator das Sternsymbol neben einem Eintrag
+      </p>
+    </div>
+
+    <div id="favourites-list" class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-2"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const FAVOURITES_KEY = 'namenschmiede-favourites';
+
+  function loadFavourites() {
+    try {
+      const raw = localStorage.getItem(FAVOURITES_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveFavourites(entries) {
+    localStorage.setItem(FAVOURITES_KEY, JSON.stringify(entries));
+  }
+
+  function buildEnvelope(entries) {
+    return {
+      format: 'namenschmiede-results',
+      version: 1,
+      exported_at: new Date().toISOString(),
+      entries,
+    };
+  }
+
+  function updateCount() {
+    const n = document.querySelectorAll('.name-entry').length;
+    document.getElementById('favourites-count').textContent = `(${n})`;
+    document.getElementById('favourites-empty').style.display = n === 0 ? '' : 'none';
+  }
+
+  async function renderFavourites() {
+    const entries = loadFavourites();
+    const list = document.getElementById('favourites-list');
+    if (!entries.length) {
+      list.innerHTML = '';
+      updateCount();
+      return;
+    }
+
+    const response = await fetch('/import-json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildEnvelope(entries)),
+    });
+    if (!response.ok) {
+      list.innerHTML = '';
+      updateCount();
+      return;
+    }
+    list.innerHTML = await response.text();
+    refreshFavouriteButtons();
+    updateCount();
+  }
+
+  function collectEntry(el) {
+    const isCharacter = el.dataset.age !== undefined && el.dataset.age !== '';
+    const base = {
+      kind: isCharacter ? 'character' : 'name',
+      full_name: el.dataset.fullName,
+      gender: el.dataset.gender,
+      region: el.dataset.region,
+      culture: el.dataset.culture || null,
+      species: el.dataset.species || null,
+      region_abbr: el.dataset.regionAbbr || null,
+      mode: el.dataset.mode,
+    };
+    if (!isCharacter) return base;
+    return {
+      ...base,
+      age: Number(el.dataset.age),
+      profession: el.dataset.profession,
+      hair: el.dataset.hair,
+      eyes: el.dataset.eyes,
+      build: el.dataset.build,
+      personality: el.dataset.personality,
+      motivation: el.dataset.motivation,
+      quirk: el.dataset.quirk,
+    };
+  }
+
+  function favouriteKey(entry) {
+    return JSON.stringify(entry);
+  }
+
+  function updateFavouriteButton(button, active) {
+    button.textContent = active ? '★' : '☆';
+    button.style.color = active ? 'var(--color-accent)' : 'var(--color-text-faint)';
+  }
+
+  function refreshFavouriteButtons(scope = document) {
+    scope.querySelectorAll('.favourite-toggle').forEach(button => updateFavouriteButton(button, true));
+  }
+
+  function removeName(button) {
+    toggleFavourite(button.closest('.name-entry').querySelector('.favourite-toggle'));
+  }
+
+  function toggleFavourite(button) {
+    const entry = collectEntry(button.closest('.name-entry'));
+    const key = favouriteKey(entry);
+    const next = loadFavourites().filter(saved => favouriteKey(saved) !== key);
+    saveFavourites(next);
+    button.closest('.name-entry').remove();
+    updateCount();
+  }
+
+  function clearFavourites() {
+    saveFavourites([]);
+    document.getElementById('favourites-list').innerHTML = '';
+    updateCount();
+  }
+
+  function downloadBlob(content, filename, type) {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadFavouritesJson() {
+    const entries = loadFavourites();
+    if (!entries.length) return;
+    downloadBlob(
+      JSON.stringify(buildEnvelope(entries), null, 2),
+      'namenschmiede_favoriten.json',
+      'application/json;charset=utf-8',
+    );
+  }
+
+  function downloadFavouritesCsv() {
+    const entries = loadFavourites();
+    if (!entries.length) return;
+    const header = [
+      'kind', 'full_name', 'gender', 'species', 'culture', 'region', 'region_abbr', 'mode',
+      'age', 'profession', 'hair', 'eyes', 'build', 'personality', 'motivation', 'quirk',
+    ];
+    const lines = [
+      header.join(','),
+      ...entries.map(entry => header.map(key => JSON.stringify(entry[key] ?? '')).join(',')),
+    ];
+    downloadBlob(lines.join('\n') + '\n', 'namenschmiede_favoriten.csv', 'text/csv;charset=utf-8');
+  }
+
+  renderFavourites();
+</script>
+{% endblock %}

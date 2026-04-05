@@ -119,12 +119,16 @@ def parse_results_json(
     payload: str,
 ) -> list[NameTemplateResult | CharacterTemplateResult]:
     """Validate and normalize imported result JSON for template rendering."""
+    parsed = load_results_export(payload)
+    return [_to_template_result(entry) for entry in parsed.entries]
+
+
+def load_results_export(payload: str) -> ResultsExport:
+    """Validate and return the web result export envelope."""
     try:
-        parsed = ResultsExport.model_validate(json.loads(payload))
+        return ResultsExport.model_validate(json.loads(payload))
     except (json.JSONDecodeError, ValidationError) as exc:
         raise ValueError("Ungültige JSON-Datei für Namensliste/Charakterliste.") from exc
-
-    return [_to_template_result(entry) for entry in parsed.entries]
 
 
 def _to_template_result(

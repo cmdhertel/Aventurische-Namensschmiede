@@ -174,6 +174,20 @@ def resolve_generation_targets(selection_id: str, compose_only: bool = False) ->
     selection = selection_id.lower()
     catalog = _get_concrete_origin_catalog()
 
+    if "," in selection:
+        parts = tuple(part.strip() for part in selection.split(",") if part.strip())
+        if not parts:
+            raise LoaderError("Selection list is empty.")
+        if len(parts) > 3:
+            raise LoaderError("At most 3 selections can be mixed at once.")
+
+        resolved: list[str] = []
+        for part in parts:
+            resolved.extend(resolve_generation_targets(part, compose_only=False))
+
+        deduped = tuple(dict.fromkeys(resolved))
+        return _filter_compose_targets(selection_id, deduped) if compose_only else deduped
+
     if selection in list_regions():
         targets = (selection,)
         return _filter_compose_targets(selection_id, targets) if compose_only else targets
