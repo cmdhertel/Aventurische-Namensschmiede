@@ -77,3 +77,9 @@ def test_simple_accepts_species_aggregate_id() -> None:
     result = runner.invoke(app, ["simple", "human", "--format", "json"])
     assert result.exit_code == 0
     assert '"species": "Mensch"' in result.stdout
+
+
+def test_compose_rejects_selection_without_syllable_data() -> None:
+    result = runner.invoke(app, ["compose", "thorwal"])
+    assert result.exit_code == 1
+    assert "Silbenbausteine" in result.stdout

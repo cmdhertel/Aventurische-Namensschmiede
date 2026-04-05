@@ -248,6 +248,10 @@ def _abbreviation_from_name(name: str) -> str:
     return (letters[:3] or "REG").ljust(3, "X")
 
 
+def _has_compose_parts(parts: ComposeParts) -> bool:
+    return bool(parts.prefix and parts.suffix)
+
+
 def _load_raw_culture_region(culture_id: str) -> dict:
     raw_culture = _read_toml(f"cultures/{culture_id.lower()}.toml")
     meta = raw_culture.get("meta", {})
@@ -374,6 +378,11 @@ def load_region(region_name: str) -> RegionData:
 load_origin = load_region
 
 
+def _region_supports_compose(data: RegionData) -> bool:
+    first = data.compose.first
+    return any(_has_compose_parts(parts) for parts in (first.male, first.female, first.neutral))
+
+
 @cache
 def _get_concrete_origin_catalog() -> tuple[dict[str, str], ...]:
     catalog: list[dict[str, str]] = []
@@ -390,6 +399,7 @@ def _get_concrete_origin_catalog() -> tuple[dict[str, str], ...]:
                 "region_name": "",
                 "has_region": "false",
                 "is_aggregate": "false",
+                "has_compose": "true" if _region_supports_compose(data) else "false",
                 "notes": data.meta.notes,
             }
         )
@@ -415,6 +425,7 @@ def _get_concrete_origin_catalog() -> tuple[dict[str, str], ...]:
                 "region_name": data.meta.region if is_region_choice else "",
                 "has_region": "true" if is_region_choice else "false",
                 "is_aggregate": "false",
+                "has_compose": "true" if _region_supports_compose(data) else "false",
                 "notes": data.meta.notes,
             }
         )
@@ -450,6 +461,12 @@ def get_origin_catalog() -> list[dict[str, str]]:
                 "region_name": "",
                 "has_region": "false",
                 "is_aggregate": "true",
+                "has_compose": "true"
+                if any(
+                    entry["species_id"] == species_id and entry["has_compose"] == "true"
+                    for entry in _get_concrete_origin_catalog()
+                )
+                else "false",
                 "notes": "Zufällige Auswahl aus allen Kulturen und Regionen dieser Spezies.",
             }
         )
@@ -473,6 +490,12 @@ def get_origin_catalog() -> list[dict[str, str]]:
             "region_name": _REGION_AGGREGATE_LABEL,
             "has_region": "true",
             "is_aggregate": "true",
+            "has_compose": "true"
+            if any(
+                entry["culture_id"] == _REGION_ONLY_CULTURE_ID and entry["has_compose"] == "true"
+                for entry in _get_concrete_origin_catalog()
+            )
+            else "false",
             "notes": "Zufällige Auswahl aus allen Mittelreich-Regionen.",
         }
     )
@@ -488,27 +511,37 @@ def get_origin_catalog() -> list[dict[str, str]]:
     )
 
 
+def _filter_compose_targets(selection_id: str, targets: tuple[str, ...]) -> tuple[str, ...]:
+    compose_targets = tuple(target for target in targets if selection_supports_compose(target))
+    if compose_targets:
+        return compose_targets
+    raise LoaderError(f"Selection '{selection_id}' has no Silbenbausteine.")
+
+
 @cache
-def resolve_generation_targets(selection_id: str) -> tuple[str, ...]:
+def resolve_generation_targets(selection_id: str, compose_only: bool = False) -> tuple[str, ...]:
     selection = selection_id.lower()
     catalog = _get_concrete_origin_catalog()
 
     if selection in list_regions():
-        return (selection,)
+        targets = (selection,)
+        return _filter_compose_targets(selection_id, targets) if compose_only else targets
 
     direct_match = [item["id"] for item in catalog if item["id"] == selection]
     if direct_match:
-        return tuple(direct_match)
+        targets = tuple(direct_match)
+        return _filter_compose_targets(selection_id, targets) if compose_only else targets
 
     if selection in list_species():
         targets = tuple(item["id"] for item in catalog if item["species_id"] == selection)
         if targets:
-            return targets
+            return _filter_compose_targets(selection_id, targets) if compose_only else targets
 
     if selection in list_cultures():
         targets = [item["id"] for item in catalog if item["culture_id"] == selection]
         if targets:
-            return tuple(targets)
+            resolved = tuple(targets)
+            return _filter_compose_targets(selection_id, resolved) if compose_only else resolved
 
     available = ", ".join(
         sorted({*list_species(), *list_cultures(), *(item["id"] for item in catalog)})
@@ -516,8 +549,32 @@ def resolve_generation_targets(selection_id: str) -> tuple[str, ...]:
     raise LoaderError(f"Selection '{selection_id}' not found. Available: {available}")
 
 
-def pick_generation_target(selection_id: str, rng: random.Random) -> str:
-    targets = resolve_generation_targets(selection_id)
+@cache
+def selection_supports_compose(selection_id: str) -> bool:
+    selection = selection_id.lower()
+    if selection in list_regions():
+        return _region_supports_compose(load_region(selection))
+
+    concrete_catalog = _get_concrete_origin_catalog()
+    if selection in list_species():
+        return any(
+            item["species_id"] == selection and item["has_compose"] == "true"
+            for item in concrete_catalog
+        )
+    if selection in list_cultures():
+        return any(
+            item["culture_id"] == selection and item["has_compose"] == "true"
+            for item in concrete_catalog
+        )
+    return False
+
+
+def pick_generation_target(
+    selection_id: str,
+    rng: random.Random,
+    compose_only: bool = False,
+) -> str:
+    targets = resolve_generation_targets(selection_id, compose_only=compose_only)
     if len(targets) == 1:
         return targets[0]
     return rng.choice(list(targets))

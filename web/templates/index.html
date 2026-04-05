@@ -99,7 +99,7 @@
             <span class="form-label">Modus</span>
             <div class="radio-group">
               {% for val, label in [('simple','Namensliste'),('compose','Silbenbaukasten')] %}
-              <label class="radio-pill">
+              <label class="radio-pill" id="mode-pill-{{ val }}">
                 <input type="radio" name="mode" value="{{ val }}"
                        {% if val == 'simple' %}checked{% endif %} />
                 <span>{{ label }}</span>
@@ -248,6 +248,7 @@
 <script>
   const ORIGINS = JSON.parse(document.getElementById('origin-catalog').textContent);
   const SELECTED_ORIGIN = {{ selected_region|tojson }};
+  let composeEnabled = {{ compose_default_enabled|tojson }};
 
   function fillSelect(select, options, selectedValue) {
     select.innerHTML = '';
@@ -297,6 +298,23 @@
     fillSelect(regionEl, regionOptions, selectedRegion);
     regionWrap.style.display = showRegion ? '' : 'none';
     regionLabel.style.display = showRegion ? '' : 'none';
+    syncModeAvailability(selectedRegion);
+  }
+
+  function syncModeAvailability(selectionId) {
+    const composeInput = document.querySelector('input[name="mode"][value="compose"]');
+    const composePill = document.getElementById('mode-pill-compose');
+    const simpleInput = document.querySelector('input[name="mode"][value="simple"]');
+    const selectedEntry = ORIGINS.find(o => o.id === selectionId);
+    composeEnabled = selectedEntry?.has_compose === 'true';
+
+    composeInput.disabled = !composeEnabled;
+    composePill.style.opacity = composeEnabled ? '' : '0.45';
+    composePill.style.cursor = composeEnabled ? '' : 'not-allowed';
+
+    if (!composeEnabled && composeInput.checked) {
+      simpleInput.checked = true;
+    }
   }
 
   function toggleCharacter() {
@@ -389,6 +407,7 @@
     syncOriginSelectors();
     document.getElementById('culture').value = selectedOrigin?.culture_id || document.getElementById('culture').value;
     syncOriginSelectors();
+    syncModeAvailability(document.getElementById('region').value);
   })();
 </script>
 {% endblock %}

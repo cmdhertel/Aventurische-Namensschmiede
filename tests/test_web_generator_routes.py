@@ -33,10 +33,11 @@ def test_default_selected_region_prefers_human_entries() -> None:
             "id": "human",
             "species_id": "human",
             "culture_id": "all__human",
+            "has_compose": "true",
         },
-        {"id": "firnelfen", "species_id": "elf"},
-        {"id": "thorwal", "species_id": "human"},
-        {"id": "ambosszwerge", "species_id": "dwarf"},
+        {"id": "firnelfen", "species_id": "elf", "has_compose": "false"},
+        {"id": "thorwal", "species_id": "human", "has_compose": "false"},
+        {"id": "ambosszwerge", "species_id": "dwarf", "has_compose": "false"},
     ]
 
     assert _default_selected_region(origins) == "human"
