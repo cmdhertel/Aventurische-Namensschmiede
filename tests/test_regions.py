@@ -1,6 +1,5 @@
 from namegen.loader import list_regions, load_region
 
-
 NEW_REGION_IDS = [
     "kalifat",
     "mittelreich_nordmarken",
@@ -42,8 +41,4 @@ def test_new_regions_load_with_name_material() -> None:
         data = load_region(region_id)
         assert len(data.meta.abbreviation) == 3
         assert data.origin.region_id == region_id
-        assert (
-            data.simple.first.male
-            or data.simple.first.female
-            or data.simple.first.neutral
-        )
+        assert data.simple.first.male or data.simple.first.female or data.simple.first.neutral
