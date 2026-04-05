@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import random
 
-from .loader import load_region, pick_generation_target
+from .catalog import pick_generation_target
+from .loader import load_region
 from .models import (
     ComposeParts,
     ComposeSection,
@@ -15,6 +16,7 @@ from .models import (
     NameResult,
     NameSchemaType,
     RegionData,
+    _DEFAULT_INFIX_PROBABILITY,
 )
 
 
@@ -201,7 +203,7 @@ def _generate_compose(
     first_infix_probability = (
         infix_probability_override
         if infix_probability_override is not None
-        else first_section.infix_probability
+        else (first_section.infix_probability or _DEFAULT_INFIX_PROBABILITY)
     )
 
     prefix = _pick(fp.prefix, fn.prefix, "prefix", "first name", data.meta.region, rng)
@@ -224,7 +226,7 @@ def _generate_compose(
     last_infix_probability = (
         infix_probability_override
         if infix_probability_override is not None
-        else last_section.infix_probability
+        else (last_section.infix_probability or _DEFAULT_INFIX_PROBABILITY)
     )
     all_prefixes = lp.prefix + ln.prefix
     all_suffixes = lp.suffix + ln.suffix
@@ -246,6 +248,9 @@ def _generate_compose(
         last_suffix=last_suffix,
     )
 
+    # resolved_gender stays as-is (including ANY): compose mode merges all gender
+    # pools into one, so we can't determine which gender the syllables came from.
+    # In simple mode resolved_gender is set by whichever pool the name was drawn from.
     return _apply_schema(
         data=data,
         first=first,

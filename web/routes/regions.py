@@ -29,7 +29,8 @@ async def regions_page(request: Request):
                 }
             )
         except Exception:
-            pass
+            import logging
+            logging.getLogger(__name__).warning("Failed to load region %r", rid, exc_info=True)
     return _TEMPLATES.TemplateResponse(
         request,
         "regions.html",

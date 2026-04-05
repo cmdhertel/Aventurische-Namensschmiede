@@ -58,11 +58,11 @@ def test_parse_results_json_supports_mixed_name_and_character_entries() -> None:
     results = parse_results_json(json.dumps(payload))
 
     assert len(results) == 2
-    assert results[0]["kind"] == "name"
-    assert results[0]["resolved_gender"]["value"] == "male"
-    assert results[1]["kind"] == "character"
-    assert results[1]["name"]["resolved_gender"]["value"] == "female"
-    assert results[1]["traits"]["physical"]["hair"] == "blond"
+    assert results[0].kind == "name"
+    assert results[0].resolved_gender.value == "male"
+    assert results[1].kind == "character"
+    assert results[1].name.resolved_gender.value == "female"
+    assert results[1].traits.physical.hair == "blond"
 
 
 def test_parse_results_json_rejects_invalid_payload() -> None:

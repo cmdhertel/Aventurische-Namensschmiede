@@ -8,7 +8,8 @@ from functools import lru_cache
 from importlib.resources import files
 
 from .generator import generate
-from .loader import load_region, pick_generation_target
+from .catalog import pick_generation_target
+from .loader import load_region
 from .models import (
     CharacterResult,
     CharacterTraits,
@@ -110,6 +111,7 @@ def _pick_profession(
 
 
 def _weighted_pool(base: list[str], extra: list[str], multiplier: int = 3) -> list[str]:
+    # multiplier=3: regional entries appear 3× more often than generic pool entries
     if not extra:
         return base
     return base + extra * multiplier

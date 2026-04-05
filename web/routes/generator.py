@@ -18,7 +18,7 @@ from result_transfer import parse_results_json
 
 from namegen.chargen import generate_character
 from namegen.generator import generate
-from namegen.loader import (
+from namegen.catalog import (
     get_origin_catalog,
     resolve_generation_targets,
     selection_supports_compose,
@@ -162,15 +162,13 @@ async def generate_names(
         input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
         empty_results = count_empty_names(results)
 
-        span.set_attribute("namegen.region", region)
-        span.set_attribute("namegen.mode", mode)
-        span.set_attribute("namegen.gender", gender)
-        span.set_attribute("namegen.character", character_enabled)
-        span.set_attribute("namegen.profession_category", profession_category)
-        span.set_attribute("namegen.requested_count", count)
-        span.set_attribute("namegen.input_chars", input_chars)
-        span.set_attribute("namegen.output_chars", output_chars)
-        span.set_attribute("namegen.empty_results", empty_results)
+        attrs.update({
+            "namegen.requested_count": count,
+            "namegen.input_chars": input_chars,
+            "namegen.output_chars": output_chars,
+            "namegen.empty_results": empty_results,
+        })
+        span.set_attributes(attrs)
 
         if _metrics:
             _metrics.generate_calls.add(1, attrs)
@@ -225,15 +223,16 @@ async def generate_names(
 
 
 @router.post("/pdf")
-async def download_pdf(names: str = Form(...)):
+async def download_pdf(names: str = Form(...), kind: str = Form("name")):
     from pdf_utils import build_pdf_bytes  # noqa: PLC0415
 
     with _tracer.start_as_current_span("namegen.pdf.build") as span:
         name_data: list[dict] = json.loads(names)
         span.set_attribute("namegen.pdf.names_count", len(name_data))
+        span.set_attribute("namegen.pdf.kind", kind)
 
         start = perf_counter()
-        pdf_bytes = build_pdf_bytes(name_data)
+        pdf_bytes = build_pdf_bytes(name_data, kind=kind)
         elapsed_ms = (perf_counter() - start) * 1000
 
         if _metrics:
