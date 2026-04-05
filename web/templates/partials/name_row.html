@@ -30,6 +30,15 @@
     {{ gender_de[gv] }}
   </span>
 
+  <button type="button"
+          onclick="toggleFavourite(this)"
+          aria-label="Favorit umschalten"
+          class="favourite-toggle shrink-0 w-6 h-6 rounded flex items-center justify-center text-sm leading-none
+                 transition-all duration-150 opacity-0 group-hover:opacity-100 focus:opacity-100"
+          style="color: var(--color-text-faint);">
+    ☆
+  </button>
+
   <!-- Löschen -->
   <button type="button" onclick="removeName(this)" aria-label="Entfernen"
           class="shrink-0 w-6 h-6 rounded flex items-center justify-center text-base leading-none

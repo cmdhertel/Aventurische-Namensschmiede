@@ -71,9 +71,19 @@
                   {% if '/regions' in request.url.path %}
                     background-color: var(--color-input-bg); color: var(--color-text);
                   {% else %}
-                    color: var(--color-text-muted);
+                   color: var(--color-text-muted);
                   {% endif %}">
           Regionen
+        </a>
+        <a href="/favourites"
+           class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
+           style="font-family: 'Inter', system-ui, sans-serif;
+                  {% if '/favourites' in request.url.path %}
+                    background-color: var(--color-input-bg); color: var(--color-text);
+                  {% else %}
+                    color: var(--color-text-muted);
+                  {% endif %}">
+          Favoriten
         </a>
         <a href="/rechtliches"
            class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"

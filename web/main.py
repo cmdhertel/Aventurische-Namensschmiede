@@ -16,10 +16,9 @@ from routes.regions import router as regions_router
 
 app = FastAPI(
     title="DSA Namengenerator",
-    # Swagger/ReDoc ausgeblendet – später für /api/v1/ aktivierbar
-    docs_url=None,
-    redoc_url=None,
-    openapi_url=None,
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
 )
 
 logger = setup_logging()
