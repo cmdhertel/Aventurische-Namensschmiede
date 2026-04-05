@@ -33,6 +33,7 @@ _GENDER_DE = {
 _logger = logging.getLogger("namenschmiede.observability")
 _tracer: Tracer = get_tracer("namenschmiede.web")
 _metrics: AppMetrics | None = None
+_TRUE_FORM_VALUES = {"1", "true", "on", "yes"}
 
 
 def configure_observability(
@@ -50,6 +51,12 @@ def configure_observability(
 
 def _get_origins() -> list[dict]:
     return get_origin_catalog()
+
+
+def _parse_checkbox_value(value: str | None) -> bool:
+    if value is None:
+        return False
+    return value.strip().lower() in _TRUE_FORM_VALUES
 
 
 @router.get("/")
@@ -81,17 +88,18 @@ async def generate_names(
     gender: str = Form("any"),
     mode: str = Form("simple"),
     count: int = Form(5),
-    character: bool = Form(False),
+    character: str | None = Form(None),
     profession_category: str = Form("alle"),
 ):
     with _tracer.start_as_current_span("namegen.generate") as span:
         count = max(1, min(count, 50))
+        character_enabled = _parse_checkbox_value(character)
 
         attrs = {
             "namegen.region": region,
             "namegen.mode": mode,
             "namegen.gender": gender,
-            "namegen.character": character,
+            "namegen.character": character_enabled,
             "namegen.profession_category": profession_category,
         }
 
@@ -116,7 +124,7 @@ async def generate_names(
                 _metrics.load_region_duration_ms.record((perf_counter() - load_start) * 1000, attrs)
 
         generate_start = perf_counter()
-        if character:
+        if character_enabled:
             results = [
                 generate_character(
                     region=region,
@@ -141,7 +149,7 @@ async def generate_names(
         span.set_attribute("namegen.region", region)
         span.set_attribute("namegen.mode", mode)
         span.set_attribute("namegen.gender", gender)
-        span.set_attribute("namegen.character", character)
+        span.set_attribute("namegen.character", character_enabled)
         span.set_attribute("namegen.profession_category", profession_category)
         span.set_attribute("namegen.requested_count", count)
         span.set_attribute("namegen.input_chars", input_chars)
@@ -163,7 +171,7 @@ async def generate_names(
                 " character=%s empty_ratio=%.2f",
                 region,
                 mode,
-                character,
+                character_enabled,
                 empty_results / count,
             )
 
@@ -174,7 +182,7 @@ async def generate_names(
             region,
             mode,
             gender,
-            character,
+            character_enabled,
             profession_category,
             count,
             input_chars,
