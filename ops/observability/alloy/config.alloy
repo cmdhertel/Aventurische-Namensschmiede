@@ -1,0 +1,82 @@
+// ── Docker container discovery ───────────────────────────────────────────────
+discovery.docker "containers" {
+  host             = "unix:///var/run/docker.sock"
+  refresh_interval = "10s"
+}
+
+discovery.relabel "containers" {
+  targets = discovery.docker.containers.targets
+
+  // Strip leading slash from container name: /namegen-web-1 → namegen-web-1
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  // Use the Compose service name as primary service label
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+
+  // Keep the Compose project name for multi-project setups
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "compose_project"
+  }
+
+  // Distinguish stdout vs stderr
+  rule {
+    source_labels = ["__meta_docker_container_log_stream"]
+    target_label  = "logstream"
+  }
+}
+
+// ── Collect logs from all Docker containers ───────────────────────────────────
+loki.source.docker "default" {
+  host                     = "unix:///var/run/docker.sock"
+  targets                  = discovery.relabel.containers.output
+  forward_to = [loki.process.pipeline.receiver]
+}
+
+// ── Processing pipeline ───────────────────────────────────────────────────────
+loki.process "pipeline" {
+  forward_to = [loki.write.loki_server.receiver]
+
+  // Extract log level from Python/Rich log output
+  // Rich outputs lines like: "[HH:MM:SS] INFO  event=http.request ..."
+  stage.regex {
+    expression = "\\s(?P<level>DEBUG|INFO|WARNING|ERROR|CRITICAL)\\s"
+  }
+
+  stage.labels {
+    values = {
+      level = "",
+    }
+  }
+
+  // Extract trace_id for Tempo correlation
+  // Web app logs: "... trace_id=<hex32> span_id=<hex16>"
+  stage.regex {
+    expression = "trace_id=(?P<trace_id>[0-9a-f]{32})"
+  }
+
+  stage.labels {
+    values = {
+      trace_id = "",
+    }
+  }
+
+  // Suppress noisy health-check polling lines
+  stage.drop {
+    expression = "GET /health"
+  }
+}
+
+// ── Write to Loki ─────────────────────────────────────────────────────────────
+loki.write "loki_server" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
