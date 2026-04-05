@@ -96,10 +96,9 @@ def _write_rich_characters(results: list[CharacterResult]) -> None:
         t = r.traits
         lines = [
             f"[bold amber]{r.full_name}[/bold amber]",
-            f"[dim]{r.name.region}  ·  {_GENDER_DE[r.gender.value]}  ·  {r.experience.value}  ·  {r.age} Jahre  ·  {r.profession}[/dim]",
             (
                 f"[dim]{r.name.region}  ·  {_GENDER_DE[r.gender.value]}"
-                f"  ·  {r.age} Jahre  ·  {r.profession}[/dim]"
+                f"  ·  {r.experience.value}  ·  {r.age} Jahre  ·  {r.profession}[/dim]"
             ),
             "",
             (
@@ -118,11 +117,9 @@ def _chars_to_plain(results: list[CharacterResult]) -> str:
     for r in results:
         t = r.traits
         lines += [
-            f"{r.full_name}  ({r.name.region}, {_GENDER_DE[r.gender.value]}, {r.experience.value}, {r.age} J., {r.profession})",
-            f"  Äußeres:  Haare {t.physical.hair}, Augen {t.physical.eyes}, Statur {t.physical.build}",
             (
                 f"{r.full_name}  ({r.name.region},"
-                f" {_GENDER_DE[r.gender.value]}, {r.age} J., {r.profession})"
+                f" {_GENDER_DE[r.gender.value]}, {r.experience.value}, {r.age} J., {r.profession})"
             ),
             (
                 f"  Äußeres:  Haare {t.physical.hair},"

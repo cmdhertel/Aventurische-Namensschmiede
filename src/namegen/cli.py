@@ -15,8 +15,7 @@ from .chargen import generate_character, get_profession_groups
 from .generator import GeneratorError, generate
 from .loader import LoaderError, list_regions, load_region
 from .models import ExperienceLevel, Gender, GenerationMode, ProfessionCategory
-from .output import OutputFormat, write as output_write
-from .models import Gender, GenerationMode, ProfessionCategory
+from .output import OutputFormat
 from .output import write as output_write
 
 app = typer.Typer(
@@ -39,16 +38,6 @@ def _default(ctx: typer.Context) -> None:
 
 # ── Shared option types ────────────────────────────────────────────────────────
 
-RegionArg     = Annotated[str,           typer.Argument(help="Region ID (z.B. kosch, mittelreich, horasreich).")]
-GenderOpt     = Annotated[Gender,        typer.Option("--gender", "-g", help="male | female | any", case_sensitive=False)]
-CountOpt      = Annotated[int,           typer.Option("--count", "-n", help="Anzahl Namen.", min=1, max=100)]
-ComponentsOpt = Annotated[bool,          typer.Option("--components", "-c", help="Silbenbausteine anzeigen (nur compose).")]
-CharacterOpt  = Annotated[bool,               typer.Option("--character", "-C", help="Vollständigen Charakter generieren (Beruf, Alter, Eigenschaften).")]
-CategoryOpt   = Annotated[ProfessionCategory, typer.Option("--profession-category", "--category", "-k", help="Berufskategorie: alle | geweihte | zauberer | kaempfer | profan", case_sensitive=False)]
-ExperienceOpt = Annotated[ExperienceLevel, typer.Option("--experience", help="Erfahrungsstufe: lehrling | geselle | meister | veteran", case_sensitive=False)]
-InfixProbOpt  = Annotated[float | None, typer.Option("--infix-probability", min=0.0, max=1.0, help="Überschreibt im Compose-Modus temporär die Infix-Wahrscheinlichkeit für Vor- und Nachnamen.")]
-FormatOpt     = Annotated[OutputFormat,       typer.Option("--format", "-f", help="Ausgabeformat: rich | plain | json | csv | markdown | clipboard | pdf", case_sensitive=False)]
-OutputOpt     = Annotated[Optional[Path],     typer.Option("--output", "-o", help="Ausgabedatei (Standard: stdout / Standardname für PDF).")]
 RegionArg = Annotated[
     str,
     typer.Argument(help="Region ID (z.B. kosch, mittelreich, horasreich)."),
@@ -76,10 +65,31 @@ CharacterOpt = Annotated[
 CategoryOpt = Annotated[
     ProfessionCategory,
     typer.Option(
+        "--profession-category",
         "--category",
         "-k",
         help="Berufskategorie: alle | geweihte | zauberer | kaempfer | profan",
         case_sensitive=False,
+    ),
+]
+ExperienceOpt = Annotated[
+    ExperienceLevel,
+    typer.Option(
+        "--experience",
+        help="Erfahrungsstufe: lehrling | geselle | meister | veteran",
+        case_sensitive=False,
+    ),
+]
+InfixProbOpt = Annotated[
+    float | None,
+    typer.Option(
+        "--infix-probability",
+        min=0.0,
+        max=1.0,
+        help=(
+            "Überschreibt im Compose-Modus temporär die Infix-Wahrscheinlichkeit"
+            " für Vor- und Nachnamen."
+        ),
     ),
 ]
 FormatOpt = Annotated[
