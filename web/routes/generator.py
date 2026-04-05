@@ -1,4 +1,4 @@
-"""Generator-Routen: Startseite, Namens-Generierung, PDF-Download."""
+"""Generator-Routen: Startseite, Namens-Generierung, PDF- und JSON-Import."""
 
 from __future__ import annotations
 
@@ -8,12 +8,13 @@ import logging
 from pathlib import Path
 from time import perf_counter
 
-from fastapi import APIRouter, Form, Query, Request
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Form, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from observability import AppMetrics
 from observability_utils import count_empty_names, name_length, safe_full_name
 from opentelemetry.trace import Tracer, get_tracer
+from result_transfer import parse_results_json
 
 from namegen.chargen import generate_character
 from namegen.generator import generate
@@ -238,3 +239,21 @@ async def download_pdf(names: str = Form(...)):
             media_type="application/pdf",
             headers={"Content-Disposition": 'attachment; filename="dsa_namen.pdf"'},
         )
+
+
+@router.post("/import-json", response_class=HTMLResponse)
+async def import_results_json(request: Request):
+    payload = (await request.body()).decode("utf-8")
+    try:
+        results = parse_results_json(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return _TEMPLATES.TemplateResponse(
+        request,
+        "partials/imported_rows.html",
+        {
+            "results": results,
+            "gender_de": _GENDER_DE,
+        },
+    )

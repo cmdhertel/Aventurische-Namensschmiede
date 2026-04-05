@@ -205,6 +205,12 @@
             <button type="button" onclick="clearList()" class="btn-secondary text-xs py-1 px-2.5">
               Leeren
             </button>
+            <button type="button" onclick="triggerImportJson()" class="btn-secondary text-xs py-1 px-2.5">
+              Import
+            </button>
+            <button type="button" onclick="downloadJson()" class="btn-secondary text-xs py-1 px-2.5">
+              JSON
+            </button>
             <button type="button" onclick="downloadPdf()" class="btn-primary text-xs py-1 px-2.5">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -236,6 +242,8 @@
 
         <!-- Namensliste -->
         <div id="name-list" class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-2"></div>
+        <input type="file" id="json-import-input" accept="application/json,.json" class="hidden"
+               onchange="importJsonFile(this.files?.[0])" />
 
       </div>
     </div>
@@ -340,33 +348,115 @@
     updateCount();
   }
 
-  function downloadPdf() {
-    const entries = [...document.querySelectorAll('.name-entry')];
+  function collectEntries() {
+    return [...document.querySelectorAll('.name-entry')].map(el => {
+      const isCharacter = el.dataset.age !== undefined && el.dataset.age !== '';
+      const base = {
+        kind: isCharacter ? 'character' : 'name',
+        full_name: el.dataset.fullName,
+        gender: el.dataset.gender,
+        region: el.dataset.region,
+        culture: el.dataset.culture || null,
+        species: el.dataset.species || null,
+        region_abbr: el.dataset.regionAbbr || null,
+        mode: el.dataset.mode,
+      };
+      if (!isCharacter) return base;
+      return {
+        ...base,
+        age: Number(el.dataset.age),
+        profession: el.dataset.profession,
+        hair: el.dataset.hair,
+        eyes: el.dataset.eyes,
+        build: el.dataset.build,
+        personality: el.dataset.personality,
+        motivation: el.dataset.motivation,
+        quirk: el.dataset.quirk,
+      };
+    });
+  }
+
+  function buildJsonExport() {
+    return {
+      format: 'namenschmiede-results',
+      version: 1,
+      exported_at: new Date().toISOString(),
+      entries: collectEntries(),
+    };
+  }
+
+  function downloadJson() {
+    const entries = collectEntries();
     if (!entries.length) { alert('Keine Namen in der Liste.'); return; }
 
-    const isCharacter = entries.some(el => el.dataset.age !== undefined && el.dataset.age !== '');
-    const names = entries.map(el => {
-      const base = {
-        full_name:   el.dataset.fullName,
-        gender:      el.dataset.gender,
-        region:      el.dataset.region,
-        region_abbr: el.dataset.regionAbbr,
-        mode:        el.dataset.mode,
-      };
-      if (isCharacter) {
-        Object.assign(base, {
-          age:         el.dataset.age,
-          profession:  el.dataset.profession,
-          hair:        el.dataset.hair,
-          eyes:        el.dataset.eyes,
-          build:       el.dataset.build,
-          personality: el.dataset.personality,
-          motivation:  el.dataset.motivation,
-          quirk:       el.dataset.quirk,
-        });
+    const blob = new Blob(
+      [JSON.stringify(buildJsonExport(), null, 2)],
+      { type: 'application/json;charset=utf-8' },
+    );
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'namenschmiede_ergebnisse.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  function triggerImportJson() {
+    document.getElementById('json-import-input').click();
+  }
+
+  async function importJsonFile(file) {
+    const input = document.getElementById('json-import-input');
+    if (!file) return;
+    if (document.querySelectorAll('.name-entry').length > 0) {
+      const replace = confirm('Die aktuelle Liste wird durch den Import ersetzt. Fortfahren?');
+      if (!replace) {
+        input.value = '';
+        return;
       }
-      return base;
-    });
+    }
+
+    try {
+      const payload = await file.text();
+      const response = await fetch('/import-json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+      });
+      if (!response.ok) {
+        let message = 'Import fehlgeschlagen.';
+        try {
+          const data = await response.json();
+          message = data.detail || message;
+        } catch {
+          message = await response.text();
+        }
+        throw new Error(message);
+      }
+      document.getElementById('name-list').innerHTML = await response.text();
+      document.getElementById('name-list-empty').style.display = 'none';
+      updateCount();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Import fehlgeschlagen.');
+    } finally {
+      input.value = '';
+    }
+  }
+
+  function downloadPdf() {
+    const entries = collectEntries();
+    if (!entries.length) { alert('Keine Namen in der Liste.'); return; }
+
+    const hasNames = entries.some(entry => entry.kind === 'name');
+    const hasCharacters = entries.some(entry => entry.kind === 'character');
+    if (hasNames && hasCharacters) {
+      alert('PDF-Download ist nur für reine Namens- oder Charakterlisten verfügbar.');
+      return;
+    }
+
+    const names = entries.map(({ kind, ...entry }) => entry);
 
     const form = document.createElement('form');
     form.method = 'POST';
