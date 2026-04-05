@@ -1,0 +1,12 @@
+[meta]
+region = "Waldelfen"
+abbreviation = "WEL"
+notes = "Waldelf-Kulturen in den tiefen Wäldern Aventuriens. Naturverbundene Namen mit Tier- und Pflanzenbezügen."
+
+[origin]
+species_id = "elf"
+culture_id = "waldelfen"
+region_id = "elfen_waldelfen"
+
+[character]
+professions = ["Waldläufer", "Jagdweber", "Baumseher"]
