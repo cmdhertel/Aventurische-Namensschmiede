@@ -1,0 +1,29 @@
+[meta]
+name = "Bornländer"
+notes = "Kälteharte Kultur zwischen Adelsstolz und Grenzland."
+
+[naming_schema]
+type = "given_family"
+
+[simple.first]
+male = ["Bosjew", "Danow", "Elkwin", "Firunew", "Irjan", "Jaakon", "Oswin", "Travin"]
+female = ["Alwinja", "Dunjascha", "Elkwinja", "Hesinja", "Irinja", "Karinja", "Nadjescha", "Rowena"]
+
+[simple.last]
+neutral = ["Alwinnen", "Baerow", "Bornski", "Firunkis", "Larinow", "Saraski", "Timpski", "von Salderkeim"]
+
+[character]
+languages = ["Garethi (Bornländisch)"]
+scripts = ["Kusliker Zeichen"]
+local_knowledge = ["je nach Heimatort im Bornland"]
+social_status = ["Adel", "Unfrei"]
+professions = ["Jäger", "Holzfäller", "Soldat", "Händler", "Fuhrmann"]
+typical_advantages = ["Kälteresistenz", "Richtungssinn", "Zäher Hund"]
+typical_disadvantages = ["Hitzeempfindlich", "Aberglaube", "Vorurteile gegen Orks und Goblins"]
+typical_talents = ["Fährtensuchen", "Wildnisleben", "Pflanzenkunde", "Zechen"]
+personality = ["rau, stolz und ausdauernd"]
+motivations = ["will Hof, Familie oder Gut im Norden behaupten"]
+quirks = ["hält warmen Tee und Pelze für nahezu heilig"]
+
+package_ap = 18
+

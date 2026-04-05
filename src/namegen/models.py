@@ -1,4 +1,4 @@
-"""Pydantic v2 data models for region files and generator output."""
+"""Pydantic v2 data models for species, cultures, origins, and generator output."""
 
 from __future__ import annotations
 
@@ -36,7 +36,12 @@ class ExperienceLevel(StrEnum):
     VETERAN = "veteran"
 
 
-# ── Region TOML sub-models ────────────────────────────────────────────────────
+class NameSchemaType(StrEnum):
+    GIVEN_FAMILY = "given_family"
+    GIVEN_FAMILY_CONNECTOR = "given_family_connector"
+    GIVEN_PATRONYM = "given_patronym"
+    GIVEN_BYNAME = "given_byname"
+    SINGLE_NAME = "single_name"
 
 
 class GenderedStringPool(BaseModel):
@@ -64,9 +69,22 @@ class ComposeSection(BaseModel):
     neutral: ComposeParts = Field(default_factory=ComposeParts)
 
 
+class NameSchema(BaseModel):
+    """Describes how a generated full name is assembled."""
+
+    type: NameSchemaType = NameSchemaType.GIVEN_FAMILY
+    connector: str | None = None
+    male_patronym_pattern: str = "{parent}son"
+    female_patronym_pattern: str = "{parent}dottir"
+    neutral_patronym_pattern: str = "{parent}"
+    description: str = ""
+
+
 class SimpleConfig(BaseModel):
     first: GenderedStringPool = Field(default_factory=GenderedStringPool)
     last: GenderedStringPool = Field(default_factory=GenderedStringPool)
+    parent: GenderedStringPool = Field(default_factory=GenderedStringPool)
+    byname: GenderedStringPool = Field(default_factory=GenderedStringPool)
 
 
 class ComposeConfig(BaseModel):
@@ -81,22 +99,82 @@ class RegionMeta(BaseModel):
     notes: str = ""
 
 
+class SpeciesMeta(BaseModel):
+    name: str
+    notes: str = ""
+
+
+class CultureMeta(BaseModel):
+    name: str
+    notes: str = ""
+
+
+class SpeciesStats(BaseModel):
+    ap_value: int | None = None
+    life_points: int | None = None
+    soul_power: int | None = None
+    toughness: int | None = None
+    speed: int | None = None
+    attribute_modifiers: list[str] = Field(default_factory=list)
+    automatic_advantages: list[str] = Field(default_factory=list)
+    automatic_disadvantages: list[str] = Field(default_factory=list)
+    adult_age: int = 18
+    max_age: int = 80
+
+
 class CharacterConfig(BaseModel):
-    """Region-specific character data (professions, etc.)."""
+    """Character-relevant data from species, culture, and origin."""
 
     professions: list[str] = Field(default_factory=list)
+    languages: list[str] = Field(default_factory=list)
+    scripts: list[str] = Field(default_factory=list)
+    local_knowledge: list[str] = Field(default_factory=list)
+    social_status: list[str] = Field(default_factory=list)
+    typical_advantages: list[str] = Field(default_factory=list)
+    typical_disadvantages: list[str] = Field(default_factory=list)
+    typical_talents: list[str] = Field(default_factory=list)
+    personality: list[str] = Field(default_factory=list)
+    motivations: list[str] = Field(default_factory=list)
+    quirks: list[str] = Field(default_factory=list)
+    hair: list[str] = Field(default_factory=list)
+    eyes: list[str] = Field(default_factory=list)
+    build: list[str] = Field(default_factory=list)
 
 
-class RegionData(BaseModel):
-    """Top-level model representing one parsed region TOML file."""
-
-    meta: RegionMeta
-    simple: SimpleConfig = Field(default_factory=SimpleConfig)
-    compose: ComposeConfig = Field(default_factory=ComposeConfig)
+class SpeciesData(BaseModel):
+    meta: SpeciesMeta
+    stats: SpeciesStats = Field(default_factory=SpeciesStats)
+    usual_cultures: list[str] = Field(default_factory=list)
     character: CharacterConfig = Field(default_factory=CharacterConfig)
 
 
-# ── Generator output ──────────────────────────────────────────────────────────
+class CultureData(BaseModel):
+    meta: CultureMeta
+    naming_schema: NameSchema = Field(default_factory=NameSchema)
+    simple: SimpleConfig = Field(default_factory=SimpleConfig)
+    compose: ComposeConfig = Field(default_factory=ComposeConfig)
+    character: CharacterConfig = Field(default_factory=CharacterConfig)
+    package_ap: int | None = None
+
+
+class OriginRef(BaseModel):
+    species_id: str = "human"
+    culture_id: str = "generic"
+    region_id: str | None = None
+    tags: list[str] = Field(default_factory=list)
+
+
+class RegionData(BaseModel):
+    """Resolved origin profile representing one playable naming origin."""
+
+    meta: RegionMeta
+    origin: OriginRef = Field(default_factory=OriginRef)
+    naming_schema: NameSchema = Field(default_factory=NameSchema)
+    simple: SimpleConfig = Field(default_factory=SimpleConfig)
+    compose: ComposeConfig = Field(default_factory=ComposeConfig)
+    character: CharacterConfig = Field(default_factory=CharacterConfig)
+    species: SpeciesData | None = None
+    culture: CultureData | None = None
 
 
 class NameComponents(BaseModel):
@@ -131,6 +209,13 @@ class CharacterResult(BaseModel):
     age: int
     profession: str
     traits: CharacterTraits
+    language: str | None = None
+    script: str | None = None
+    social_status: str | None = None
+    species_stats: SpeciesStats | None = None
+    typical_advantages: list[str] = Field(default_factory=list)
+    typical_disadvantages: list[str] = Field(default_factory=list)
+    typical_talents: list[str] = Field(default_factory=list)
 
     @property
     def full_name(self) -> str:
@@ -144,6 +229,14 @@ class CharacterResult(BaseModel):
     def region(self) -> str:
         return self.name.region
 
+    @property
+    def culture(self) -> str | None:
+        return self.name.culture
+
+    @property
+    def species(self) -> str | None:
+        return self.name.species
+
 
 class NameResult(BaseModel):
     """Structured result returned by the generator."""
@@ -154,7 +247,12 @@ class NameResult(BaseModel):
     gender: Gender  # angefordertes Geschlecht
     resolved_gender: Gender  # tatsächlicher Pool des Vornamens
     region: str
+    culture: str | None = None
+    species: str | None = None
+    origin_id: str | None = None
     mode: GenerationMode
+    name_schema: NameSchemaType = NameSchemaType.GIVEN_FAMILY
+    connector: str | None = None
     components: NameComponents | None = None
 
     @classmethod
@@ -167,8 +265,22 @@ class NameResult(BaseModel):
         mode: GenerationMode,
         components: NameComponents | None = None,
         resolved_gender: Gender | None = None,
+        culture: str | None = None,
+        species: str | None = None,
+        origin_id: str | None = None,
+        name_schema: NameSchemaType = NameSchemaType.GIVEN_FAMILY,
+        connector: str | None = None,
+        full_name_override: str | None = None,
     ) -> NameResult:
-        full = f"{first} {last}" if last else first
+        if full_name_override is not None:
+            full = full_name_override
+        elif last and connector:
+            full = f"{first} {connector} {last}"
+        elif last:
+            full = f"{first} {last}"
+        else:
+            full = first
+
         return cls(
             first_name=first,
             last_name=last,
@@ -176,6 +288,11 @@ class NameResult(BaseModel):
             gender=gender,
             resolved_gender=resolved_gender if resolved_gender is not None else gender,
             region=region,
+            culture=culture,
+            species=species,
+            origin_id=origin_id,
             mode=mode,
+            name_schema=name_schema,
+            connector=connector,
             components=components,
         )

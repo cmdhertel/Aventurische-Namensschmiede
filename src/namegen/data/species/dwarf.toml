@@ -1,0 +1,21 @@
+[meta]
+name = "Zwerg"
+notes = "Robuste, langlebige Spezies mit ausgeprägter Sippenkultur."
+
+[stats]
+ap_value = 61
+life_points = 8
+soul_power = -4
+toughness = -4
+speed = 6
+adult_age = 30
+max_age = 220
+attribute_modifiers = ["KO und KK +1", "CH oder GE -2"]
+
+[character]
+typical_advantages = ["Zäher Hund"]
+typical_disadvantages = ["Hitzeempfindlich", "Nachtblind"]
+personality = ["stolz auf Sippe und Handwerk", "stur und verlässlich"]
+motivations = ["will den Ruf der eigenen Sippe mehren"]
+quirks = ["prüft Stein und Metall mit beinahe ehrfürchtiger Sorgfalt"]
+

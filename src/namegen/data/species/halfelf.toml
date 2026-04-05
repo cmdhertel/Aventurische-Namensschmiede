@@ -1,0 +1,17 @@
+[meta]
+name = "Halbelf"
+notes = "Zwischen elfischer und menschlicher Welt."
+
+[stats]
+ap_value = 0
+life_points = 5
+soul_power = -4
+toughness = -6
+speed = 8
+adult_age = 18
+max_age = 140
+attribute_modifiers = ["eine beliebige Eigenschaft +1"]
+
+[character]
+personality = ["steht oft zwischen zwei Welten"]
+

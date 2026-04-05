@@ -13,7 +13,7 @@ from rich.table import Table
 
 from .chargen import generate_character, get_profession_groups
 from .generator import GeneratorError, generate
-from .loader import LoaderError, list_regions, load_region
+from .loader import LoaderError, get_origin_catalog, list_regions, load_region
 from .models import ExperienceLevel, Gender, GenerationMode, ProfessionCategory
 from .output import OutputFormat
 from .output import write as output_write
@@ -41,7 +41,7 @@ def _default(ctx: typer.Context) -> None:
 
 RegionArg = Annotated[
     str,
-    typer.Argument(help="Region ID (z.B. kosch, mittelreich, horasreich)."),
+    typer.Argument(help="Origin ID (z.B. mittelreich_kosch, thorwal, auelfen)."),
 ]
 GenderOpt = Annotated[
     Gender,
@@ -180,20 +180,34 @@ def cmd_menu() -> None:
 
 @app.command("regions")
 def cmd_regions() -> None:
-    """Alle verfügbaren Regionen auflisten."""
+    """Alle verfügbaren Origins auflisten."""
     try:
-        ids = list_regions()
+        list_regions()
     except Exception as exc:
         console.print(f"[red]Fehler:[/red] {exc}")
         raise typer.Exit(1) from None
 
-    table = Table("Region", "Anzeigename", "Beschreibung", box=box.SIMPLE, header_style="bold cyan")
-    for region_id in ids:
+    table = Table(
+        "Origin",
+        "Anzeigename",
+        "Spezies",
+        "Kultur",
+        "Beschreibung",
+        box=box.SIMPLE,
+        header_style="bold cyan",
+    )
+    for item in get_origin_catalog():
         try:
-            r = load_region(region_id)
-            table.add_row(region_id, r.meta.region, r.meta.notes)
+            r = load_region(item["id"])
+            table.add_row(
+                item["id"],
+                r.meta.region,
+                r.species.meta.name if r.species else "?",
+                r.culture.meta.name if r.culture else "?",
+                r.meta.notes,
+            )
         except Exception:
-            table.add_row(region_id, "?", "[red]Fehler beim Laden[/red]")
+            table.add_row(item["id"], "?", "?", "?", "[red]Fehler beim Laden[/red]")
 
     console.print(table)
 

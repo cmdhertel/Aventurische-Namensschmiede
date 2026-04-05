@@ -1,0 +1,13 @@
+[meta]
+region = "Auelfen"
+abbreviation = "AUE"
+notes = "Elfische Auen- und Flusslandschaften."
+
+[origin]
+species_id = "elf"
+culture_id = "auelfen"
+region_id = "auelfen"
+
+[character]
+professions = ["Sippenkundiger", "Bogenjäger", "Liedweber"]
+

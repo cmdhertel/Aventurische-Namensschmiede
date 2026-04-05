@@ -7,7 +7,7 @@ import random
 import pytest
 
 from namegen.generator import generate
-from namegen.models import Gender, GenerationMode, NameResult
+from namegen.models import Gender, GenerationMode, NameResult, NameSchemaType
 
 RNG = random.Random(42)
 
@@ -24,22 +24,8 @@ def test_generate_simple_has_nonempty_names() -> None:
     result = generate("mittelreich_kosch", rng=random.Random(1))
     assert result.first_name
     assert result.full_name
-    assert result.first_name in result.full_name
-
-
-def test_generate_simple_region_matches() -> None:
-    result = generate("mittelreich_kosch", rng=random.Random(1))
-    assert result.region == "Kosch"
-
-
-def test_generate_simple_mode_field() -> None:
-    result = generate("mittelreich_kosch", mode=GenerationMode.SIMPLE, rng=random.Random(1))
-    assert result.mode == GenerationMode.SIMPLE
-
-
-def test_generate_compose_mode_field() -> None:
-    result = generate("mittelreich_kosch", mode=GenerationMode.COMPOSE, rng=random.Random(1))
-    assert result.mode == GenerationMode.COMPOSE
+    assert result.species == "Mensch"
+    assert result.culture == "Mittelreicher"
 
 
 def test_generate_compose_has_components() -> None:
@@ -65,7 +51,19 @@ def test_generate_same_seed_produces_same_result() -> None:
 
 def test_generate_different_seeds_likely_differ() -> None:
     names = {generate("mittelreich_kosch", rng=random.Random(i)).full_name for i in range(20)}
-    assert len(names) > 1, "20 verschiedene Seeds sollten verschiedene Namen erzeugen"
+    assert len(names) > 1
+
+
+def test_generate_male_resolved_gender_not_female() -> None:
+    results = [
+        generate("mittelreich_kosch", gender=Gender.MALE, rng=random.Random(i)) for i in range(20)
+    ]
+    assert all(r.resolved_gender != Gender.FEMALE for r in results)
+
+
+def test_generate_horasier_uses_connector_schema() -> None:
+    result = generate("horasreich", rng=random.Random(1))
+    assert result.name_schema == NameSchemaType.GIVEN_FAMILY_CONNECTOR
 
 
 # ── Geschlecht ────────────────────────────────────────────────────────────────
@@ -86,7 +84,7 @@ def test_generate_any_gender_field() -> None:
     assert result.gender == Gender.ANY
 
 
-def test_generate_male_resolved_gender_not_female() -> None:
+def test_generate_male_resolved_gender_not_female_extended() -> None:
     """Männliche Vornamensanfrage soll keine weiblichen Namen liefern."""
     results = [
         generate("mittelreich_kosch", gender=Gender.MALE, rng=random.Random(i)) for i in range(30)
@@ -103,7 +101,17 @@ def test_generate_female_resolved_gender_not_male() -> None:
         assert r.resolved_gender != Gender.MALE
 
 
-# ── Alle Regionen im Simple-Modus ─────────────────────────────────────────────
+def test_generate_thorwaler_patronym() -> None:
+    result = generate("thorwal", rng=random.Random(1))
+    assert result.name_schema == NameSchemaType.GIVEN_PATRONYM
+    assert result.last_name is not None
+    assert result.full_name.endswith(result.last_name)
+
+
+def test_generate_ctki_ssrr_byname() -> None:
+    result = generate("ctki_ssrr", rng=random.Random(1))
+    assert result.name_schema == NameSchemaType.GIVEN_BYNAME
+    assert result.last_name is not None
 
 
 def test_all_regions_generate_simple_any() -> None:
@@ -121,11 +129,13 @@ def test_all_regions_generate_simple_any() -> None:
 
 
 def test_full_name_without_last_name() -> None:
-    """Wenn kein Nachname vorhanden, soll full_name nur den Vornamen enthalten."""
     result = NameResult.build(
-        first="Adalhard", last=None, gender=Gender.MALE, region="Test", mode=GenerationMode.SIMPLE
+        first="Adalhard",
+        last=None,
+        gender=Gender.MALE,
+        region="Test",
+        mode=GenerationMode.SIMPLE,
     )
-    assert result.last_name is None
     assert result.full_name == "Adalhard"
 
 

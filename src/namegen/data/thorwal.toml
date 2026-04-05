@@ -1,0 +1,13 @@
+[meta]
+region = "Thorwal"
+abbreviation = "THO"
+notes = "Thorwalsche Küste und Sippenhafen."
+
+[origin]
+species_id = "human"
+culture_id = "thorwaler"
+region_id = "thorwal"
+
+[character]
+professions = ["Waljäger", "Runenschnitzer", "Ottajaskoeld", "Plünderfahrer"]
+

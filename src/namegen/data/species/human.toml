@@ -1,0 +1,18 @@
+[meta]
+name = "Mensch"
+notes = "Vielseitigste aventurische Spezies."
+
+[stats]
+ap_value = 0
+life_points = 5
+soul_power = -5
+toughness = -5
+speed = 8
+adult_age = 18
+max_age = 80
+attribute_modifiers = ["eine beliebige Eigenschaft +1"]
+
+[character]
+personality = ["pragmatisch und anpassungsfähig"]
+motivations = ["will den eigenen Platz in der Welt finden"]
+

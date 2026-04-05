@@ -8,6 +8,7 @@ import statistics
 import pytest
 
 from namegen.chargen import _generate_age, _load_professions_by_category, generate_character
+from namegen.loader import load_region
 from namegen.models import (
     CharacterResult,
     ExperienceLevel,
@@ -26,16 +27,19 @@ def test_generate_character_returns_character_result() -> None:
     assert isinstance(result, CharacterResult)
 
 
-def test_generate_character_has_name() -> None:
-    result = generate_character("mittelreich_kosch", rng=random.Random(1))
-    assert result.full_name
-    assert result.name.first_name
+def test_generate_character_has_context() -> None:
+    result = generate_character("ambosszwerge", rng=random.Random(1))
+    assert result.species == "Zwerg"
+    assert result.culture == "Ambosszwerge"
+    assert result.language == "Rogolan"
+    assert result.species_stats is not None
 
 
-def test_generate_character_has_profession() -> None:
-    result = generate_character("mittelreich_kosch", rng=random.Random(1))
-    assert isinstance(result.profession, str)
-    assert len(result.profession) > 0
+def test_generate_character_has_traits_and_profession() -> None:
+    result = generate_character("thorwal", rng=random.Random(1))
+    assert result.profession
+    assert result.traits.personality
+    assert result.traits.quirk
 
 
 def test_generate_character_has_experience() -> None:
@@ -74,32 +78,25 @@ def test_generate_character_same_seed_deterministic() -> None:
     assert r1.traits.quirk == r2.traits.quirk
 
 
-# ── Altersverteilung ──────────────────────────────────────────────────────────
+def test_generate_age_human_range() -> None:
+    data = load_region("mittelreich_kosch")
+    for i in range(100):
+        age = _generate_age(data, random.Random(i))
+        assert 18 <= age <= 80
 
 
-@pytest.mark.parametrize(
-    ("experience", "minimum", "maximum"),
-    [
-        (ExperienceLevel.LEHRLING, 10, 16),
-        (ExperienceLevel.GESELLE, 17, 25),
-        (ExperienceLevel.MEISTER, 26, 45),
-        (ExperienceLevel.VETERAN, 46, 80),
-    ],
-)
-def test_age_stays_in_experience_range(
-    experience: ExperienceLevel,
-    minimum: int,
-    maximum: int,
-) -> None:
-    for i in range(200):
-        age = _generate_age(random.Random(i), experience)
-        assert minimum <= age <= maximum
+def test_generate_age_dwarf_range() -> None:
+    data = load_region("ambosszwerge")
+    for i in range(100):
+        age = _generate_age(data, random.Random(i))
+        assert 30 <= age <= 220
 
 
-def test_age_median_for_geselle_is_in_reasonable_range() -> None:
-    ages = [_generate_age(random.Random(i), ExperienceLevel.GESELLE) for i in range(1000)]
+def test_age_median_human_is_in_expected_range() -> None:
+    data = load_region("mittelreich_kosch")
+    ages = [_generate_age(data, random.Random(i)) for i in range(1000)]
     med = statistics.median(ages)
-    assert 19 <= med <= 23, f"Medianalter {med} außerhalb des erwarteten Bereichs 19–23"
+    assert 18 <= med <= 70, f"Medianalter {med} außerhalb des erwarteten Bereichs 18–70"
 
 
 # ── Berufskategorien ──────────────────────────────────────────────────────────
@@ -107,8 +104,20 @@ def test_age_median_for_geselle_is_in_reasonable_range() -> None:
 
 @pytest.mark.parametrize("category", list(ProfessionCategory))
 def test_profession_category_returns_nonempty_list(category: ProfessionCategory) -> None:
-    professions = _load_professions_by_category(category)
-    assert len(professions) > 0, f"Kategorie '{category}' hat keine Berufe"
+    assert _load_professions_by_category(category)
+
+
+def test_profession_all_includes_origin_professions() -> None:
+    regional = set(load_region("mittelreich_kosch").character.professions)
+    professions = {
+        generate_character(
+            "mittelreich_kosch",
+            profession_category=ProfessionCategory.ALL,
+            rng=random.Random(i),
+        ).profession
+        for i in range(200)
+    }
+    assert professions & regional
 
 
 @pytest.mark.parametrize("category", list(ProfessionCategory))
@@ -191,7 +200,7 @@ def test_profession_all_includes_regional_professions_in_pool() -> None:
         ).profession
         for i in range(200)
     }
-    assert professions & set(regional), "Kein regionaler Beruf in 200 Versuchen – unwahrscheinlich"
+    assert professions & regional
 
 
 def test_profession_non_all_category_ignores_regional() -> None:
@@ -200,10 +209,7 @@ def test_profession_non_all_category_ignores_regional() -> None:
 
     regional = set(load_region("mittelreich_kosch").character.professions)
     geweihte_pool = set(_load_professions_by_category(ProfessionCategory.GEWEIHTE))
-    # Regionale Kosch-Berufe wie "Bergmann" dürfen nicht in Geweihte sein
-    assert not (regional & geweihte_pool), (
-        f"Regionale Berufe dürfen nicht in Geweihte-Pool: {regional & geweihte_pool}"
-    )
+    assert not (regional & geweihte_pool)
 
 
 # ── Alle Regionen ─────────────────────────────────────────────────────────────

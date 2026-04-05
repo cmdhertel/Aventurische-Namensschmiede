@@ -93,7 +93,7 @@ def test_to_json_valid_json() -> None:
 def test_to_json_contains_required_keys() -> None:
     data = json.loads(_to_json(_name_results(1)))
     record = data[0]
-    for key in ("full_name", "first_name", "gender", "region", "mode"):
+    for key in ("full_name", "first_name", "gender", "region", "mode", "species", "culture"):
         assert key in record, f"Schlüssel '{key}' fehlt im JSON"
 
 
@@ -127,7 +127,16 @@ def test_to_csv_header_columns() -> None:
     text = _to_csv(_name_results(1), show_components=False)
     reader = csv.reader(io.StringIO(text))
     header = next(reader)
-    for col in ("full_name", "first_name", "last_name", "gender", "region", "mode"):
+    for col in (
+        "full_name",
+        "first_name",
+        "last_name",
+        "gender",
+        "species",
+        "culture",
+        "region",
+        "mode",
+    ):
         assert col in header
 
 
@@ -300,7 +309,7 @@ def test_chars_to_json_valid_json() -> None:
 
 def test_chars_to_json_has_required_top_level_keys() -> None:
     record = json.loads(_chars_to_json(_char_results(1)))[0]
-    for key in ("name", "age", "profession", "traits"):
+    for key in ("name", "age", "profession", "traits", "species", "culture", "language"):
         assert key in record
 
 
@@ -329,9 +338,14 @@ def test_chars_to_csv_header_columns() -> None:
     for col in (
         "full_name",
         "gender",
+        "species",
+        "culture",
         "region",
         "age",
         "profession",
+        "language",
+        "script",
+        "social_status",
         "hair",
         "eyes",
         "build",

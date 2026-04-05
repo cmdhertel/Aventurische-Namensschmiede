@@ -1,0 +1,13 @@
+[meta]
+region = "Ambosszwerge"
+abbreviation = "AMB"
+notes = "Zwergische Bingen und Passstraßen."
+
+[origin]
+species_id = "dwarf"
+culture_id = "ambosszwerge"
+region_id = "ambosszwerge"
+
+[character]
+professions = ["Bingewächter", "Erzschürfer", "Ahnenschmied"]
+
