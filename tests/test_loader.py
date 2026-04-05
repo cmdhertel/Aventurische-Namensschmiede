@@ -10,10 +10,10 @@ from namegen.loader import (
     list_cultures,
     list_regions,
     list_species,
-    resolve_generation_targets,
     load_culture,
     load_region,
     load_species,
+    resolve_generation_targets,
 )
 
 # ── list_regions ──────────────────────────────────────────────────────────────

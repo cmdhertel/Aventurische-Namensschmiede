@@ -10,7 +10,7 @@ from rich.rule import Rule
 
 from .chargen import generate_character
 from .generator import GeneratorError, generate
-from .loader import LoaderError, get_origin_catalog, load_region
+from .loader import LoaderError, get_origin_catalog
 from .models import (
     CharacterResult,
     ExperienceLevel,
