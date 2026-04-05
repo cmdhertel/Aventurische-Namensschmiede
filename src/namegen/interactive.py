@@ -10,7 +10,7 @@ from rich.rule import Rule
 
 from .chargen import generate_character
 from .generator import GeneratorError, generate
-from .loader import LoaderError, get_origin_catalog, load_region
+from .loader import LoaderError, get_origin_catalog
 from .models import (
     CharacterResult,
     ExperienceLevel,
@@ -166,9 +166,11 @@ def _ask_configuration() -> _ConfigResult | None:
     if matching_entries[0].get("has_region") == "true":
         region_choices = []
         for item in matching_entries:
-            data = load_region(item["id"])
-            label = f"{data.meta.region:<18} {data.meta.notes}"
-            region_choices.append(questionary.Choice(label, value=item["id"]))
+            label = item["region_name"] or item["name"]
+            notes = item.get("notes", "")
+            region_choices.append(
+                questionary.Choice(f"{label:<24} {notes}".rstrip(), value=item["id"])
+            )
 
         region = questionary.select("Region:", choices=region_choices, style=_STYLE).ask()
         if region is None:

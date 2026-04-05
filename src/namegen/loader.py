@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 import tomllib
 from functools import cache
 from importlib.resources import files
@@ -37,11 +38,15 @@ _REAL_CULTURE_MAP = {
     "mittelreich_garetien": "mittelreicher",
     "mittelreich_greifenfurt": "mittelreicher",
     "mittelreich_kosch": "mittelreicher",
+    "mittelreich_nordmarken": "mittelreicher",
     "mittelreich_perricum": "mittelreicher",
     "mittelreich_rabenmark": "mittelreicher",
     "mittelreich_rommilysermark": "mittelreicher",
     "mittelreich_sonnenmark": "mittelreicher",
     "mittelreich_tobrien": "mittelreicher",
+    "mittelreich_warunk": "mittelreicher",
+    "mittelreich_weiden": "mittelreicher",
+    "mittelreich_windhag": "mittelreicher",
     "horasreich": "horasier",
     "bornland": "bornlaender",
     "ferkina": "ferkinas",
@@ -110,6 +115,9 @@ _CULTURE_SPECIES_MAP = {
     "tiefzwerge": "dwarf",
     "waldelfen": "elf",
 }
+_SPECIES_AGGREGATE_CULTURE_PREFIX = "all__"
+_SPECIES_AGGREGATE_LABEL = "Alle Kulturen und Regionen"
+_REGION_AGGREGATE_LABEL = "Alle Mittelreich-Regionen"
 
 
 def _read_toml(path: str) -> dict:
@@ -366,7 +374,8 @@ def load_region(region_name: str) -> RegionData:
 load_origin = load_region
 
 
-def get_origin_catalog() -> list[dict[str, str]]:
+@cache
+def _get_concrete_origin_catalog() -> tuple[dict[str, str], ...]:
     catalog: list[dict[str, str]] = []
     for culture_id in _CULTURE_ONLY_CATALOG_IDS:
         data = load_region(culture_id)
@@ -380,6 +389,8 @@ def get_origin_catalog() -> list[dict[str, str]]:
                 "culture_name": data.culture.meta.name if data.culture else data.origin.culture_id,
                 "region_name": "",
                 "has_region": "false",
+                "is_aggregate": "false",
+                "notes": data.meta.notes,
             }
         )
 
@@ -389,6 +400,8 @@ def get_origin_catalog() -> list[dict[str, str]]:
             continue
 
         is_region_choice = data.origin.culture_id == _REGION_ONLY_CULTURE_ID
+        if origin_id == "mittelreich":
+            continue
         if not is_region_choice and origin_id.startswith("mittelreich_"):
             continue
         catalog.append(
@@ -401,13 +414,110 @@ def get_origin_catalog() -> list[dict[str, str]]:
                 "culture_name": data.culture.meta.name if data.culture else data.origin.culture_id,
                 "region_name": data.meta.region if is_region_choice else "",
                 "has_region": "true" if is_region_choice else "false",
+                "is_aggregate": "false",
+                "notes": data.meta.notes,
             }
         )
+    return tuple(
+        sorted(
+            catalog,
+            key=lambda item: (
+                item["species_name"],
+                item["culture_name"],
+                item["region_name"] or item["name"],
+            ),
+        )
+    )
+
+
+def get_origin_catalog() -> list[dict[str, str]]:
+    catalog = list(_get_concrete_origin_catalog())
+
+    seen_species: set[str] = set()
+    for item in _get_concrete_origin_catalog():
+        species_id = item["species_id"]
+        if species_id in seen_species:
+            continue
+        seen_species.add(species_id)
+        catalog.append(
+            {
+                "id": species_id,
+                "name": item["species_name"],
+                "species_id": species_id,
+                "species_name": item["species_name"],
+                "culture_id": f"{_SPECIES_AGGREGATE_CULTURE_PREFIX}{species_id}",
+                "culture_name": _SPECIES_AGGREGATE_LABEL,
+                "region_name": "",
+                "has_region": "false",
+                "is_aggregate": "true",
+                "notes": "Zufällige Auswahl aus allen Kulturen und Regionen dieser Spezies.",
+            }
+        )
+
+    human_name = next(
+        (
+            item["species_name"]
+            for item in _get_concrete_origin_catalog()
+            if item["culture_id"] == _REGION_ONLY_CULTURE_ID
+        ),
+        "Mensch",
+    )
+    catalog.append(
+        {
+            "id": _REGION_ONLY_CULTURE_ID,
+            "name": human_name,
+            "species_id": "human",
+            "species_name": human_name,
+            "culture_id": _REGION_ONLY_CULTURE_ID,
+            "culture_name": "Mittelreicher",
+            "region_name": _REGION_AGGREGATE_LABEL,
+            "has_region": "true",
+            "is_aggregate": "true",
+            "notes": "Zufällige Auswahl aus allen Mittelreich-Regionen.",
+        }
+    )
+
     return sorted(
         catalog,
         key=lambda item: (
             item["species_name"],
             item["culture_name"],
+            item["is_aggregate"] == "false",
             item["region_name"] or item["name"],
         ),
     )
+
+
+@cache
+def resolve_generation_targets(selection_id: str) -> tuple[str, ...]:
+    selection = selection_id.lower()
+    catalog = _get_concrete_origin_catalog()
+
+    if selection in list_regions():
+        return (selection,)
+
+    direct_match = [item["id"] for item in catalog if item["id"] == selection]
+    if direct_match:
+        return tuple(direct_match)
+
+    if selection in list_species():
+        targets = tuple(item["id"] for item in catalog if item["species_id"] == selection)
+        if targets:
+            return targets
+
+    if selection in list_cultures():
+        targets = [item["id"] for item in catalog if item["culture_id"] == selection]
+        if targets:
+            return tuple(targets)
+
+    available = ", ".join(
+        sorted({*list_species(), *list_cultures(), *(item["id"] for item in catalog)})
+    )
+    raise LoaderError(f"Selection '{selection_id}' not found. Available: {available}")
+
+
+def pick_generation_target(selection_id: str, rng: random.Random) -> str:
+    targets = resolve_generation_targets(selection_id)
+    if len(targets) == 1:
+        return targets[0]
+    return rng.choice(list(targets))

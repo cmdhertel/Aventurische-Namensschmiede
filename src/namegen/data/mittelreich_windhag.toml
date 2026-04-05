@@ -1,5 +1,5 @@
 [meta]
-region = "Mittelreich: Windhag"
+region = "Windhag"
 abbreviation = "WDH"
 notes = "Mischklang aus albernischen, nordmärkischen und horasischen Einflüssen."
 
@@ -12,4 +12,3 @@ neutral = ["Arsinger", "Drachenschlag", "Eisenblatt", "Harbener", "Kleibock", "W
 
 [character]
 professions = ["Kadett", "Seesoldat", "Holzfäller", "Jäger"]
-

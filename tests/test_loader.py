@@ -13,6 +13,7 @@ from namegen.loader import (
     load_culture,
     load_region,
     load_species,
+    resolve_generation_targets,
 )
 
 # ── list_regions ──────────────────────────────────────────────────────────────
@@ -103,6 +104,21 @@ def test_catalog_contains_selection_metadata() -> None:
     assert entry["has_region"] == "true"
 
 
+def test_catalog_lists_mittelreich_regions_without_redundant_prefix() -> None:
+    entry = next(item for item in get_origin_catalog() if item["id"] == "mittelreich_nordmarken")
+    assert entry["region_name"] == "Nordmarken"
+
+
+def test_catalog_contains_species_and_mittelreich_aggregate_entries() -> None:
+    species_entry = next(item for item in get_origin_catalog() if item["id"] == "human")
+    assert species_entry["culture_name"] == "Alle Kulturen und Regionen"
+    assert species_entry["is_aggregate"] == "true"
+
+    culture_entry = next(item for item in get_origin_catalog() if item["id"] == "mittelreicher")
+    assert culture_entry["region_name"] == "Alle Mittelreich-Regionen"
+    assert culture_entry["is_aggregate"] == "true"
+
+
 def test_catalog_uses_culture_ids_for_non_mittelreich_elves_and_dwarves() -> None:
     entry = next(item for item in get_origin_catalog() if item["id"] == "firnelfen")
     assert entry["culture_name"] == "Firnelfen"
@@ -129,6 +145,20 @@ def test_load_region_accepts_culture_only_ids() -> None:
     assert data.origin.region_id == "steppenelfen"
     assert data.culture is not None
     assert data.culture.meta.name == "Steppenelfen"
+
+
+def test_resolve_generation_targets_for_species_contains_multiple_human_targets() -> None:
+    targets = resolve_generation_targets("human")
+    assert "thorwal" in targets
+    assert "mittelreich_kosch" in targets
+    assert "mittelreicher" not in targets
+
+
+def test_resolve_generation_targets_for_mittelreicher_uses_subregions() -> None:
+    targets = resolve_generation_targets("mittelreicher")
+    assert "mittelreich_kosch" in targets
+    assert "mittelreich_garetien" in targets
+    assert "mittelreich" not in targets
 
 
 def test_load_region_all_known_regions_load_without_error() -> None:

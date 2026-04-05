@@ -1,5 +1,5 @@
 [meta]
-region = "Mittelreich: Weiden"
+region = "Weiden"
 abbreviation = "WEI"
 notes = "Altertümliche, märchenhaft-weidener Namen mit Wald-, Bären- und Rondra-Anklängen."
 
@@ -12,4 +12,3 @@ neutral = ["Ackermann", "Brachfelder", "Kolenbrander", "Morgenroth", "Orkenhauer
 
 [character]
 professions = ["Ritter", "Jäger", "Barde", "Forstläufer"]
-

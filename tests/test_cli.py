@@ -71,3 +71,9 @@ def test_compose_rejects_invalid_infix_probability() -> None:
         ["compose", "mittelreich_kosch", "--infix-probability", "1.5"],
     )
     assert result.exit_code != 0
+
+
+def test_simple_accepts_species_aggregate_id() -> None:
+    result = runner.invoke(app, ["simple", "human", "--format", "json"])
+    assert result.exit_code == 0
+    assert '"species": "Mensch"' in result.stdout

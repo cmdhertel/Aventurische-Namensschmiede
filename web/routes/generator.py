@@ -17,7 +17,7 @@ from opentelemetry.trace import Tracer, get_tracer
 
 from namegen.chargen import generate_character
 from namegen.generator import generate
-from namegen.loader import get_origin_catalog, load_region
+from namegen.loader import get_origin_catalog, resolve_generation_targets
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 
 router = APIRouter()
@@ -59,13 +59,23 @@ def _parse_checkbox_value(value: str | None) -> bool:
     return value.strip().lower() in _TRUE_FORM_VALUES
 
 
+def _default_selected_region(origins: list[dict]) -> str:
+    for entry in origins:
+        if entry["id"] == "human":
+            return entry["id"]
+    for entry in origins:
+        if entry.get("species_id") == "human":
+            return entry["id"]
+    return origins[0]["id"] if origins else ""
+
+
 @router.get("/")
 async def index(
     request: Request,
     region: str | None = Query(default=None),
 ):
     origins = _get_origins()
-    selected = region or (origins[0]["id"] if origins else "")
+    selected = region or _default_selected_region(origins)
     return _TEMPLATES.TemplateResponse(
         request,
         "index.html",
@@ -105,7 +115,7 @@ async def generate_names(
 
         load_start = perf_counter()
         try:
-            region_data = load_region(region)
+            resolve_generation_targets(region)
             gmode = GenerationMode(mode)
             gend = Gender(gender)
             category = ProfessionCategory(profession_category)
@@ -197,8 +207,6 @@ async def generate_names(
             {
                 "results": results,
                 "gender_de": _GENDER_DE,
-                "region_abbr": region_data.meta.abbreviation,
-                "origin_data": region_data,
             },
         )
 

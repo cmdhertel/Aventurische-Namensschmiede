@@ -41,7 +41,9 @@ def _default(ctx: typer.Context) -> None:
 
 RegionArg = Annotated[
     str,
-    typer.Argument(help="Region- oder Kultur-ID (z.B. mittelreich_kosch, thorwal, firnelfen)."),
+    typer.Argument(
+        help="Spezies-, Kultur- oder Region-ID (z.B. human, mittelreicher, mittelreich_kosch)."
+    ),
 ]
 GenderOpt = Annotated[
     Gender,
@@ -189,6 +191,7 @@ def cmd_regions() -> None:
 
     table = Table(
         "ID",
+        "Typ",
         "Region",
         "Anzeigename",
         "Spezies",
@@ -199,9 +202,22 @@ def cmd_regions() -> None:
     )
     for item in get_origin_catalog():
         try:
+            if item.get("is_aggregate") == "true":
+                table.add_row(
+                    item["id"],
+                    "Sammlung",
+                    item.get("region_name", "") or "–",
+                    item["name"],
+                    item["species_name"],
+                    item["culture_name"],
+                    item.get("notes", ""),
+                )
+                continue
+
             r = load_region(item["id"])
             table.add_row(
                 item["id"],
+                "Region" if item.get("has_region") == "true" else "Kultur",
                 item.get("region_name", "") or "–",
                 r.meta.region,
                 r.species.meta.name if r.species else "?",
@@ -209,7 +225,7 @@ def cmd_regions() -> None:
                 r.meta.notes,
             )
         except Exception:
-            table.add_row(item["id"], "?", "?", "?", "[red]Fehler beim Laden[/red]")
+            table.add_row(item["id"], "?", "?", "?", "?", "[red]Fehler beim Laden[/red]")
 
     console.print(table)
 

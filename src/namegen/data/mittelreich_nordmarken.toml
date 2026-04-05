@@ -1,5 +1,5 @@
 [meta]
-region = "Mittelreich: Nordmarken"
+region = "Nordmarken"
 abbreviation = "NRD"
 notes = "Konservativ und altertümlich klingende Namen, oft mit Praios-Bezug."
 
@@ -12,4 +12,3 @@ neutral = ["Andersin", "Bertenschlag", "Dernheim", "Engstrand", "Klippstein", "R
 
 [character]
 professions = ["Lehnssoldat", "Praiosdiener", "Bauer", "Flusshändler"]
-
