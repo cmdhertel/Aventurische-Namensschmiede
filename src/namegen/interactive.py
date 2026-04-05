@@ -10,7 +10,7 @@ from rich.rule import Rule
 
 from .chargen import generate_character
 from .generator import GeneratorError, generate
-from .loader import LoaderError, get_origin_catalog
+from .loader import LoaderError, get_origin_catalog, selection_supports_compose
 from .models import (
     CharacterResult,
     ExperienceLevel,
@@ -107,19 +107,6 @@ _ConfigResult = tuple[
 def _ask_configuration() -> _ConfigResult | None:
     """Fragt alle Einstellungen interaktiv ab. Gibt None zurück bei Abbruch (Ctrl+C)."""
 
-    # ── Modus ──────────────────────────────────────────────────────────────────
-    mode_str = questionary.select(
-        "Generierungsmodus:",
-        choices=[
-            questionary.Choice("Einfach       – Namen aus vordefinierten Listen", value="simple"),
-            questionary.Choice("Komposition   – Namen aus Silbenbausteinen", value="compose"),
-        ],
-        style=_STYLE,
-    ).ask()
-    if mode_str is None:
-        return None
-    mode = GenerationMode(mode_str)
-
     # ── Spezies / Kultur / Region ─────────────────────────────────────────────
     try:
         catalog = get_origin_catalog()
@@ -177,6 +164,27 @@ def _ask_configuration() -> _ConfigResult | None:
             return None
     else:
         region = matching_entries[0]["id"]
+
+    # ── Modus ──────────────────────────────────────────────────────────────────
+    mode_choices = [
+        questionary.Choice("Einfach       – Namen aus vordefinierten Listen", value="simple")
+    ]
+    if selection_supports_compose(region):
+        mode_choices.append(
+            questionary.Choice("Komposition   – Namen aus Silbenbausteinen", value="compose")
+        )
+
+    if len(mode_choices) == 1:
+        mode_str = "simple"
+    else:
+        mode_str = questionary.select(
+            "Generierungsmodus:",
+            choices=mode_choices,
+            style=_STYLE,
+        ).ask()
+        if mode_str is None:
+            return None
+    mode = GenerationMode(mode_str)
 
     # ── Geschlecht ─────────────────────────────────────────────────────────────
     gender_str = questionary.select(

@@ -143,7 +143,7 @@ def generate_character(
     rng: random.Random | None = None,
 ) -> CharacterResult:
     _rng = rng if rng is not None else random
-    target_id = pick_generation_target(region, _rng)
+    target_id = pick_generation_target(region, _rng, compose_only=mode == GenerationMode.COMPOSE)
     data = load_region(target_id)
 
     name = generate(

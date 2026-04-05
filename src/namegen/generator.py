@@ -161,7 +161,7 @@ def generate(
     infix_probability_override: float | None = None,
 ) -> NameResult:
     _rng = rng if rng is not None else random
-    target_id = pick_generation_target(region, _rng)
+    target_id = pick_generation_target(region, _rng, compose_only=mode == GenerationMode.COMPOSE)
     data: RegionData = load_region(target_id)
 
     if mode == GenerationMode.SIMPLE:

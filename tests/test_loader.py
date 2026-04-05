@@ -14,6 +14,7 @@ from namegen.loader import (
     load_region,
     load_species,
     resolve_generation_targets,
+    selection_supports_compose,
 )
 
 # ── list_regions ──────────────────────────────────────────────────────────────
@@ -113,10 +114,12 @@ def test_catalog_contains_species_and_mittelreich_aggregate_entries() -> None:
     species_entry = next(item for item in get_origin_catalog() if item["id"] == "human")
     assert species_entry["culture_name"] == "Alle Kulturen und Regionen"
     assert species_entry["is_aggregate"] == "true"
+    assert species_entry["has_compose"] == "true"
 
     culture_entry = next(item for item in get_origin_catalog() if item["id"] == "mittelreicher")
     assert culture_entry["region_name"] == "Alle Mittelreich-Regionen"
     assert culture_entry["is_aggregate"] == "true"
+    assert culture_entry["has_compose"] == "true"
 
 
 def test_catalog_uses_culture_ids_for_non_mittelreich_elves_and_dwarves() -> None:
@@ -159,6 +162,16 @@ def test_resolve_generation_targets_for_mittelreicher_uses_subregions() -> None:
     assert "mittelreich_kosch" in targets
     assert "mittelreich_garetien" in targets
     assert "mittelreich" not in targets
+
+
+def test_selection_supports_compose_detects_missing_syllable_data() -> None:
+    assert selection_supports_compose("mittelreich_kosch") is True
+    assert selection_supports_compose("thorwal") is False
+
+
+def test_resolve_generation_targets_compose_only_rejects_noncompose_selection() -> None:
+    with pytest.raises(LoaderError):
+        resolve_generation_targets("thorwal", compose_only=True)
 
 
 def test_load_region_all_known_regions_load_without_error() -> None:

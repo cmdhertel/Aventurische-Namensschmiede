@@ -17,7 +17,7 @@ from opentelemetry.trace import Tracer, get_tracer
 
 from namegen.chargen import generate_character
 from namegen.generator import generate
-from namegen.loader import get_origin_catalog, resolve_generation_targets
+from namegen.loader import get_origin_catalog, resolve_generation_targets, selection_supports_compose
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 
 router = APIRouter()
@@ -82,6 +82,7 @@ async def index(
         {
             "origins": origins,
             "selected_region": selected,
+            "compose_default_enabled": selection_supports_compose(selected),
         },
     )
 
@@ -115,7 +116,7 @@ async def generate_names(
 
         load_start = perf_counter()
         try:
-            resolve_generation_targets(region)
+            resolve_generation_targets(region, compose_only=mode == "compose")
             gmode = GenerationMode(mode)
             gend = Gender(gender)
             category = ProfessionCategory(profession_category)
