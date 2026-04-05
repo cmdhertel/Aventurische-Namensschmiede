@@ -1,0 +1,12 @@
+[meta]
+region = "Amazonen"
+abbreviation = "AMA"
+notes = "Matriarchalische Kriegerinnen-Gesellschaft. Ausschließlich weibliche Namen, kriegerisch-klingend."
+
+[origin]
+species_id = "human"
+culture_id = "amazonen"
+region_id = "amazonen"
+
+[character]
+professions = ["Kriegerin", "Bogenschützin", "Älteste"]

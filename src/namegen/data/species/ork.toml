@@ -1,0 +1,22 @@
+[meta]
+name = "Ork"
+notes = "Kriegerische Spezies aus dem Orkland. Kurze Lebenserwartung, hohe körperliche Kraft."
+
+[stats]
+ap_value = 12
+life_points = 5
+soul_power = -4
+toughness = -3
+speed = 8
+adult_age = 10
+max_age = 60
+attribute_modifiers = ["KK und KO +2", "IN oder KL -2"]
+automatic_advantages = ["Zäher Hund"]
+automatic_disadvantages = []
+
+[character]
+typical_advantages = ["Eiserner Wille", "Hohe Lebenskraft"]
+typical_disadvantages = ["Jähzorn", "Schulden"]
+personality = ["kampflustig, direkt und ohne Umschweife"]
+motivations = ["will Stärke beweisen und die Sippe ehren"]
+quirks = ["löst Meinungsverschiedenheiten am liebsten mit Fäusten"]

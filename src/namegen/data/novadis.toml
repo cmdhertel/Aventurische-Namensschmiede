@@ -1,0 +1,12 @@
+[meta]
+region = "Novadis"
+abbreviation = "NOV"
+notes = "Tulamidische Wüstennomaden der Khôm. Arabisch-anmutende Namen mit Patronymen (ibn/bint)."
+
+[origin]
+species_id = "human"
+culture_id = "novadis"
+region_id = "novadis"
+
+[character]
+professions = ["Wüstenreiter", "Kamelhändler", "Stammesältester"]

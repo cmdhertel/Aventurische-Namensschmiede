@@ -1,0 +1,83 @@
+[meta]
+name = "Orkland"
+notes = "Orkische Stammeskultur. Kurze, harte Namen mit wenig Vokalen. Kein Familienname – optionaler Clan-Zusatz."
+
+[naming_schema]
+type = "given_family"
+description = "Einzelner Vorname, optional mit Clan-Zusatz (z.B. von Blutzahn-Stamm)."
+
+[simple.first]
+male = [
+  "Borzak", "Brag", "Drogh", "Grak", "Gruk",
+  "Krag", "Krug", "Krutz", "Morg", "Rag",
+  "Rork", "Skrag", "Snok", "Togg", "Ug",
+  "Ushnak", "Vorak", "Zok", "Zorak", "Grakh",
+  "Brakh", "Drakh", "Krakh", "Snark", "Thrak",
+]
+female = [
+  "Borzha", "Braga", "Drogha", "Graka", "Gruka",
+  "Kraga", "Krudza", "Morga", "Raga", "Rorka",
+  "Skraga", "Snoka", "Togga", "Usha", "Vora",
+  "Zoka", "Zorka", "Grakha", "Brakha", "Snarka",
+]
+neutral = ["Grag", "Krug", "Snok"]
+
+[simple.last]
+neutral = [
+  "von Blutzahn", "von Eisenkralle", "von Steinbrecher",
+  "vom Blutfang-Stamm", "vom Eisenpelz-Stamm",
+  "vom Schwarzklaue-Stamm", "vom Schädelberg",
+]
+
+[compose.first]
+infix_probability = 0.1
+
+[compose.first.male]
+prefix = [
+  "Borz", "Br", "Drog", "Gr", "Kr",
+  "Morg", "Rag", "Skr", "Sn", "Tog",
+  "Ush", "Vor", "Zor", "Thr", "Gakh",
+]
+infix = ["ak", "or", "ag", "uk"]
+suffix = ["ak", "ag", "ug", "ok", "ork", "nak", "kh", "gh"]
+
+[compose.first.female]
+prefix = [
+  "Borz", "Br", "Drog", "Gr", "Kr",
+  "Morg", "Rag", "Skr", "Sn", "Tog",
+  "Ush", "Vor", "Zor", "Thr",
+]
+infix = ["ak", "or", "ag", "uk"]
+suffix = ["a", "ha", "ga", "dza", "ka", "sha", "kha"]
+
+[compose.first.neutral]
+prefix = ["Gr", "Kr", "Sn"]
+infix = []
+suffix = ["ag", "ok", "ug"]
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["Blut", "Eisen", "Stein", "Schwarz", "Schädel"]
+infix = []
+suffix = ["zahn", "kralle", "brecher", "pelz", "klaue", "fang"]
+
+[character]
+languages = ["Oloarkh"]
+scripts = []
+local_knowledge = ["Orkstämme und Stammesgebiete des Nordostens"]
+social_status = ["Frei"]
+professions = [
+  "Krieger", "Plünderer", "Stammesschamane",
+  "Jagdführer", "Häuptlingswächter",
+]
+typical_advantages = ["Hohe Lebenskraft", "Zäher Hund"]
+typical_disadvantages = ["Jähzorn", "Vorurteile gegenüber Fremden"]
+typical_talents = [
+  "Kraftakt", "Einschüchtern", "Kämpfen",
+  "Wildnisleben", "Tierkunde", "Klettern",
+]
+personality = ["direkt bis rüde, respektiert nur Stärke"]
+motivations = ["will den Stamm durch Sieg und Beute mehren"]
+quirks = ["fordert Rivalen lieber zum Duell, statt zu diskutieren"]

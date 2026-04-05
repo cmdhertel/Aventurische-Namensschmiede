@@ -1,0 +1,96 @@
+[meta]
+name = "Novadis"
+notes = "Tulamidische Wüstennomaden. Vorname mit Patronym (ibn/bint) oder Stammesname."
+
+[naming_schema]
+type = "given_patronym"
+male_patronym_pattern = "ibn {parent}"
+female_patronym_pattern = "bint {parent}"
+neutral_patronym_pattern = "ibn {parent}"
+description = "Vorname plus Herkunftslinie (ibn = Sohn des, bint = Tochter des)."
+
+[simple.first]
+male = [
+  "Akim", "Bahir", "Darim", "Faruq", "Hakim",
+  "Ishakim", "Jasim", "Karim", "Kasim", "Nadzim",
+  "Omar", "Rashid", "Salim", "Tariq", "Talib",
+  "Umar", "Yasim", "Zakim", "Halid", "Jassak",
+  "Hamid", "Ikim", "Nadir", "Salam", "Wahid",
+]
+female = [
+  "Aisha", "Bahira", "Damira", "Farisa", "Fatimeh",
+  "Hasibah", "Karima", "Layla", "Miriam", "Nadzira",
+  "Naila", "Samira", "Sharisad", "Tahira", "Yamira",
+  "Zanira", "Zariya", "Zuleika", "Salima", "Kasimeh",
+  "Bahija", "Jamila", "Nadira", "Rahimeh", "Tahira",
+]
+
+[simple.parent]
+male = [
+  "Rashid", "Hakim", "Tariq", "Omar", "Salim",
+  "Kasim", "Faruq", "Karim", "Bahir", "Jasim",
+]
+female = [
+  "Sharisad", "Bahira", "Layla", "Fatimeh", "Miriam",
+]
+
+[simple.last]
+neutral = [
+  "al-Khôm", "al-Rashida", "al-Salam", "al-Tariq",
+  "vom Schwarzen Zelt", "der Freien Stämme", "aus der Wüste",
+]
+
+[compose.first]
+infix_probability = 0.2
+
+[compose.first.male]
+prefix = [
+  "Ak", "Bah", "Dam", "Far", "Hak",
+  "Ish", "Jas", "Kar", "Kas", "Nad",
+  "Om", "Rash", "Sal", "Tar", "Tal",
+  "Um", "Yas", "Zak", "Hal", "Jas",
+]
+infix = ["im", "ir", "ak", "id", "al"]
+suffix = ["im", "iq", "id", "uk", "am", "in", "an"]
+
+[compose.first.female]
+prefix = [
+  "Aish", "Bah", "Dam", "Far", "Fat",
+  "Has", "Kar", "Layl", "Mir", "Nad",
+  "Nail", "Sam", "Shar", "Tah", "Yam",
+  "Zan", "Zar", "Zul", "Sal", "Kas",
+]
+infix = ["ir", "im", "is", "in", "al"]
+suffix = ["a", "eh", "ira", "imeh", "ida", "iya", "isha"]
+
+[compose.first.neutral]
+prefix = []
+infix = []
+suffix = []
+
+[compose.last]
+infix_probability = 0.0
+
+[compose.last.neutral]
+prefix = ["al-", "ibn-", "bint-"]
+infix = []
+suffix = ["Khôm", "Rashida", "Salam", "Tariq", "Wüste"]
+
+[character]
+languages = ["Tulamidya"]
+scripts = ["Tulamidya-Alphabet"]
+local_knowledge = ["Khôm-Wüste und Karawanenrouten"]
+social_status = ["Frei"]
+professions = [
+  "Karawanenführer", "Wüstenreiter", "Händler",
+  "Schamane", "Schwertkämpfer", "Bogenläufer",
+]
+typical_advantages = ["Richtungssinn", "Hitzeresistenz"]
+typical_disadvantages = ["Kälteempfindlich", "Ortsgebunden (Stamm)"]
+typical_talents = [
+  "Orientierung", "Tierkunde", "Reiten",
+  "Handeln", "Sinnesschärfe", "Wildnisleben",
+]
+personality = ["stolz auf Stamm und Tradition, gastfreundlich gegenüber Respektierten"]
+motivations = ["ehrt die Götter der Wüste und hütet die Stammeslinien"]
+quirks = ["spricht nie schlecht über seinen Stamm vor Fremden"]
