@@ -68,7 +68,8 @@ zusätzlich eingebunden.
 
 ### Einfacher Produktionsstart per IP
 
-Für einen ersten Deploy ohne DNS gibt es einen schlanken Produktions-Compose-Stack:
+Für einen ersten Deploy ohne DNS gibt es einen Produktions-Compose-Stack für
+Web-App und Observability:
 
 ```bash
 cp infra/.env.example infra/.env
@@ -76,11 +77,21 @@ docker compose --env-file infra/.env -f infra/docker-compose.prod.yml pull
 docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d
 ```
 
+Danach verfügbar unter:
+
+| Service | URL | Hinweis |
+|---|---|---|
+| Web-App | `http://<SERVER-IP>/` | per Basic Auth geschützt |
+| Health | `http://<SERVER-IP>/health` | ohne Auth |
+| Grafana | `http://<SERVER-IP>:3300` | Login aus `infra/.env` |
+
 Wichtig:
 
 - das Compose-File zieht GHCR-Images und baut nicht lokal
 - setze in `infra/.env` unbedingt `APP_BASIC_AUTH_PASSWORD`
+- setze in `infra/.env` unbedingt `GRAFANA_ADMIN_PASSWORD`
 - die Web-App ist dann per HTTP Basic Auth geschützt
+- Grafana läuft zusätzlich auf Port `3300`
 - `/health` bleibt absichtlich ohne Auth für Healthchecks erreichbar
 
 Details stehen in [infra/DEPLOYMENT.md](infra/DEPLOYMENT.md).

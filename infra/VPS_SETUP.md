@@ -36,6 +36,7 @@ Minimal für den aktuellen IP-basierten Betrieb:
 ```bash
 ufw allow 22/tcp
 ufw allow 80/tcp
+ufw allow 3300/tcp
 ufw enable
 ufw status
 ```
@@ -78,6 +79,12 @@ cd /opt/namenschmiede
 docker compose --env-file infra/.env -f infra/docker-compose.prod.yml ps
 curl http://<SERVER-IP>/health
 curl -u admin:<passwort> http://<SERVER-IP>/
+```
+
+Grafana ist danach direkt per IP erreichbar:
+
+```bash
+http://<SERVER-IP>:3300
 ```
 
 ## Spätere Härtung

@@ -133,6 +133,7 @@ jobs:
           GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           APP_BASIC_AUTH_PASSWORD: ${{ secrets.APP_BASIC_AUTH_PASSWORD }}
+          GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
         run: |
           set -e
           missing=0
@@ -152,6 +153,7 @@ jobs:
           require_secret "GHCR_USERNAME" "$GHCR_USERNAME"
           require_secret "GHCR_TOKEN" "$GHCR_TOKEN"
           require_secret "APP_BASIC_AUTH_PASSWORD" "$APP_BASIC_AUTH_PASSWORD"
+          require_secret "GRAFANA_ADMIN_PASSWORD" "$GRAFANA_ADMIN_PASSWORD"
 
           if [ "$missing" -ne 0 ]; then
             echo "::error::Deploy aborted because required secrets are missing. Configure the repository secrets and rerun the workflow."
@@ -174,19 +176,22 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             mkdir -p "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/infra"
+            mkdir -p "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/ops"
 
-      - name: Copy production compose file
+      - name: Create deployment bundle
+        run: tar -czf deploy-bundle.tgz infra/docker-compose.prod.yml ops/observability
+
+      - name: Copy deployment bundle
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ vars.DEPLOY_HOST || secrets.DEPLOY_HOST }}
           port: ${{ vars.DEPLOY_PORT || secrets.DEPLOY_PORT || 22 }}
           username: ${{ vars.DEPLOY_USER || secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: "infra/docker-compose.prod.yml"
-          target: "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/infra"
-          strip_components: 1
+          source: "deploy-bundle.tgz"
+          target: "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}"
 
-      - name: Deploy web app
+      - name: Deploy web and observability stack
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ vars.DEPLOY_HOST || secrets.DEPLOY_HOST }}
@@ -196,13 +201,18 @@ jobs:
           script: |
             set -e
             TARGET_DIR="${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}"
-            mkdir -p "$TARGET_DIR/infra"
+            mkdir -p "$TARGET_DIR/infra" "$TARGET_DIR/ops"
+            tar -xzf "$TARGET_DIR/deploy-bundle.tgz" -C "$TARGET_DIR"
+            rm -f "$TARGET_DIR/deploy-bundle.tgz"
             cat > "$TARGET_DIR/infra/.env" <<EOF
             IMAGE_NAME=ghcr.io/${{ steps.repo.outputs.lower }}/namegen-web
             IMAGE_TAG=${{ github.sha }}
             WEB_PORT=80
-            APP_BASIC_AUTH_USERNAME=${{ secrets.APP_BASIC_AUTH_USERNAME }}
+            GRAFANA_PORT=3300
+            APP_BASIC_AUTH_USERNAME=${{ secrets.APP_BASIC_AUTH_USERNAME || 'admin' }}
             APP_BASIC_AUTH_PASSWORD=${{ secrets.APP_BASIC_AUTH_PASSWORD }}
+            GRAFANA_ADMIN_USER=${{ secrets.GRAFANA_ADMIN_USER || 'admin' }}
+            GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }}
             EOF
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
             cd "$TARGET_DIR"
