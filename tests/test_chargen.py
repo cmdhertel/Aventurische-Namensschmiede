@@ -271,12 +271,8 @@ def test_audit_moved_professions_are_no_longer_global() -> None:
 
 
 def test_audit_themes_show_up_only_in_matching_regions() -> None:
-    horasreich_themes = {
-        theme.id for theme in get_profession_themes_for_selection("horasreich")
-    }
-    mittelreich_themes = {
-        theme.id for theme in get_profession_themes_for_selection("mittelreich")
-    }
+    horasreich_themes = {theme.id for theme in get_profession_themes_for_selection("horasreich")}
+    mittelreich_themes = {theme.id for theme in get_profession_themes_for_selection("mittelreich")}
 
     assert "ardarit" in horasreich_themes
     assert "rosenritter" in horasreich_themes
