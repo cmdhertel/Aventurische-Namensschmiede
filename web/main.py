@@ -5,6 +5,7 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from time import monotonic
 
+from auth import basic_auth_middleware
 from fastapi import FastAPI
 from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
@@ -35,6 +36,7 @@ tracer = setup_telemetry()
 app_metrics = build_metrics()
 configure_observability(logger=logger, tracer=tracer, app_metrics=app_metrics)
 
+app.middleware("http")(basic_auth_middleware)
 app.middleware("http")(create_metrics_middleware(logger=logger, app_metrics=app_metrics))
 instrument_fastapi(app, logger=logger)
 Instrumentator(
