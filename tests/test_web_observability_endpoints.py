@@ -82,7 +82,8 @@ async def test_metrics_endpoint_exposes_http_and_namegen_metrics() -> None:
     assert (
         'namegen_generate_count_total{namegen_character="false",'
         'namegen_gender="any",namegen_mode="simple",'
-        'namegen_profession_category="alle",namegen_region="human"}'
+        'namegen_profession_category="alle",namegen_profession_theme="none",'
+        'namegen_region="human"}'
     ) in body
     assert "namegen_template_render_duration_ms_milliseconds_bucket" in body
 
@@ -93,12 +94,13 @@ async def test_generate_character_path_and_pdf_metric_are_exposed() -> None:
         generate_response = await client.post(
             "/generate",
             data={
-                "region": "human",
+                "region": "mittelreich_perricum",
                 "gender": "female",
                 "mode": "simple",
                 "count": "1",
                 "character": "on",
                 "profession_category": "zauberer",
+                "profession_theme": "graumagier_aus_perricum",
             },
         )
         assert generate_response.status_code == 200
@@ -127,7 +129,8 @@ async def test_generate_character_path_and_pdf_metric_are_exposed() -> None:
     assert (
         'namegen_generate_count_total{namegen_character="true",'
         'namegen_gender="female",namegen_mode="simple",'
-        'namegen_profession_category="zauberer",namegen_region="human"}'
+        'namegen_profession_category="zauberer",'
+        'namegen_profession_theme="graumagier_aus_perricum",namegen_region="mittelreich_perricum"}'
     ) in metrics_body
     assert "namegen_pdf_duration_ms_milliseconds_bucket" in metrics_body
 

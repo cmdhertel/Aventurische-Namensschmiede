@@ -19,7 +19,7 @@ if str(WEB_DIR) not in sys.path:
 from export_bundle import build_export_zip  # noqa: E402
 from main import app  # noqa: E402
 from result_transfer import load_results_export  # noqa: E402
-from routes.generator import favourites_page  # noqa: E402
+from routes.generator import favourites_page, index  # noqa: E402
 
 
 def test_fastapi_docs_are_enabled() -> None:
@@ -102,3 +102,13 @@ async def test_favourites_page_renders() -> None:
     body = response.body.decode("utf-8")
     assert "Favoritenliste" in body
     assert "localStorage" in body
+
+
+@pytest.mark.anyio
+async def test_index_page_renders_profession_preview_payload() -> None:
+    response = await index(_request(), region="mittelreich_perricum")
+    assert response.status_code == 200
+    body = response.body.decode("utf-8")
+    assert "profession-preview-map" in body
+    assert "character-preview-panel" in body
+    assert "Graumagier aus Perricum" in body

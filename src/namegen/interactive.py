@@ -10,7 +10,7 @@ from rich.console import Console
 from rich.rule import Rule
 
 from .catalog import get_origin_catalog, selection_supports_compose
-from .chargen import generate_character
+from .chargen import generate_character, get_profession_themes_for_selection
 from .generator import GeneratorError, generate
 from .loader import LoaderError
 from .models import (
@@ -61,6 +61,7 @@ def run() -> None:
             config.show_components,
             config.character,
             config.profession_category,
+            config.profession_theme,
             config.experience,
             config.fmt,
             config.dest,
@@ -89,6 +90,7 @@ class _GenerationConfig:
     show_components: bool
     character: bool
     profession_category: ProfessionCategory
+    profession_theme: str | None
     experience: ExperienceLevel
     fmt: OutputFormat
     dest: Path | None
@@ -227,6 +229,7 @@ def _ask_configuration() -> _GenerationConfig | None:
 
     # ── Berufskategorie (nur wenn Charakterbogen aktiv) ────────────────────────
     profession_category = ProfessionCategory.ALL
+    profession_theme: str | None = None
     experience = ExperienceLevel.GESELLE
     if character:
         cat_str = questionary.select(
@@ -243,6 +246,23 @@ def _ask_configuration() -> _GenerationConfig | None:
         if cat_str is None:
             return None
         profession_category = ProfessionCategory(cat_str)
+
+        available_themes = get_profession_themes_for_selection(region)
+        if available_themes:
+            theme_value = questionary.select(
+                "Thema/Gruppe:",
+                choices=[
+                    questionary.Choice("Kein Thema", value=""),
+                    *[
+                        questionary.Choice(f"{theme.label} ({theme.id})", value=theme.id)
+                        for theme in available_themes
+                    ],
+                ],
+                style=_STYLE,
+            ).ask()
+            if theme_value is None:
+                return None
+            profession_theme = theme_value or None
 
         experience_str = questionary.select(
             "Erfahrungsstufe:",
@@ -318,6 +338,7 @@ def _ask_configuration() -> _GenerationConfig | None:
         show_components=show_components,
         character=character,
         profession_category=profession_category,
+        profession_theme=profession_theme,
         experience=experience,
         fmt=fmt,
         dest=dest,
@@ -332,6 +353,7 @@ def _generate_and_output(
     show_components: bool,
     character: bool,
     profession_category: ProfessionCategory,
+    profession_theme: str | None,
     experience: ExperienceLevel,
     fmt: OutputFormat,
     dest: Path | None,
@@ -344,6 +366,7 @@ def _generate_and_output(
                     mode=mode,
                     gender=gender,
                     profession_category=profession_category,
+                    profession_theme=profession_theme,
                     experience=experience,
                 )
                 for _ in range(count)

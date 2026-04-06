@@ -205,6 +205,10 @@ Neue Inhalte liegen in TOML-Dateien unter `src/namegen/data/`.
 - Regionen können Spezies- und Kulturdaten referenzieren und überschreiben
 - nur Mittelreich nutzt aktuell eine zusätzliche Regionsebene in der UI
 
+Für die praktische Pflege neuer Inhalte gibt es einen separaten Leitfaden:
+
+- [Content Guide](docs/content_guide.md)
+
 ### Neue Region oder Kultur hinzufügen
 
 Eine neue Datei genügt in vielen Fällen bereits, solange die `origin`-Zuordnung

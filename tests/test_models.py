@@ -17,6 +17,7 @@ from namegen.models import (
     NameSchemaType,
     PhysicalTraits,
     ProfessionCategory,
+    ProfessionEntry,
     RegionData,
     RegionMeta,
     SpeciesStats,
@@ -275,3 +276,29 @@ def test_region_data_all_sections_default_to_empty() -> None:
 def test_character_config_default_empty() -> None:
     cfg = CharacterConfig()
     assert cfg.languages == []
+
+
+def test_character_config_splits_plain_and_structured_professions() -> None:
+    cfg = CharacterConfig.model_validate(
+        {
+            "professions": [
+                "Schmied",
+                {
+                    "name": "Graumagier aus Perricum",
+                    "categories": ["zauberer"],
+                    "themes": ["graumagier_aus_perricum"],
+                    "weight": 5,
+                },
+            ]
+        }
+    )
+
+    assert cfg.professions == ["Schmied"]
+    assert cfg.profession_entries == [
+        ProfessionEntry(
+            name="Graumagier aus Perricum",
+            categories=["zauberer"],
+            themes=["graumagier_aus_perricum"],
+            weight=5,
+        )
+    ]
