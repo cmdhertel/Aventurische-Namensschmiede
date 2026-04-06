@@ -179,7 +179,7 @@ jobs:
             mkdir -p "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/ops"
 
       - name: Create deployment bundle
-        run: tar -czf deploy-bundle.tgz infra/docker-compose.prod.yml ops/observability
+        run: tar -czf deploy-bundle.tgz infra/docker-compose.prod.yml ops/observability ops/nginx
 
       - name: Copy deployment bundle
         uses: appleboy/scp-action@v0.1.7
@@ -207,8 +207,6 @@ jobs:
             cat > "$TARGET_DIR/infra/.env" <<EOF
             IMAGE_NAME=ghcr.io/${{ steps.repo.outputs.lower }}/namegen-web
             IMAGE_TAG=${{ github.sha }}
-            WEB_PORT=80
-            GRAFANA_PORT=3300
             APP_BASIC_AUTH_USERNAME=${{ secrets.APP_BASIC_AUTH_USERNAME || 'admin' }}
             APP_BASIC_AUTH_PASSWORD=${{ secrets.APP_BASIC_AUTH_PASSWORD }}
             GRAFANA_ADMIN_USER=${{ secrets.GRAFANA_ADMIN_USER || 'admin' }}

@@ -83,7 +83,7 @@ Danach verfügbar unter:
 |---|---|---|
 | Web-App | `http://<SERVER-IP>/` | per Basic Auth geschützt |
 | Health | `http://<SERVER-IP>/health` | ohne Auth |
-| Grafana | `http://<SERVER-IP>:3300` | Login aus `infra/.env` |
+| Grafana | `http://<SERVER-IP>/grafana/` | Login aus `infra/.env` |
 
 Wichtig:
 
@@ -91,7 +91,7 @@ Wichtig:
 - setze in `infra/.env` unbedingt `APP_BASIC_AUTH_PASSWORD`
 - setze in `infra/.env` unbedingt `GRAFANA_ADMIN_PASSWORD`
 - die Web-App ist dann per HTTP Basic Auth geschützt
-- Grafana läuft zusätzlich auf Port `3300`
+- Grafana ist unter `/grafana/` erreichbar (über nginx Reverse Proxy)
 - `/health` bleibt absichtlich ohne Auth für Healthchecks erreichbar
 
 Details stehen in [infra/DEPLOYMENT.md](infra/DEPLOYMENT.md).

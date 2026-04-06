@@ -7,8 +7,8 @@ Stand: GitHub-Actions-Deploy auf einen Server ohne DNS und ohne TLS-Termination.
 - GitHub Actions deployt auf den Server `alveran`
 - Zugriff erfolgt vorerst direkt per Server-IP
 - die Oberfläche ist per HTTP Basic Auth geschützt
-- der Observability-Stack läuft auf demselben Server mit internem Prometheus,
-  Tempo, Loki und Alloy sowie extern erreichbarem Grafana
+- nginx läuft als Reverse Proxy auf Port 80 und leitet `/grafana/` an Grafana weiter
+- der Observability-Stack läuft intern (Prometheus, Tempo, Loki, Alloy, Grafana)
 - `/health` bleibt ohne Auth erreichbar, damit Docker-Healthchecks funktionieren
 
 ## Voraussetzungen
@@ -16,7 +16,6 @@ Stand: GitHub-Actions-Deploy auf einen Server ohne DNS und ohne TLS-Termination.
 - Docker Engine + Compose Plugin sind auf dem Server installiert
 - der Server ist per SSH erreichbar: `ssh alveran`
 - Port `80/tcp` ist in der Firewall offen
-- Port `3300/tcp` ist offen, wenn Grafana direkt per IP erreichbar sein soll
 - ein Zielverzeichnis existiert, z. B. `/opt/namenschmiede`
 
 ## GitHub-Secrets
@@ -51,8 +50,6 @@ Datei: `infra/.env`
 ```env
 IMAGE_NAME=ghcr.io/cmdhertel/aventurische-namensschmiede/namegen-web
 IMAGE_TAG=latest
-WEB_PORT=80
-GRAFANA_PORT=3300
 APP_BASIC_AUTH_USERNAME=admin
 APP_BASIC_AUTH_PASSWORD=<starkes-passwort>
 GRAFANA_ADMIN_USER=admin
@@ -65,8 +62,8 @@ Die Datei wird im Normalfall vom Deploy-Workflow bei jedem Rollout neu geschrieb
 
 1. Push nach `main`
 2. GitHub Actions baut und pusht `namegen-web` nach GHCR
-3. Der Deploy-Job kopiert `infra/docker-compose.prod.yml` und
-   `ops/observability/*` als Bundle auf den Server
+3. Der Deploy-Job kopiert `infra/docker-compose.prod.yml`, `ops/observability/*`
+   und `ops/nginx/*` als Bundle auf den Server
 4. Der Deploy-Job schreibt `infra/.env` mit `IMAGE_TAG=<git-sha>` sowie den
    Auth- und Grafana-Credentials
 5. Der Server zieht das neue Image und startet den kompletten Stack via
@@ -90,7 +87,7 @@ docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d
 - Web-App mit Auth:
   - `curl -u admin:<passwort> http://<SERVER-IP>/`
 - Grafana:
-  - `http://<SERVER-IP>:3300`
+  - `http://<SERVER-IP>/grafana/`
 
 ## Nächster Schritt nach DNS
 

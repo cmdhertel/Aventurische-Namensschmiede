@@ -1,9 +1,22 @@
 services:
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ../ops/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      web:
+        condition: service_healthy
+      grafana:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - app_net
+
   web:
     image: "${IMAGE_NAME:-ghcr.io/cmdhertel/aventurische-namensschmiede/namegen-web}:${IMAGE_TAG:-latest}"
     pull_policy: always
-    ports:
-      - "${WEB_PORT:-80}:8000"
     restart: unless-stopped
     environment:
       PYTHONUNBUFFERED: "1"
@@ -116,6 +129,8 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD}"
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
     volumes:
       - grafana_data:/var/lib/grafana
       - ../ops/observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
@@ -129,8 +144,6 @@ services:
         condition: service_started
       loki:
         condition: service_healthy
-    ports:
-      - "${GRAFANA_PORT:-3300}:3000"
     networks:
       - app_net
 
