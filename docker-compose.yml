@@ -9,138 +9,19 @@ services:
     environment:
       PYTHONUNBUFFERED: "1"
       OTEL_SERVICE_NAME: "aventurische-namensschmiede-web"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
-    depends_on:
-      - otel-collector
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2)"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - app_net
-
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.149.0
-    command: ["--config=/etc/otelcol-contrib/config.yaml"]
-    volumes:
-      - ./ops/observability/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
-    restart: unless-stopped
-    networks:
-      - app_net
-
-  prometheus:
-    image: prom/prometheus:v3.11.0
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      - "--web.enable-lifecycle"
-    volumes:
-      - ./ops/observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus
-    restart: unless-stopped
-    depends_on:
-      - otel-collector
-    ports:
-      - "9090:9090"
-    networks:
-      - app_net
-
-  tempo:
-    image: grafana/tempo:2.10.3
-    command: ["-config.file=/etc/tempo/tempo.yaml"]
-    volumes:
-      - ./ops/observability/tempo.yaml:/etc/tempo/tempo.yaml:ro
-      - tempo_data:/var/tempo
-    restart: unless-stopped
-    ports:
-      - "3200:3200"
-    networks:
-      - app_net
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3200/ready || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 6
-      # Ring join + 15s stability buffer typically takes 45-60s on first boot
-      start_period: 90s
-
-  loki:
-    image: grafana/loki:3.4.2
-    command: ["-config.file=/etc/loki/config.yaml"]
-    volumes:
-      - ./ops/observability/loki.yaml:/etc/loki/config.yaml:ro
-      - loki_data:/loki
-    restart: unless-stopped
-    ports:
-      - "3100:3100"
-    networks:
-      - app_net
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
-
-  alloy:
-    image: grafana/alloy:v1.8.3
-    command:
-      - run
-      - /etc/alloy/config.alloy
-      - --server.http.listen-addr=0.0.0.0:12345
-      - --storage.path=/var/lib/alloy/data
-    volumes:
-      - ./ops/observability/alloy/config.alloy:/etc/alloy/config.alloy:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: unless-stopped
-    depends_on:
-      loki:
-        condition: service_healthy
-    networks:
-      - app_net
-
-  grafana:
-    image: grafana/grafana:12.4.2
-    environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
-      GF_USERS_ALLOW_SIGN_UP: "false"
-      GF_AUTH_ANONYMOUS_ENABLED: "false"
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./ops/observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
-      - ./ops/observability/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
-      - ./ops/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
-    restart: unless-stopped
-    depends_on:
-      prometheus:
-        condition: service_started
-      tempo:
-        # service_started is enough: container registered in Docker DNS before Grafana probes
-        condition: service_started
-      loki:
-        condition: service_healthy
-    ports:
-      - "3300:3000"
-    networks:
-      - app_net
-
-  # ── Für spätere REST-API (z. B. /api/v1/generate) ─────────────────────────
-  # api:
-  #   build:
-  #     context: .
-  #     dockerfile: api/Dockerfile
-  #   ports:
-  #     - "8001:8001"
-  #   restart: unless-stopped
-
-volumes:
-  prometheus_data:
-  tempo_data:
-  grafana_data:
-  loki_data:
 
 networks:
   app_net:

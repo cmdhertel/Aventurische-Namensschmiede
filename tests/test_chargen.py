@@ -7,7 +7,15 @@ import statistics
 
 import pytest
 
-from namegen.chargen import _generate_age, _load_professions_by_category, generate_character
+from namegen.chargen import (
+    _generate_age,
+    _load_professions_by_category,
+    _resolve_profession_pool,
+    generate_character,
+    get_profession_preview_for_selection,
+    get_profession_themes,
+    get_profession_themes_for_selection,
+)
 from namegen.loader import load_region
 from namegen.models import (
     CharacterResult,
@@ -202,27 +210,106 @@ def test_profession_category_all_is_superset_of_others() -> None:
 
 def test_profession_all_includes_regional_professions_in_pool() -> None:
     """Regionale Berufe sollen für category=alle berücksichtigt werden."""
-    from namegen.loader import load_region
-
     regional = set(load_region("mittelreich_kosch").character.professions)
     assert regional, "Kosch sollte regionale Berufe haben"
-    # Mit genug Samples muss mindestens ein regionaler Beruf gewürfelt werden
-    professions = {
-        generate_character(
-            "mittelreich_kosch", profession_category=ProfessionCategory.ALL, rng=random.Random(i)
-        ).profession
-        for i in range(200)
+    pool = {
+        name
+        for name, _weight in _resolve_profession_pool(
+            load_region("mittelreich_kosch"), ProfessionCategory.ALL, None
+        )
     }
-    assert professions & regional
+    assert pool & regional
 
 
-def test_profession_non_all_category_ignores_regional() -> None:
-    """Kategorie-spezifische Auswahl soll KEINE regionalen Berufe enthalten."""
-    from namegen.loader import load_region
-
+def test_profession_non_all_category_includes_matching_regional_professions() -> None:
+    """Regionale Berufe sollen auch für passende Unterkategorien gelten."""
     regional = set(load_region("mittelreich_kosch").character.professions)
-    geweihte_pool = set(_load_professions_by_category(ProfessionCategory.GEWEIHTE))
-    assert not (regional & geweihte_pool)
+    pool = {
+        name
+        for name, _weight in _resolve_profession_pool(
+            load_region("mittelreich_kosch"), ProfessionCategory.PROFAN, None
+        )
+    }
+    assert pool & regional
+
+
+def test_profession_category_filters_out_non_matching_regional_professions() -> None:
+    pool = {
+        name
+        for name, _weight in _resolve_profession_pool(
+            load_region("mittelreich_kosch"), ProfessionCategory.GEWEIHTE, None
+        )
+    }
+    assert "Koschbauer" not in pool
+    assert "Erzschmelzer" not in pool
+
+
+def test_profession_theme_catalog_exposes_stable_theme_ids() -> None:
+    themes = {theme.id: theme.label for theme in get_profession_themes()}
+    assert themes["graumagier_aus_perricum"] == "Graumagier aus Perricum"
+
+
+def test_profession_themes_for_selection_only_returns_matching_region_themes() -> None:
+    perricum_themes = {
+        theme.id for theme in get_profession_themes_for_selection("mittelreich_perricum")
+    }
+    kosch_themes = {theme.id for theme in get_profession_themes_for_selection("mittelreich_kosch")}
+
+    assert "graumagier_aus_perricum" in perricum_themes
+    assert "graumagier_aus_perricum" not in kosch_themes
+
+
+def test_profession_themes_for_selection_respect_category_filter() -> None:
+    perricum_kaempfer = {
+        theme.id
+        for theme in get_profession_themes_for_selection(
+            "mittelreich_perricum", category=ProfessionCategory.KAEMPFER
+        )
+    }
+
+    assert perricum_kaempfer == set()
+
+
+def test_profession_theme_filters_to_structured_regional_entry() -> None:
+    result = generate_character(
+        "mittelreich_perricum",
+        profession_category=ProfessionCategory.ZAUBERER,
+        profession_theme="graumagier_aus_perricum",
+        rng=random.Random(13),
+    )
+    assert result.profession == "Graumagier aus Perricum"
+
+
+def test_profession_preview_for_region_includes_regional_professions() -> None:
+    preview = get_profession_preview_for_selection("mittelreich_garetien")
+    profane = next(group for group in preview.groups if group.id == ProfessionCategory.PROFAN.value)
+
+    assert "Kaufmann" in profane.professions
+    assert "Gerstenbauer" not in profane.professions
+
+
+def test_profession_preview_for_region_includes_matching_themes_only() -> None:
+    preview = get_profession_preview_for_selection("mittelreich_perricum")
+
+    assert [theme.id for theme in preview.themes] == ["graumagier_aus_perricum"]
+
+
+def test_profession_preview_for_aggregate_merges_subregion_professions() -> None:
+    preview = get_profession_preview_for_selection("mittelreicher")
+    profane = next(group for group in preview.groups if group.id == ProfessionCategory.PROFAN.value)
+
+    assert "Koschbauer" in profane.professions
+    assert "Kaufmann" in profane.professions
+
+
+def test_profession_pool_deduplicates_general_and_regional_matches() -> None:
+    pool = dict(
+        _resolve_profession_pool(
+            load_region("mittelreich_weiden"), ProfessionCategory.KAEMPFER, None
+        )
+    )
+    assert "Ritter" in pool
+    assert pool["Ritter"] > 1
 
 
 # ── Alle Regionen ─────────────────────────────────────────────────────────────

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import structlog
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
 
@@ -12,6 +13,7 @@ from namegen.loader import list_regions, load_region
 router = APIRouter(prefix="/regions")
 
 _TEMPLATES = Jinja2Templates(directory=str(Path(__file__).parent.parent / "templates"))
+_logger = structlog.get_logger("namenschmiede.regions")
 
 
 @router.get("")
@@ -29,9 +31,7 @@ async def regions_page(request: Request):
                 }
             )
         except Exception:
-            import logging
-
-            logging.getLogger(__name__).warning("Failed to load region %r", rid, exc_info=True)
+            _logger.warning("regions.load.failed", region_id=rid, exc_info=True)
     return _TEMPLATES.TemplateResponse(
         request,
         "regions.html",

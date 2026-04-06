@@ -41,6 +41,8 @@
           class="space-y-5">
 
           <script id="origin-catalog" type="application/json">{{ origins|tojson }}</script>
+          <script id="profession-theme-map" type="application/json">{{ profession_theme_map|tojson }}</script>
+          <script id="profession-preview-map" type="application/json">{{ profession_preview_map|tojson }}</script>
 
           <div>
             <label for="species" class="form-label">Spezies</label>
@@ -161,10 +163,18 @@
               ] %}
               <label class="radio-pill">
                 <input type="radio" name="profession_category" value="{{ val }}"
-                       {% if val == 'alle' %}checked{% endif %} />
+                       {% if val == 'alle' %}checked{% endif %}
+                       onchange="syncCharacterPreview()" />
                 <span>{{ label }}</span>
               </label>
               {% endfor %}
+            </div>
+
+            <div id="profession-theme-section" class="mt-4" style="display:none;">
+              <label class="form-label" for="profession-theme">Thema/Gruppe</label>
+              <select id="profession-theme" name="profession_theme" class="input-base w-full">
+                <option value="">Kein Thema</option>
+              </select>
             </div>
           </div>
 
@@ -248,6 +258,26 @@
         <input type="file" id="json-import-input" accept="application/json,.json" class="hidden"
                onchange="importJsonFile(this.files?.[0])" />
 
+        <div id="character-preview-panel"
+             class="mt-6 rounded-3xl border p-6 space-y-4"
+             style="display:none; border-color: var(--color-divider); background: linear-gradient(180deg, var(--color-card-bg) 0%, var(--color-surface) 100%);">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="section-header" style="margin-bottom: 0.25rem;">Mögliche Professionen</h2>
+              <p class="text-sm"
+                 style="font-family: 'Crimson Text', serif; color: var(--color-text-muted);">
+                Vorschau für die aktuelle Auswahl im Charaktermodus
+              </p>
+            </div>
+            <span id="character-preview-caption"
+                  class="text-xs normal-case tracking-normal"
+                  style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
+              Alle Kategorien für die Auswahl
+            </span>
+          </div>
+          <div id="character-preview-content" class="space-y-4"></div>
+        </div>
+
       </div>
     </div>
 
@@ -258,6 +288,12 @@
 {% block scripts %}
 <script>
   const ORIGINS = JSON.parse(document.getElementById('origin-catalog').textContent);
+  const PROFESSION_THEME_MAP = JSON.parse(
+    document.getElementById('profession-theme-map').textContent
+  );
+  const PROFESSION_PREVIEW_MAP = JSON.parse(
+    document.getElementById('profession-preview-map').textContent
+  );
   const SELECTED_ORIGIN = {{ selected_region|tojson }};
   const FAVOURITES_KEY = 'namenschmiede-favourites';
   let composeEnabled = {{ compose_default_enabled|tojson }};
@@ -311,6 +347,82 @@
     regionWrap.style.display = showRegion ? '' : 'none';
     regionLabel.style.display = showRegion ? '' : 'none';
     syncModeAvailability(selectedRegion);
+    syncCharacterPreview();
+  }
+
+  function selectedProfessionCategory() {
+    return document.querySelector('input[name="profession_category"]:checked')?.value || 'alle';
+  }
+
+  function syncProfessionThemes(selectionId, categoryValue) {
+    const themeSection = document.getElementById('profession-theme-section');
+    const themeSelect = document.getElementById('profession-theme');
+    const availableThemes = PROFESSION_THEME_MAP[selectionId]?.[categoryValue] || [];
+    const currentTheme = availableThemes.some(theme => theme.id === themeSelect.value)
+      ? themeSelect.value
+      : '';
+
+    fillSelect(
+      themeSelect,
+      [{ value: '', label: 'Kein Thema' }, ...availableThemes.map(theme => ({
+        value: theme.id,
+        label: theme.label,
+      }))],
+      currentTheme,
+    );
+    themeSection.style.display = availableThemes.length > 0 ? '' : 'none';
+  }
+
+  function syncCharacterPreview() {
+    const characterEnabled = document.getElementById('character-checkbox').checked;
+    const selectionId = document.getElementById('region').value;
+    const categoryValue = selectedProfessionCategory();
+    const previewPanel = document.getElementById('character-preview-panel');
+    const previewContainer = document.getElementById('character-preview-content');
+    const preview = PROFESSION_PREVIEW_MAP[selectionId]?.[categoryValue];
+    const content = [];
+    const caption = document.getElementById('character-preview-caption');
+
+    syncProfessionThemes(selectionId, categoryValue);
+
+    if (!characterEnabled) {
+      previewPanel.style.display = 'none';
+      previewContainer.innerHTML = '';
+      return;
+    }
+
+    for (const group of (preview?.groups || [])) {
+      if (!group.professions || group.professions.length === 0) continue;
+      content.push(`
+        <div class="space-y-2">
+          <h3 class="text-sm font-semibold" style="color: var(--color-text);">${group.label}</h3>
+          <p class="text-xs leading-6" style="font-family: 'Inter', sans-serif; color: var(--color-text-muted);">
+            ${group.professions.join(' · ')}
+          </p>
+        </div>
+      `);
+    }
+
+    if ((preview?.themes || []).length > 0) {
+      content.push(`
+        <div class="space-y-2">
+          <h3 class="text-sm font-semibold" style="color: var(--color-text);">Themen-Gruppen</h3>
+          <p class="text-xs leading-6" style="font-family: 'Inter', sans-serif; color: var(--color-text-muted);">
+            ${preview.themes.map(theme => theme.label).join(' · ')}
+          </p>
+        </div>
+      `);
+    }
+
+    caption.textContent = categoryValue === 'alle'
+      ? 'Alle Kategorien für die Auswahl'
+      : `Gefiltert nach ${document.querySelector('input[name="profession_category"]:checked + span')?.textContent || categoryValue}`;
+    previewContainer.innerHTML = content.join('') || `
+      <p class="text-xs" style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
+        Keine professionellen Auswahlmöglichkeiten verfügbar.
+      </p>
+    `;
+    previewPanel.style.display = '';
   }
 
   function syncModeAvailability(selectionId) {
@@ -346,6 +458,7 @@
       thumb.style.transform       = '';
       catSection.style.display    = 'none';
     }
+    syncCharacterPreview();
   }
 
   function onNamesGenerated(evt) {

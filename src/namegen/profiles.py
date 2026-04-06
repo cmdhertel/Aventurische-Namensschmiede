@@ -20,6 +20,7 @@ class GenerationProfile(BaseModel):
     fmt: OutputFormat = OutputFormat.RICH
     character: bool = False
     profession_category: ProfessionCategory = ProfessionCategory.ALL
+    profession_theme: str | None = None
     experience: ExperienceLevel = ExperienceLevel.GESELLE
     show_components: bool = False
     infix_probability: float | None = Field(default=None, ge=0.0, le=1.0)
