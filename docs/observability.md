@@ -4,21 +4,26 @@
 
 Der Docker-Compose-Stack umfasst eine vollständige, entkoppelte Pipeline:
 
-1. **Web-App** exportiert OTLP-Metriken und OTLP-Spans an den Collector.
-2. **OpenTelemetry Collector** übernimmt Entgegennahme, Batching und Routing.
-3. **Prometheus** scraped die Collector-Metriken (`otel-collector:9464`).
+1. **Web-App** exportiert Prometheus-Metriken unter `/metrics` und sendet OTLP-Spans.
+2. **OpenTelemetry Collector** übernimmt OTLP-Traces und leitet sie an Tempo weiter.
+3. **Prometheus** scraped direkt `web:8000/metrics`.
 4. **Tempo** speichert Traces/Spans.
-5. **Grafana** nutzt provisionierte Datasources für Prometheus + Tempo sowie ein sofort nutzbares Dashboard.
+5. **Alloy** shippt Docker-Logs nach Loki.
+6. **Grafana** nutzt provisionierte Datasources für Prometheus, Loki und Tempo.
 
 Starten:
 
 ```bash
 docker compose up --build
+docker compose -f docker-compose.yml -f docker-compose.observability.yml up --build
 ```
 
 Zugriff:
-- Grafana: `http://localhost:3000` (admin/admin)
+- Web-App: `http://localhost:8000`
+- Metrics: `http://localhost:8000/metrics`
+- Grafana: `http://localhost:3300` (admin/admin)
 - Prometheus: `http://localhost:9090`
+- Loki: `http://localhost:3100`
 - Tempo: `http://localhost:3200`
 
 Automatisch provisioniertes Dashboard:
@@ -35,27 +40,27 @@ Automatisch provisioniertes Dashboard:
 ### Latenz-SLO `/generate`
 - Ziel: **p95 < 500ms**, **p99 < 1000ms**.
 - Primärmetriken:
-  - `http.server.request.duration` (route `/generate`)
-  - `namegen.generate_loop.duration_ms`
-  - `namegen.load_region.duration_ms`
-  - `namegen.template_render.duration_ms`
+  - `http_server_request_duration_milliseconds_bucket` (route `/generate`)
+  - `namegen_generate_loop_duration_ms_milliseconds_bucket`
+  - `namegen_load_region_duration_ms_milliseconds_bucket`
+  - `namegen_template_render_duration_ms_milliseconds_bucket`
 
 ### Fehler-SLO
-- Ziel: **< 1% `app.errors.count`** pro Stunde für Produktivumgebung.
-- Gruppierung nach `http.route`, `http.status_class`, `error.type`.
+- Ziel: **< 1% `app_errors_count_total`** pro Stunde für Produktivumgebung.
+- Gruppierung nach `http_route`, `http_status_class`, `error_type`.
 
 ## Alert-Empfehlungen
 
 1. **High 5xx Rate**
-   - Bedingung: `app.errors.count` / `http.server.request.count` > 1% für 10 Minuten.
+   - Bedingung: `app_errors_count_total` / `http_server_request_count_total` > 1% für 10 Minuten.
    - Schweregrad: High.
 
 2. **Latency Regression `/generate`**
-   - Bedingung: p95(`http.server.request.duration` bei route `/generate`) > 500ms für 15 Minuten.
+   - Bedingung: p95(`http_server_request_duration_milliseconds_bucket` bei route `/generate`) > 500ms für 15 Minuten.
    - Schweregrad: Medium.
 
 3. **Data Quality Drift**
-   - Bedingung: `namegen.empty_results.count` > 5 pro 100 `namegen.generate.count`.
+   - Bedingung: `namegen_empty_results_count_total` > 5 pro 100 `namegen_generate_count_total`.
    - Schweregrad: Medium.
 
 ## Kardinalitätsrichtlinien
@@ -65,4 +70,4 @@ Automatisch provisioniertes Dashboard:
 
 ## Korrelation
 - Alle HTTP-Responses enthalten `X-Request-ID`.
-- Logs enthalten `trace_id`/`span_id` für direkte Trace-Korrelation.
+- Logs enthalten `request_id`, `trace_id` und `span_id` als JSON-Felder.
