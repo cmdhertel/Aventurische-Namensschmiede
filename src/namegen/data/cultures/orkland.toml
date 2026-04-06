@@ -70,6 +70,7 @@ local_knowledge = ["Orkstämme und Stammesgebiete des Nordostens"]
 social_status = ["Frei"]
 professions = [
   "Krieger", "Plünderer", "Stammesschamane",
+  "Graveshpriester", "Rikaipriester", "Tairachschamane",
   "Jagdführer", "Häuptlingswächter",
 ]
 typical_advantages = ["Hohe Lebenskraft", "Zäher Hund"]

@@ -46,4 +46,8 @@ professions = [
   "Ritter", "Stadtwächter", "Knappe", "Hofnarr", "Zunftmeister",
   "Fernhändler", "Kirchenmann", "Stadtschreiber", "Söldner",
   "Ratsdiener", "Brauer", "Marktaufseher",
+  { name = "Bannstrahler", categories = ["geweihte"], themes = ["bannstrahler"], weight = 5 },
+  { name = "Golgaritin", categories = ["kaempfer"], themes = ["golgaritin"], weight = 4 },
+  { name = "Sonnenlegionärin", categories = ["geweihte", "kaempfer"], themes = ["sonnenlegionaerin"], weight = 4 },
+  { name = "Ucuriatin", categories = ["geweihte"], themes = ["ucuriatin"], weight = 4 },
 ]

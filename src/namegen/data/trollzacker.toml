@@ -18,5 +18,4 @@ type = "given_byname"
 description = "Trollzacker führen häufig Ehren- oder Schandnamen statt Familiennamen."
 
 [character]
-professions = ["Schamane", "Krieger", "Kundschafter", "Stammesführer"]
-
+professions = ["Schamane", "Trollzackerschamanin", "Krieger", "Kundschafter", "Stammesführer"]

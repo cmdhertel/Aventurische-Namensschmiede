@@ -11,4 +11,4 @@ female = ["Adula", "Amadis", "Basilissa", "Calderine", "Elwene", "Gelda", "Imeld
 neutral = ["Arsinger", "Drachenschlag", "Eisenblatt", "Harbener", "Kleibock", "Windrufer", "Drachenwacht", "Schattengrund", "Trutzburg", "Widdernhall"]
 
 [character]
-professions = ["Kadett", "Seesoldat", "Holzfäller", "Jäger"]
+professions = ["Kadett", "Seesoldat", "Holzfäller", "Jäger", "Elenviner Kriegerin", "Windhager Sippenkrieger"]

@@ -17,5 +17,16 @@ male = ["Gaftar", "Kasim", "Rashid", "Salim", "Tariq", "Hakim", "Karim", "Omar"]
 female = ["Aischa", "Amina", "Layla", "Sharisad", "Zuleikha"]
 
 [character]
-professions = ["Karawanenführer", "Wüstenkrieger", "Stammesältester", "Kamelzüchter"]
-
+professions = [
+  "Karawanenführer",
+  "Wüstenkrieger",
+  "Stammesältester",
+  "Kamelzüchter",
+  "Badilakanerin",
+  { name = "Mada Basari-Ordensmitglied", categories = ["geweihte"], themes = ["mada_basari_ordensmitglied"], weight = 4 },
+  { name = "Ordenskrieger der Tarisharim", categories = ["geweihte", "kaempfer"], themes = ["ordenskrieger_der_tarisharim"], weight = 4 },
+  { name = "Ordenskriegerin der Al’Drakorhim", categories = ["geweihte", "kaempfer"], themes = ["ordenskriegerin_der_al_drakorhim"], weight = 4 },
+  { name = "Ordenskriegerin der Beni Uchakâni", categories = ["geweihte", "kaempfer"], themes = ["ordenskriegerin_der_beni_uchakani"], weight = 4 },
+  { name = "Ordensmitglied der Beni Fessiri", categories = ["geweihte"], themes = ["ordensmitglied_der_beni_fessiri"], weight = 4 },
+  { name = "Säbeltänzerin", categories = ["geweihte", "kaempfer"], themes = ["saebeltaenzerin"], weight = 4 },
+]

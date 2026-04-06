@@ -11,5 +11,10 @@ female = ["Chli'Bah", "Daszzareth", "Esmalda", "Ferusz'Han", "Heyeszhan", "M'Hib
 neutral = ["al'Azzar", "Delassa", "Harlamuq", "Sayaladam", "Szelematih", "Zurshazs"]
 
 [character]
-professions = ["Echsenkultist", "Hafenhändler", "Alchimist", "Söldner"]
-
+professions = [
+  "Echsenkultist",
+  "Hafenhändler",
+  "Alchimist",
+  "Söldner",
+  { name = "Noionit", categories = ["geweihte"], themes = ["noionit"], weight = 5 },
+]

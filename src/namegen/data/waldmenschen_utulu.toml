@@ -19,5 +19,4 @@ type = "given_byname"
 description = "Waldmenschennamen funktionieren oft wie sprechende Namen mit Stammeszuordnung."
 
 [character]
-professions = ["Schamane", "Jäger", "Perlenfischer", "Stammeskrieger"]
-
+professions = ["Schamane", "Tahayaschamanin", "Jäger", "Perlenfischer", "Stammeskrieger"]

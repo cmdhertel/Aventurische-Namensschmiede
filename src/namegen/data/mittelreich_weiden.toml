@@ -11,4 +11,4 @@ female = ["Aartrude", "Adilgunde", "Alwen", "Bärlinde", "Elftraute", "Farnlieb"
 neutral = ["Ackermann", "Brachfelder", "Kolenbrander", "Morgenroth", "Orkenhauer", "Rohleder", "Waldner", "Auenfels", "Nordfalk", "Weißenstein"]
 
 [character]
-professions = ["Ritter", "Jäger", "Barde", "Forstläufer"]
+professions = ["Ritter", "Jäger", "Barde", "Forstläufer", "Balihoer Krieger"]

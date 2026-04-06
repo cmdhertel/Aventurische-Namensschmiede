@@ -9,4 +9,10 @@ culture_id = "novadis"
 region_id = "novadis"
 
 [character]
-professions = ["Wüstenreiter", "Kamelhändler", "Stammesältester"]
+professions = [
+  "Wüstenreiter",
+  "Kamelhändler",
+  "Stammesältester",
+  "Badilakanerin",
+  { name = "Säbeltänzerin", categories = ["geweihte", "kaempfer"], themes = ["saebeltaenzerin"], weight = 4 },
+]

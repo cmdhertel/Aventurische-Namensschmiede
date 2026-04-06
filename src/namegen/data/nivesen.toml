@@ -9,4 +9,4 @@ culture_id = "nivesen"
 region_id = "nivesen"
 
 [character]
-professions = ["Schamane", "Jäger", "Stammesführer"]
+professions = ["Schamane", "Kasknuk (Nivesenschamane)", "Jäger", "Stammesführer"]
