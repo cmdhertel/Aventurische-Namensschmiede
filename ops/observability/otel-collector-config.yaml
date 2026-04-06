@@ -10,8 +10,6 @@ processors:
   batch: {}
 
 exporters:
-  debug:
-    verbosity: normal
   prometheus:
     endpoint: 0.0.0.0:9464
   otlp/tempo:
@@ -29,8 +27,8 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp/tempo, debug]
+      exporters: [otlp/tempo]
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [prometheus, debug]
+      exporters: [prometheus]

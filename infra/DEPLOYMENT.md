@@ -7,6 +7,8 @@ Stand: GitHub-Actions-Deploy auf einen Server ohne DNS und ohne TLS-Termination.
 - GitHub Actions deployt auf den Server `alveran`
 - Zugriff erfolgt vorerst direkt per Server-IP
 - die Oberfläche ist per HTTP Basic Auth geschützt
+- nginx läuft als Reverse Proxy auf Port 80 und leitet `/grafana/` an Grafana weiter
+- der Observability-Stack läuft intern (Prometheus, Tempo, Loki, Alloy, Grafana)
 - `/health` bleibt ohne Auth erreichbar, damit Docker-Healthchecks funktionieren
 
 ## Voraussetzungen
@@ -28,6 +30,8 @@ Für den Deploy-Workflow werden folgende Repository-Secrets benötigt:
 - `GHCR_TOKEN` – Token mit `read:packages`
 - `APP_BASIC_AUTH_USERNAME` – Loginname für die Web-App
 - `APP_BASIC_AUTH_PASSWORD` – Passwort für die Web-App
+- `GRAFANA_ADMIN_USER` – optional, Standard `admin`
+- `GRAFANA_ADMIN_PASSWORD` – Passwort für Grafana
 - `DEPLOY_TARGET_DIR` – optional, Standard `/opt/namenschmiede`
 
 ## Erst-Setup auf dem Server
@@ -46,9 +50,10 @@ Datei: `infra/.env`
 ```env
 IMAGE_NAME=ghcr.io/cmdhertel/aventurische-namensschmiede/namegen-web
 IMAGE_TAG=latest
-WEB_PORT=80
 APP_BASIC_AUTH_USERNAME=admin
 APP_BASIC_AUTH_PASSWORD=<starkes-passwort>
+GRAFANA_ADMIN_USER=admin
+GRAFANA_ADMIN_PASSWORD=<starkes-passwort>
 ```
 
 Die Datei wird im Normalfall vom Deploy-Workflow bei jedem Rollout neu geschrieben.
@@ -57,9 +62,12 @@ Die Datei wird im Normalfall vom Deploy-Workflow bei jedem Rollout neu geschrieb
 
 1. Push nach `main`
 2. GitHub Actions baut und pusht `namegen-web` nach GHCR
-3. Der Deploy-Job kopiert `infra/docker-compose.prod.yml` auf den Server
-4. Der Deploy-Job schreibt `infra/.env` mit `IMAGE_TAG=<git-sha>`
-5. Der Server zieht das neue Image und startet `docker compose up -d`
+3. Der Deploy-Job kopiert `infra/docker-compose.prod.yml`, `ops/observability/*`
+   und `ops/nginx/*` als Bundle auf den Server
+4. Der Deploy-Job schreibt `infra/.env` mit `IMAGE_TAG=<git-sha>` sowie den
+   Auth- und Grafana-Credentials
+5. Der Server zieht das neue Image und startet den kompletten Stack via
+   `docker compose up -d`
 
 ## Manuelles Rollback
 
@@ -78,6 +86,8 @@ docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d
   - `curl http://<SERVER-IP>/health`
 - Web-App mit Auth:
   - `curl -u admin:<passwort> http://<SERVER-IP>/`
+- Grafana:
+  - `http://<SERVER-IP>/grafana/`
 
 ## Nächster Schritt nach DNS
 
