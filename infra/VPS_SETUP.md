@@ -40,23 +40,44 @@ ufw enable
 ufw status
 ```
 
-## Repository ausrollen
+## Zielverzeichnis für Deploys
 
 ```bash
-cd /root
-git clone https://github.com/cmdhertel/Aventurische-Namensschmiede.git
-cd Aventurische-Namensschmiede
-cp infra/.env.example infra/.env
-vim infra/.env
-docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d --build
+mkdir -p /opt/namenschmiede/infra
+cd /opt/namenschmiede
 ```
 
-## Prüfung
+## SSH-Zugang für GitHub Actions
+
+Empfohlen ist ein eigener Deploy-User. Minimal geht auch ein bestehender User mit Docker-Rechten.
 
 ```bash
+adduser --disabled-password --gecos "" deploy
+usermod -aG docker deploy
+mkdir -p /home/deploy/.ssh
+chmod 700 /home/deploy/.ssh
+touch /home/deploy/.ssh/authorized_keys
+chmod 600 /home/deploy/.ssh/authorized_keys
+chown -R deploy:deploy /home/deploy/.ssh
+```
+
+Danach den Public Key aus dem GitHub-Secret-Paar in
+`/home/deploy/.ssh/authorized_keys` eintragen.
+
+## GHCR-Zugriff testen
+
+```bash
+echo "<ghcr-token>" | docker login ghcr.io -u "<ghcr-username>" --password-stdin
+docker pull ghcr.io/cmdhertel/aventurische-namensschmiede/namegen-web:latest
+```
+
+## Prüfung nach erstem CI-Deploy
+
+```bash
+cd /opt/namenschmiede
+docker compose --env-file infra/.env -f infra/docker-compose.prod.yml ps
 curl http://<SERVER-IP>/health
 curl -u admin:<passwort> http://<SERVER-IP>/
-docker compose --env-file infra/.env -f infra/docker-compose.prod.yml ps
 ```
 
 ## Spätere Härtung

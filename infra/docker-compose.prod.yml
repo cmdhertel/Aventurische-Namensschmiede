@@ -1,8 +1,7 @@
 services:
   web:
-    build:
-      context: ..
-      dockerfile: web/Dockerfile
+    image: "${IMAGE_NAME:-ghcr.io/cmdhertel/aventurische-namensschmiede/namegen-web}:${IMAGE_TAG:-latest}"
+    pull_policy: always
     ports:
       - "${WEB_PORT:-80}:8000"
     restart: unless-stopped
@@ -29,4 +28,3 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-

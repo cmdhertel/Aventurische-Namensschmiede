@@ -72,11 +72,13 @@ Für einen ersten Deploy ohne DNS gibt es einen schlanken Produktions-Compose-St
 
 ```bash
 cp infra/.env.example infra/.env
-docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d --build
+docker compose --env-file infra/.env -f infra/docker-compose.prod.yml pull
+docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d
 ```
 
 Wichtig:
 
+- das Compose-File zieht GHCR-Images und baut nicht lokal
 - setze in `infra/.env` unbedingt `APP_BASIC_AUTH_PASSWORD`
 - die Web-App ist dann per HTTP Basic Auth geschützt
 - `/health` bleibt absichtlich ohne Auth für Healthchecks erreichbar
