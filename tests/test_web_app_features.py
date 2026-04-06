@@ -153,3 +153,26 @@ async def test_web_app_requires_basic_auth_when_password_is_configured(monkeypat
     assert blocked.headers["www-authenticate"].startswith("Basic")
     assert health.status_code == 200
     assert allowed.status_code == 200
+
+
+@pytest.mark.anyio
+async def test_web_app_accepts_non_ascii_basic_auth_credentials(monkeypatch) -> None:
+    old_password = os.environ.get("APP_BASIC_AUTH_PASSWORD")
+    old_username = os.environ.get("APP_BASIC_AUTH_USERNAME")
+    monkeypatch.setenv("APP_BASIC_AUTH_PASSWORD", "pässwort")
+    monkeypatch.setenv("APP_BASIC_AUTH_USERNAME", "jörg")
+
+    try:
+        async with _client() as client:
+            response = await client.get("/", headers=_basic_auth_header("jörg", "pässwort"))
+    finally:
+        if old_password is None:
+            monkeypatch.delenv("APP_BASIC_AUTH_PASSWORD", raising=False)
+        else:
+            monkeypatch.setenv("APP_BASIC_AUTH_PASSWORD", old_password)
+        if old_username is None:
+            monkeypatch.delenv("APP_BASIC_AUTH_USERNAME", raising=False)
+        else:
+            monkeypatch.setenv("APP_BASIC_AUTH_USERNAME", old_username)
+
+    assert response.status_code == 200
