@@ -155,6 +155,7 @@ async def test_request_error_records_metrics_and_structured_log(caplog) -> None:
     caplog.set_level(logging.INFO)
 
     if not any(route.path == "/_boom" for route in app.router.routes):
+
         @app.get("/_boom")  # type: ignore[misc]
         async def _boom() -> dict:
             raise RuntimeError("boom")
