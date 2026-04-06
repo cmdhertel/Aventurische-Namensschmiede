@@ -125,8 +125,10 @@ jobs:
     steps:
       - name: Validate deploy configuration
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST || secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.DEPLOY_USER || secrets.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT || secrets.DEPLOY_PORT || '22' }}
+          DEPLOY_TARGET_DIR: ${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
@@ -166,34 +168,34 @@ jobs:
       - name: Ensure target directory exists
         uses: appleboy/ssh-action@v1.2.2
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          port: ${{ secrets.DEPLOY_PORT || 22 }}
-          username: ${{ secrets.DEPLOY_USER }}
+          host: ${{ vars.DEPLOY_HOST || secrets.DEPLOY_HOST }}
+          port: ${{ vars.DEPLOY_PORT || secrets.DEPLOY_PORT || 22 }}
+          username: ${{ vars.DEPLOY_USER || secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
-            mkdir -p "${{ secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/infra"
+            mkdir -p "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/infra"
 
       - name: Copy production compose file
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          port: ${{ secrets.DEPLOY_PORT || 22 }}
-          username: ${{ secrets.DEPLOY_USER }}
+          host: ${{ vars.DEPLOY_HOST || secrets.DEPLOY_HOST }}
+          port: ${{ vars.DEPLOY_PORT || secrets.DEPLOY_PORT || 22 }}
+          username: ${{ vars.DEPLOY_USER || secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           source: "infra/docker-compose.prod.yml"
-          target: "${{ secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/infra"
+          target: "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/infra"
           strip_components: 1
 
       - name: Deploy web app
         uses: appleboy/ssh-action@v1.2.2
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          port: ${{ secrets.DEPLOY_PORT || 22 }}
-          username: ${{ secrets.DEPLOY_USER }}
+          host: ${{ vars.DEPLOY_HOST || secrets.DEPLOY_HOST }}
+          port: ${{ vars.DEPLOY_PORT || secrets.DEPLOY_PORT || 22 }}
+          username: ${{ vars.DEPLOY_USER || secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             set -e
-            TARGET_DIR="${{ secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}"
+            TARGET_DIR="${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}"
             mkdir -p "$TARGET_DIR/infra"
             cat > "$TARGET_DIR/infra/.env" <<EOF
             IMAGE_NAME=ghcr.io/${{ steps.repo.outputs.lower }}/namegen-web
