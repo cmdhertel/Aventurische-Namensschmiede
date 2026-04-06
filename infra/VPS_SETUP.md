@@ -80,6 +80,8 @@ curl http://<SERVER-IP>/health
 curl -u admin:<passwort> http://<SERVER-IP>/
 ```
 
+Grafana ist danach unter `http://<SERVER-IP>/grafana/` erreichbar.
+
 ## Spätere Härtung
 
 Sobald DNS vorhanden ist:

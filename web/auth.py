@@ -59,9 +59,12 @@ def _is_authorized(request: Request) -> bool:
         return False
 
     username, password = parsed
-    return hmac.compare_digest(username, _configured_username()) and hmac.compare_digest(
-        password,
-        _configured_password(),
+    return hmac.compare_digest(
+        username.encode("utf-8"),
+        _configured_username().encode("utf-8"),
+    ) and hmac.compare_digest(
+        password.encode("utf-8"),
+        _configured_password().encode("utf-8"),
     )
 
 
