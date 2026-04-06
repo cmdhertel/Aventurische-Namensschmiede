@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import io
 import json
-import logging
 from pathlib import Path
 from time import perf_counter
 
+import structlog
 from fastapi import APIRouter, Form, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
-from observability import AppMetrics
+from metrics import AppMetrics
 from observability_utils import count_empty_names, name_length, safe_full_name
 from opentelemetry.trace import Tracer, get_tracer
 from result_transfer import load_results_export, parse_results_json
@@ -35,7 +35,7 @@ _GENDER_DE = {
     "any": "⚥ Beliebig",
 }
 
-_logger = logging.getLogger("namenschmiede.observability")
+_logger = structlog.get_logger("namenschmiede.observability")
 _tracer: Tracer = get_tracer("namenschmiede.web")
 _metrics: AppMetrics | None = None
 _TRUE_FORM_VALUES = {"1", "true", "on", "yes"}
@@ -43,7 +43,7 @@ _TRUE_FORM_VALUES = {"1", "true", "on", "yes"}
 
 def configure_observability(
     *,
-    logger: logging.Logger,
+    logger,
     tracer: Tracer,
     app_metrics: AppMetrics,
 ) -> None:
@@ -116,12 +116,12 @@ async def generate_names(
         count = max(1, min(count, 50))
         character_enabled = _parse_checkbox_value(character)
 
-        attrs = {
-            "namegen.region": region,
-            "namegen.mode": mode,
-            "namegen.gender": gender,
-            "namegen.character": character_enabled,
-            "namegen.profession_category": profession_category,
+        labels = {
+            "namegen_region": region,
+            "namegen_mode": mode,
+            "namegen_gender": gender,
+            "namegen_character": str(character_enabled).lower(),
+            "namegen_profession_category": profession_category,
         }
 
         load_start = perf_counter()
@@ -142,7 +142,9 @@ async def generate_names(
             raise
         finally:
             if _metrics:
-                _metrics.load_region_duration_ms.record((perf_counter() - load_start) * 1000, attrs)
+                _metrics.load_region_duration_ms.labels(**labels).observe(
+                    (perf_counter() - load_start) * 1000
+                )
 
         generate_start = perf_counter()
         if character_enabled:
@@ -167,48 +169,53 @@ async def generate_names(
         input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
         empty_results = count_empty_names(results)
 
-        attrs.update(
+        span_attrs = {
+            "namegen.region": region,
+            "namegen.mode": mode,
+            "namegen.gender": gender,
+            "namegen.character": character_enabled,
+            "namegen.profession_category": profession_category,
+            "namegen.requested_count": count,
+            "namegen.input_chars": input_chars,
+            "namegen.output_chars": output_chars,
+            "namegen.empty_results": empty_results,
+        }
+        span_attrs.update(
             {
-                "namegen.requested_count": count,
-                "namegen.input_chars": input_chars,
-                "namegen.output_chars": output_chars,
-                "namegen.empty_results": empty_results,
+                "request.id": request.headers.get("x-request-id", ""),
             }
         )
-        span.set_attributes(attrs)
+        span.set_attributes(span_attrs)
 
         if _metrics:
-            _metrics.generate_calls.add(1, attrs)
-            _metrics.input_chars.add(input_chars, attrs)
-            _metrics.output_chars.add(output_chars, attrs)
-            _metrics.generate_loop_duration_ms.record(generate_elapsed_ms, attrs)
-            _metrics.empty_results.add(empty_results, attrs)
+            _metrics.generate_calls.labels(**labels).inc()
+            _metrics.input_chars.labels(**labels).inc(input_chars)
+            _metrics.output_chars.labels(**labels).inc(output_chars)
+            _metrics.generate_loop_duration_ms.labels(**labels).observe(generate_elapsed_ms)
+            _metrics.empty_results.labels(**labels).inc(empty_results)
             for entry in results:
-                _metrics.name_length.record(name_length(entry), attrs)
+                _metrics.name_length.labels(**labels).observe(name_length(entry))
 
         if count > 0 and (empty_results / count) > 0.1:
             _logger.warning(
-                "event=namegen.data_quality.warning region=%s mode=%s"
-                " character=%s empty_ratio=%.2f",
-                region,
-                mode,
-                character_enabled,
-                empty_results / count,
+                "namegen.data_quality.warning",
+                region=region,
+                mode=mode,
+                character=character_enabled,
+                empty_ratio=round(empty_results / count, 2),
             )
 
         _logger.info(
-            "event=namegen.generate region=%s mode=%s gender=%s"
-            " character=%s profession_category=%s count=%s"
-            " input_chars=%s output_chars=%s empty_results=%s",
-            region,
-            mode,
-            gender,
-            character_enabled,
-            profession_category,
-            count,
-            input_chars,
-            output_chars,
-            empty_results,
+            "namegen.generate",
+            region=region,
+            mode=mode,
+            gender=gender,
+            character=character_enabled,
+            profession_category=profession_category,
+            count=count,
+            input_chars=input_chars,
+            output_chars=output_chars,
+            empty_results=empty_results,
         )
 
         render_start = perf_counter()
@@ -222,8 +229,8 @@ async def generate_names(
         )
 
         if _metrics:
-            _metrics.template_render_duration_ms.record(
-                (perf_counter() - render_start) * 1000, attrs
+            _metrics.template_render_duration_ms.labels(**labels).observe(
+                (perf_counter() - render_start) * 1000
             )
 
         return response
@@ -243,7 +250,7 @@ async def download_pdf(names: str = Form(...), kind: str = Form("name")):
         elapsed_ms = (perf_counter() - start) * 1000
 
         if _metrics:
-            _metrics.pdf_duration_ms.record(elapsed_ms, {"route": "/pdf"})
+            _metrics.pdf_duration_ms.labels(route="/pdf").observe(elapsed_ms)
 
         return StreamingResponse(
             io.BytesIO(pdf_bytes),

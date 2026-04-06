@@ -48,6 +48,7 @@ uv run namegen
 
 ```bash
 docker compose up --build
+docker compose -f docker-compose.yml -f docker-compose.observability.yml up --build
 ```
 
 Danach verfügbar unter:
@@ -55,10 +56,15 @@ Danach verfügbar unter:
 | Service | URL | Hinweis |
 |---|---|---|
 | Web-App | <http://localhost:8000> | Generator-Oberfläche |
+| Metrics | <http://localhost:8000/metrics> | Prometheus-Format |
 | Grafana | <http://localhost:3300> | Login: `admin` / `admin` |
 | Prometheus | <http://localhost:9090> | Metriken |
 | Loki (API) | <http://localhost:3100> | Logs |
 | Tempo (API) | <http://localhost:3200> | Traces |
+
+`docker compose up --build` startet nur die Web-App. Für den kompletten
+Observability-Stack wird das Overlay `docker-compose.observability.yml`
+zusätzlich eingebunden.
 
 ## CLI-Nutzung
 
@@ -251,8 +257,19 @@ uv run ruff format .
 
 ## Observability
 
-Die Web-App instrumentiert den Request-Lifecycle mit OpenTelemetry und
-strukturierten Logs. Der komplette Stack startet mit `docker compose up --build`.
+Die Web-App instrumentiert den Request-Lifecycle mit OpenTelemetry-Tracing,
+Prometheus-Metriken auf `/metrics` und strukturierten JSON-Logs mit
+`request_id`, `trace_id` und `span_id`.
+
+Start:
+
+```bash
+docker compose up --build
+docker compose -f docker-compose.yml -f docker-compose.observability.yml up --build
+```
+
+- Basis-Compose: nur die Web-App
+- Overlay: OpenTelemetry Collector, Prometheus, Tempo, Loki, Alloy und Grafana
 
 ### Stack-Versionen
 
@@ -275,6 +292,13 @@ strukturierten Logs. Der komplette Stack startet mit `docker compose up --build`
 | `namegen_generate_count_total` | Generierungsaufrufe |
 | `namegen_empty_results_count_total` | leere Ergebnisse |
 | `namegen_name_length_chars_bucket` | Namenslängen |
+
+### Health & Request-Korrelation
+
+- `/health` liefert `status`, `version`, `regions_loaded`, `uptime_s` und
+  `python_version`
+- jede HTTP-Response enthält `X-Request-ID`
+- Web-Logs enthalten dieselbe `request_id` plus `trace_id` / `span_id`
 
 ## Rechtlicher Hinweis
 
