@@ -6,6 +6,7 @@ import os
 from collections.abc import Callable
 from contextlib import suppress
 from time import perf_counter
+from urllib.parse import parse_qs
 from uuid import uuid4
 
 import structlog
@@ -52,6 +53,25 @@ def _trace_context() -> tuple[str, str]:
     if not context.is_valid:
         return "", ""
     return f"{context.trace_id:032x}", f"{context.span_id:016x}"
+
+
+async def _request_region(request: Request) -> str:
+    """Extract the region from query params or form submissions when available."""
+    region = request.query_params.get("region")
+    if region:
+        return region
+
+    content_type = request.headers.get("content-type", "")
+    if (
+        request.method in {"POST", "PUT", "PATCH"}
+        and "application/x-www-form-urlencoded" in content_type
+    ):
+        with suppress(Exception):
+            body = (await request.body()).decode("utf-8")
+            values = parse_qs(body, keep_blank_values=False)
+            parsed = values.get("region", [""])
+            return parsed[0]
+    return ""
 
 
 def _add_trace_context(
@@ -149,7 +169,7 @@ def create_metrics_middleware(
             return await call_next(request)
 
         request_id = request.headers.get("x-request-id", str(uuid4()))
-        region = request.query_params.get("region")
+        region = await _request_region(request)
         active_labels = {
             "http_method": method,
             "http_route": route_template,
@@ -161,7 +181,7 @@ def create_metrics_middleware(
             method=method,
             path=path,
             route=route_template,
-            region=region or "",
+            region=region,
         )
         app_metrics.active_requests.labels(**active_labels).inc()
 
@@ -201,7 +221,7 @@ def create_metrics_middleware(
                 status_code=500,
                 duration_ms=round(elapsed_ms, 2),
                 error_type=type(exc).__name__,
-                region=region or "",
+                region=region,
             )
             clear_contextvars()
             raise
@@ -235,7 +255,7 @@ def create_metrics_middleware(
             route=route_template,
             status_code=response.status_code,
             duration_ms=round(elapsed_ms, 2),
-            region=region or "",
+            region=region,
         )
         clear_contextvars()
         return response

@@ -151,6 +151,32 @@ async def test_request_id_header_is_forwarded_and_logs_are_json(caplog) -> None:
 
 
 @pytest.mark.anyio
+async def test_generate_request_log_includes_form_region(caplog) -> None:
+    caplog.set_level(logging.INFO)
+
+    async with _client() as client:
+        response = await client.post(
+            "/generate",
+            data={
+                "region": "human",
+                "gender": "any",
+                "mode": "simple",
+                "count": "1",
+                "profession_category": "alle",
+            },
+        )
+
+    assert response.status_code == 200
+    log_lines = [record.message for record in caplog.records if record.message.strip()]
+    request_log = next(
+        json.loads(line)
+        for line in reversed(log_lines)
+        if '"event": "http.request"' in line and '"path": "/generate"' in line
+    )
+    assert request_log["region"] == "human"
+
+
+@pytest.mark.anyio
 async def test_request_error_records_metrics_and_structured_log(caplog) -> None:
     caplog.set_level(logging.INFO)
 
