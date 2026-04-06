@@ -66,6 +66,25 @@ Danach verfügbar unter:
 Observability-Stack wird das Overlay `docker-compose.observability.yml`
 zusätzlich eingebunden.
 
+### Einfacher Produktionsstart per IP
+
+Für einen ersten Deploy ohne DNS gibt es einen schlanken Produktions-Compose-Stack:
+
+```bash
+cp infra/.env.example infra/.env
+docker compose --env-file infra/.env -f infra/docker-compose.prod.yml pull
+docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d
+```
+
+Wichtig:
+
+- das Compose-File zieht GHCR-Images und baut nicht lokal
+- setze in `infra/.env` unbedingt `APP_BASIC_AUTH_PASSWORD`
+- die Web-App ist dann per HTTP Basic Auth geschützt
+- `/health` bleibt absichtlich ohne Auth für Healthchecks erreichbar
+
+Details stehen in [infra/DEPLOYMENT.md](infra/DEPLOYMENT.md).
+
 ## CLI-Nutzung
 
 ### Katalog anzeigen

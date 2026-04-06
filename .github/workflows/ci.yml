@@ -114,3 +114,63 @@ jobs:
       - name: Build Web Docker image
         if: github.event_name != 'push'
         run: docker build -f web/Dockerfile -t dsa-namegen-web:ci .
+
+  deploy_web:
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Normalize repository name
+        id: repo
+        run: echo "lower=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure target directory exists
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          port: ${{ secrets.DEPLOY_PORT || 22 }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            mkdir -p "${{ secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/infra"
+
+      - name: Copy production compose file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          port: ${{ secrets.DEPLOY_PORT || 22 }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: "infra/docker-compose.prod.yml"
+          target: "${{ secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/infra"
+          strip_components: 1
+
+      - name: Deploy web app
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          port: ${{ secrets.DEPLOY_PORT || 22 }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            TARGET_DIR="${{ secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}"
+            mkdir -p "$TARGET_DIR/infra"
+            cat > "$TARGET_DIR/infra/.env" <<EOF
+            IMAGE_NAME=ghcr.io/${{ steps.repo.outputs.lower }}/namegen-web
+            IMAGE_TAG=${{ github.sha }}
+            WEB_PORT=80
+            APP_BASIC_AUTH_USERNAME=${{ secrets.APP_BASIC_AUTH_USERNAME }}
+            APP_BASIC_AUTH_PASSWORD=${{ secrets.APP_BASIC_AUTH_PASSWORD }}
+            EOF
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+            cd "$TARGET_DIR"
+            docker compose --env-file infra/.env -f infra/docker-compose.prod.yml pull
+            docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d
+            docker image prune -f
