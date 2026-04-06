@@ -64,7 +64,7 @@ scripts = ["Kusliker Zeichen"]
 local_knowledge = ["Amazonen-Siedlungen und Kampfausbildungsstätten"]
 social_status = ["Frei"]
 professions = [
-  "Kriegerin", "Bogenschützin", "Älteste",
+  "Kriegerin", "Amazone", "Bogenschützin", "Älteste",
   "Spähterin", "Hüterin der Halle", "Wandererin",
 ]
 typical_advantages = ["Kampfreflexe", "Beidhändiger Kampf"]

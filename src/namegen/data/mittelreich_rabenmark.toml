@@ -68,3 +68,12 @@ infix_probability = 0.0
 prefix = ["Raben", "Bor", "Troll", "Sensendengl"]
 infix  = []
 suffix = ["feld", "thal", "treu", "acker", "zacker", "er"]
+
+[character]
+professions = [
+  "Rabengardistin",
+  { name = "Golgaritin", categories = ["kaempfer"], themes = ["golgaritin"], weight = 5 },
+  { name = "Rabengardistin", categories = ["geweihte", "kaempfer"], themes = ["rabengardistin"], weight = 5 },
+  "Borongeweihter",
+  "Landadlige",
+]

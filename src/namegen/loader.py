@@ -27,7 +27,13 @@ class LoaderError(Exception):
 
 
 _DATA_PACKAGE = "namegen.data"
-_NON_REGION_TOML = {"professions.toml", "professions_regelwiki.toml", "traits.toml", "__init__.py"}
+_NON_REGION_TOML = {
+    "professions.toml",
+    "professions_regelwiki.toml",
+    "profession_themes.toml",
+    "traits.toml",
+    "__init__.py",
+}
 
 _REAL_CULTURE_MAP = {
     "mittelreich": "mittelreicher",
@@ -171,6 +177,7 @@ def _merge_compose(base: ComposeConfig, override: ComposeConfig) -> ComposeConfi
 def _merge_character(base: CharacterConfig, override: CharacterConfig) -> CharacterConfig:
     return CharacterConfig(
         professions=_concat_unique(base.professions, override.professions),
+        profession_entries=base.profession_entries + override.profession_entries,
         languages=_concat_unique(base.languages, override.languages),
         scripts=_concat_unique(base.scripts, override.scripts),
         local_knowledge=_concat_unique(base.local_knowledge, override.local_knowledge),

@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import sys
 import zipfile
+from base64 import b64encode
 from pathlib import Path
 
+import httpx
 import pytest
 from starlette.requests import Request
 
@@ -19,7 +22,7 @@ if str(WEB_DIR) not in sys.path:
 from export_bundle import build_export_zip  # noqa: E402
 from main import app  # noqa: E402
 from result_transfer import load_results_export  # noqa: E402
-from routes.generator import favourites_page  # noqa: E402
+from routes.generator import favourites_page, index  # noqa: E402
 
 
 def test_fastapi_docs_are_enabled() -> None:
@@ -102,3 +105,51 @@ async def test_favourites_page_renders() -> None:
     body = response.body.decode("utf-8")
     assert "Favoritenliste" in body
     assert "localStorage" in body
+
+
+@pytest.mark.anyio
+async def test_index_page_renders_profession_preview_payload() -> None:
+    response = await index(_request(), region="mittelreich_perricum")
+    assert response.status_code == 200
+    body = response.body.decode("utf-8")
+    assert "profession-preview-map" in body
+    assert "character-preview-panel" in body
+    assert "Graumagier aus Perricum" in body
+
+
+def _client() -> httpx.AsyncClient:
+    transport = httpx.ASGITransport(app=app)
+    return httpx.AsyncClient(transport=transport, base_url="http://testserver")
+
+
+def _basic_auth_header(username: str, password: str) -> dict[str, str]:
+    token = b64encode(f"{username}:{password}".encode()).decode("ascii")
+    return {"Authorization": f"Basic {token}"}
+
+
+@pytest.mark.anyio
+async def test_web_app_requires_basic_auth_when_password_is_configured(monkeypatch) -> None:
+    old_password = os.environ.get("APP_BASIC_AUTH_PASSWORD")
+    old_username = os.environ.get("APP_BASIC_AUTH_USERNAME")
+    monkeypatch.setenv("APP_BASIC_AUTH_PASSWORD", "secret-pass")
+    monkeypatch.setenv("APP_BASIC_AUTH_USERNAME", "gm")
+
+    try:
+        async with _client() as client:
+            blocked = await client.get("/")
+            health = await client.get("/health")
+            allowed = await client.get("/", headers=_basic_auth_header("gm", "secret-pass"))
+    finally:
+        if old_password is None:
+            monkeypatch.delenv("APP_BASIC_AUTH_PASSWORD", raising=False)
+        else:
+            monkeypatch.setenv("APP_BASIC_AUTH_PASSWORD", old_password)
+        if old_username is None:
+            monkeypatch.delenv("APP_BASIC_AUTH_USERNAME", raising=False)
+        else:
+            monkeypatch.setenv("APP_BASIC_AUTH_USERNAME", old_username)
+
+    assert blocked.status_code == 401
+    assert blocked.headers["www-authenticate"].startswith("Basic")
+    assert health.status_code == 200
+    assert allowed.status_code == 200

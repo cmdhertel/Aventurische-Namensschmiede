@@ -77,3 +77,6 @@ prefix = ["Brecheis", "Firn", "Gold", "Schnee", "Reusen", "Robben"]
 infix  = []
 suffix = ["läufer", "nase", "haar", "holer", "schlächter", "toht", "finger",
           "auge", "son", "dottir", "jef", "ew", "ski"]
+
+[character]
+professions = ["Jäger der Verfluchten", "Jäger", "Fallensteller", "Schlittenführer"]

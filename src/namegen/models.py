@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Annotated
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 # ── Enums ─────────────────────────────────────────────────────────────────────
 
@@ -34,6 +34,38 @@ class ExperienceLevel(StrEnum):
     GESELLE = "geselle"
     MEISTER = "meister"
     VETERAN = "veteran"
+
+
+class ProfessionTheme(BaseModel):
+    id: str
+    label: str
+    description: str = ""
+
+
+class ProfessionChoiceGroup(BaseModel):
+    id: str
+    label: str
+    professions: list[str] = Field(default_factory=list)
+
+
+class ProfessionSelectionPreview(BaseModel):
+    selection_id: str
+    groups: list[ProfessionChoiceGroup] = Field(default_factory=list)
+    themes: list[ProfessionTheme] = Field(default_factory=list)
+
+
+class ProfessionEntry(BaseModel):
+    name: str
+    categories: list[ProfessionCategory] = Field(default_factory=lambda: [ProfessionCategory.ALL])
+    themes: list[str] = Field(default_factory=list)
+    weight: int = Field(default=1, ge=1)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _from_string(cls, value):
+        if isinstance(value, str):
+            return {"name": value}
+        return value
 
 
 class NameSchemaType(StrEnum):
@@ -140,6 +172,7 @@ class CharacterConfig(BaseModel):
     """Character-relevant data from species, culture, and origin."""
 
     professions: list[str] = Field(default_factory=list)
+    profession_entries: list[ProfessionEntry] = Field(default_factory=list)
     languages: list[str] = Field(default_factory=list)
     scripts: list[str] = Field(default_factory=list)
     local_knowledge: list[str] = Field(default_factory=list)
@@ -153,6 +186,31 @@ class CharacterConfig(BaseModel):
     hair: list[str] = Field(default_factory=list)
     eyes: list[str] = Field(default_factory=list)
     build: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _normalize_professions(cls, value):
+        if not isinstance(value, dict):
+            return value
+
+        raw_professions = value.get("professions", [])
+        if not isinstance(raw_professions, list):
+            return value
+
+        plain_professions: list[str] = []
+        structured_professions: list[ProfessionEntry | dict] = list(
+            value.get("profession_entries", [])
+        )
+        for entry in raw_professions:
+            if isinstance(entry, str):
+                plain_professions.append(entry)
+            else:
+                structured_professions.append(entry)
+
+        value = dict(value)
+        value["professions"] = plain_professions
+        value["profession_entries"] = structured_professions
+        return value
 
 
 class SpeciesData(BaseModel):

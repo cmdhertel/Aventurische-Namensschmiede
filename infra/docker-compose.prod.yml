@@ -1,0 +1,30 @@
+services:
+  web:
+    image: "${IMAGE_NAME:-ghcr.io/cmdhertel/aventurische-namensschmiede/namegen-web}:${IMAGE_TAG:-latest}"
+    pull_policy: always
+    ports:
+      - "${WEB_PORT:-80}:8000"
+    restart: unless-stopped
+    environment:
+      PYTHONUNBUFFERED: "1"
+      APP_ENV: "prod"
+      OTEL_SERVICE_NAME: "aventurische-namensschmiede-web"
+      APP_BASIC_AUTH_USERNAME: "${APP_BASIC_AUTH_USERNAME:-admin}"
+      APP_BASIC_AUTH_PASSWORD: "${APP_BASIC_AUTH_PASSWORD}"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2)",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -91,3 +91,6 @@ prefix = ["vom Haerad der "]
 infix  = []
 suffix = ["rudh", "taech", "gach", "takh", "llyn", "yadh", "mur", "hälur",
           "skoth", "yolir", "barr", "sloch"]
+
+[character]
+professions = ["Brenoch-Dûn (Gjalskerschamane)", "Jäger", "Krieger", "Schamane"]

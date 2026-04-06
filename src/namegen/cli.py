@@ -12,7 +12,12 @@ from rich.console import Console
 from rich.table import Table
 
 from .catalog import get_origin_catalog
-from .chargen import generate_character, get_profession_groups
+from .chargen import (
+    generate_character,
+    get_profession_groups,
+    get_profession_preview_for_selection,
+    get_profession_themes,
+)
 from .generator import GeneratorError, generate
 from .loader import LoaderError, list_regions, load_region
 from .models import ExperienceLevel, Gender, GenerationMode, ProfessionCategory
@@ -91,6 +96,13 @@ ExperienceOpt = Annotated[
         case_sensitive=False,
     ),
 ]
+ThemeOpt = Annotated[
+    str | None,
+    typer.Option(
+        "--profession-theme",
+        help="Optionale Themen-Gruppe, z.B. graumagier_aus_perricum.",
+    ),
+]
 InfixProbOpt = Annotated[
     float | None,
     typer.Option(
@@ -139,6 +151,12 @@ MaxSyllablesOpt = Annotated[
     int,
     typer.Option("--max-syllables", min=1, help="Maximale Part-Anzahl pro Compose-Name."),
 ]
+ProfessionSelectionArg = Annotated[
+    str | None,
+    typer.Argument(
+        help="Optionale Spezies-, Kultur- oder Region-ID für selektionsbezogene Vorschau."
+    ),
+]
 
 
 # ── Commands ───────────────────────────────────────────────────────────────────
@@ -152,6 +170,7 @@ def cmd_simple(
     count: CountOpt = 1,
     character: CharacterOpt = False,
     category: CategoryOpt = ProfessionCategory.ALL,
+    profession_theme: ThemeOpt = None,
     experience: ExperienceOpt = ExperienceLevel.GESELLE,
     fmt: FormatOpt = OutputFormat.RICH,
     output: OutputOpt = None,
@@ -168,6 +187,7 @@ def cmd_simple(
         count=count,
         character=character,
         category=category,
+        profession_theme=profession_theme,
         experience=experience,
         fmt=fmt,
         output=output,
@@ -183,6 +203,7 @@ def cmd_simple(
         show_components=False,
         character=config["character"],
         category=config["category"],
+        profession_theme=config["profession_theme"],
         experience=config["experience"],
         fmt=config["fmt"],
         dest=config["output"],
@@ -199,6 +220,7 @@ def cmd_compose(
     show_components: ComponentsOpt = False,
     character: CharacterOpt = False,
     category: CategoryOpt = ProfessionCategory.ALL,
+    profession_theme: ThemeOpt = None,
     experience: ExperienceOpt = ExperienceLevel.GESELLE,
     infix_probability: InfixProbOpt = None,
     fmt: FormatOpt = OutputFormat.RICH,
@@ -218,6 +240,7 @@ def cmd_compose(
         count=count,
         character=character,
         category=category,
+        profession_theme=profession_theme,
         experience=experience,
         fmt=fmt,
         output=output,
@@ -236,6 +259,7 @@ def cmd_compose(
         config["show_components"],
         character=config["character"],
         category=config["category"],
+        profession_theme=config["profession_theme"],
         experience=config["experience"],
         infix_probability_override=config["infix_probability"],
         fmt=config["fmt"],
@@ -305,13 +329,41 @@ def cmd_regions() -> None:
 
 
 @app.command("professions")
-def cmd_professions() -> None:
+def cmd_professions(selection: ProfessionSelectionArg = None) -> None:
     """Alle verfügbaren Professionen geordnet nach Kategorie anzeigen."""
+    if selection:
+        preview = get_profession_preview_for_selection(selection)
+        for group in preview.groups:
+            if not group.professions:
+                continue
+            table = Table(group.label, box=box.SIMPLE, header_style="bold cyan")
+            for profession in group.professions:
+                table.add_row(profession)
+            console.print(table)
+
+        if preview.themes:
+            theme_table = Table(
+                "Themen-ID", "Label", "Beschreibung", box=box.SIMPLE, header_style="bold cyan"
+            )
+            for theme in preview.themes:
+                theme_table.add_row(theme.id, theme.label, theme.description)
+            console.print(theme_table)
+        return
+
     for title, professions in get_profession_groups():
         table = Table(title, box=box.SIMPLE, header_style="bold cyan")
         for profession in professions:
             table.add_row(profession)
         console.print(table)
+
+    themes = get_profession_themes()
+    if themes:
+        theme_table = Table(
+            "Themen-ID", "Label", "Beschreibung", box=box.SIMPLE, header_style="bold cyan"
+        )
+        for theme in themes:
+            theme_table.add_row(theme.id, theme.label, theme.description)
+        console.print(theme_table)
 
 
 @config_app.command("save")
@@ -327,6 +379,7 @@ def cmd_config_save(
     fmt: FormatOpt = OutputFormat.RICH,
     character: CharacterOpt = False,
     category: CategoryOpt = ProfessionCategory.ALL,
+    profession_theme: ThemeOpt = None,
     experience: ExperienceOpt = ExperienceLevel.GESELLE,
     show_components: ComponentsOpt = False,
     infix_probability: InfixProbOpt = None,
@@ -347,6 +400,7 @@ def cmd_config_save(
         fmt=fmt,
         character=character,
         profession_category=category,
+        profession_theme=profession_theme,
         experience=experience,
         show_components=show_components,
         infix_probability=infix_probability,
@@ -394,6 +448,7 @@ def _run(
     dest: Path | None,
     character: bool = False,
     category: ProfessionCategory = ProfessionCategory.ALL,
+    profession_theme: str | None = None,
     experience: ExperienceLevel = ExperienceLevel.GESELLE,
     infix_probability_override: float | None = None,
     min_syllables: int = 2,
@@ -408,6 +463,7 @@ def _run(
                     mode=mode,
                     gender=gender,
                     profession_category=category,
+                    profession_theme=profession_theme,
                     experience=experience,
                     infix_probability_override=infix_probability_override,
                     min_syllables=min_syllables,
@@ -441,9 +497,13 @@ def _validate_character_options(ctx: typer.Context, character: bool) -> None:
         return
 
     category_source = ctx.get_parameter_source("category")
+    profession_theme_source = ctx.get_parameter_source("profession_theme")
     experience_source = ctx.get_parameter_source("experience")
     if category_source not in (None, ParameterSource.DEFAULT):
         console.print("[red]Fehler:[/red] --profession-category erfordert --character.")
+        raise typer.Exit(1)
+    if profession_theme_source not in (None, ParameterSource.DEFAULT):
+        console.print("[red]Fehler:[/red] --profession-theme erfordert --character.")
         raise typer.Exit(1)
     if experience_source not in (None, ParameterSource.DEFAULT):
         console.print("[red]Fehler:[/red] --experience erfordert --character.")
@@ -459,6 +519,7 @@ def _resolve_profile_overrides(
     count: int,
     character: bool,
     category: ProfessionCategory,
+    profession_theme: str | None,
     experience: ExperienceLevel,
     fmt: OutputFormat,
     output: Path | None,
@@ -509,6 +570,12 @@ def _resolve_profile_overrides(
             "category",
             category,
             profile.profession_category if profile else None,
+        ),
+        "profession_theme": _profile_default(
+            ctx,
+            "profession_theme",
+            profession_theme,
+            profile.profession_theme if profile else None,
         ),
         "experience": _profile_default(
             ctx,

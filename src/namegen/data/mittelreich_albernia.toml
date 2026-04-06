@@ -120,3 +120,14 @@ infix  = []
 suffix = ["arodon", "crumold", "fenwasian", "herlogan", "sanin", "stepahan",
           "bennain", "conchobair", "llud", "niamad", "hold", "wirt",
           "strand", "seehoff"]
+
+[character]
+professions = [
+  "Albernischer Seefahrer",
+  "Havener Krieger",
+  "Küstenschmugglerin aus Havena",
+  "Neethaner Kriegerin",
+  "Winhaller Kriegerin",
+  "Seefahrerin",
+  "Schiffer",
+]

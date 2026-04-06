@@ -20,4 +20,4 @@ female = ["Diamante", "Saphira", "Taloscha", "Turmaline"]
 neutral = ["Goldhand", "Gemmenschneider", "Silberhelm", "Feuerbart", "Runendeuter", "Steinspalter"]
 
 [character]
-professions = ["Juwelier", "Dieb", "Händler", "Objektkundiger"]
+professions = ["Juwelier", "Dieb", "Händler", "Objektkundiger", "Brobim-Geode"]

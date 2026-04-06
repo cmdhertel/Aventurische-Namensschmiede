@@ -17,6 +17,16 @@ def test_professions_command_lists_all_user_facing_groups() -> None:
     assert result.exit_code == 0
     for title in ("Geweihte", "Zauberer", "Kämpfer & Ordensleute", "Profane"):
         assert title in result.stdout
+    assert "graumagier_aus_perricum" in result.stdout
+
+
+def test_professions_command_for_selection_shows_only_selection_preview() -> None:
+    result = runner.invoke(app, ["professions", "mittelreich_perricum"])
+
+    assert result.exit_code == 0
+    assert "Graumagier aus Perricum" in result.stdout
+    assert "graumagier_aus_perricum" in result.stdout
+    assert "Koschbauer" not in result.stdout
 
 
 def test_simple_character_accepts_profession_category_alias() -> None:
@@ -49,6 +59,34 @@ def test_simple_profession_category_requires_character() -> None:
     )
     assert result.exit_code == 1
     assert "--profession-category erfordert --character" in result.stdout
+
+
+def test_simple_profession_theme_requires_character() -> None:
+    result = runner.invoke(
+        app,
+        ["simple", "mittelreich_perricum", "--profession-theme", "graumagier_aus_perricum"],
+    )
+    assert result.exit_code == 1
+    assert "--profession-theme erfordert --character" in result.stdout
+
+
+def test_simple_character_accepts_profession_theme() -> None:
+    result = runner.invoke(
+        app,
+        [
+            "simple",
+            "mittelreich_perricum",
+            "--character",
+            "--profession-category",
+            "zauberer",
+            "--profession-theme",
+            "graumagier_aus_perricum",
+            "--format",
+            "json",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "Graumagier aus Perricum" in result.stdout
 
 
 def test_compose_accepts_infix_probability_for_character_generation() -> None:
@@ -164,6 +202,8 @@ def test_config_profile_save_and_load(tmp_path: Path, monkeypatch) -> None:
             "3",
             "--format",
             "json",
+            "--profession-theme",
+            "graumagier_aus_perricum",
             "--min-syllables",
             "2",
             "--max-syllables",
@@ -176,6 +216,7 @@ def test_config_profile_save_and_load(tmp_path: Path, monkeypatch) -> None:
     assert load_result.exit_code == 0
     assert '"region": "mittelreich_kosch"' in load_result.stdout
     assert '"mode": "compose"' in load_result.stdout
+    assert '"profession_theme": "graumagier_aus_perricum"' in load_result.stdout
 
 
 def test_compose_can_use_profile_defaults(tmp_path: Path, monkeypatch) -> None:

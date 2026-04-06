@@ -21,7 +21,11 @@ from namegen.catalog import (
     resolve_generation_targets,
     selection_supports_compose,
 )
-from namegen.chargen import generate_character
+from namegen.chargen import (
+    generate_character,
+    get_profession_preview_for_selection,
+    get_profession_themes_for_selection,
+)
 from namegen.generator import generate
 from namegen.models import Gender, GenerationMode, ProfessionCategory
 
@@ -74,6 +78,34 @@ def _default_selected_region(origins: list[dict]) -> str:
     return origins[0]["id"] if origins else ""
 
 
+def _theme_map_for_origins(origins: list[dict]) -> dict[str, list[dict[str, str]]]:
+    return {
+        origin["id"]: {
+            category.value: [
+                {
+                    "id": theme.id,
+                    "label": theme.label,
+                }
+                for theme in get_profession_themes_for_selection(origin["id"], category=category)
+            ]
+            for category in ProfessionCategory
+        }
+        for origin in origins
+    }
+
+
+def _profession_preview_map_for_origins(origins: list[dict]) -> dict[str, dict]:
+    return {
+        origin["id"]: {
+            category.value: get_profession_preview_for_selection(
+                origin["id"], category=category
+            ).model_dump(mode="json")
+            for category in ProfessionCategory
+        }
+        for origin in origins
+    }
+
+
 @router.get("/")
 async def index(
     request: Request,
@@ -88,6 +120,8 @@ async def index(
             "origins": origins,
             "selected_region": selected,
             "compose_default_enabled": selection_supports_compose(selected),
+            "profession_theme_map": _theme_map_for_origins(origins),
+            "profession_preview_map": _profession_preview_map_for_origins(origins),
         },
     )
 
@@ -111,10 +145,12 @@ async def generate_names(
     count: int = Form(5),
     character: str | None = Form(None),
     profession_category: str = Form("alle"),
+    profession_theme: str = Form(""),
 ):
     with _tracer.start_as_current_span("namegen.generate") as span:
         count = max(1, min(count, 50))
         character_enabled = _parse_checkbox_value(character)
+        normalized_theme = profession_theme.strip()
 
         labels = {
             "namegen_region": region,
@@ -122,6 +158,7 @@ async def generate_names(
             "namegen_gender": gender,
             "namegen_character": str(character_enabled).lower(),
             "namegen_profession_category": profession_category,
+            "namegen_profession_theme": normalized_theme or "none",
         }
 
         load_start = perf_counter()
@@ -154,6 +191,7 @@ async def generate_names(
                     mode=gmode,
                     gender=gend,
                     profession_category=category,
+                    profession_theme=normalized_theme or None,
                 )
                 for _ in range(count)
             ]
@@ -166,7 +204,9 @@ async def generate_names(
 
         generate_elapsed_ms = (perf_counter() - generate_start) * 1000
 
-        input_chars = sum(len(value) for value in [region, gender, mode, profession_category])
+        input_chars = sum(
+            len(value) for value in [region, gender, mode, profession_category, normalized_theme]
+        )
         empty_results = count_empty_names(results)
 
         span_attrs = {
@@ -175,6 +215,7 @@ async def generate_names(
             "namegen.gender": gender,
             "namegen.character": character_enabled,
             "namegen.profession_category": profession_category,
+            "namegen.profession_theme": normalized_theme,
             "namegen.requested_count": count,
             "namegen.input_chars": input_chars,
             "namegen.output_chars": output_chars,
@@ -212,6 +253,7 @@ async def generate_names(
             gender=gender,
             character=character_enabled,
             profession_category=profession_category,
+            profession_theme=normalized_theme or None,
             count=count,
             input_chars=input_chars,
             output_chars=output_chars,
