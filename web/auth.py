@@ -10,7 +10,7 @@ from collections.abc import Awaitable, Callable
 from fastapi import Request, Response
 from fastapi.responses import PlainTextResponse
 
-_EXEMPT_PATHS = {"/health"}
+_EXEMPT_PATHS = {"/health", "/metrics"}
 _REALM = 'Basic realm="Namensschmiede"'
 
 
