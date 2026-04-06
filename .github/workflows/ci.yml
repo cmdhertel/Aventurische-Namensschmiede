@@ -123,6 +123,39 @@ jobs:
       contents: read
 
     steps:
+      - name: Validate deploy configuration
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          APP_BASIC_AUTH_PASSWORD: ${{ secrets.APP_BASIC_AUTH_PASSWORD }}
+        run: |
+          set -e
+          missing=0
+
+          require_secret() {
+            local name="$1"
+            local value="$2"
+            if [ -z "$value" ]; then
+              echo "::error::Missing required GitHub Actions secret: $name"
+              missing=1
+            fi
+          }
+
+          require_secret "DEPLOY_HOST" "$DEPLOY_HOST"
+          require_secret "DEPLOY_USER" "$DEPLOY_USER"
+          require_secret "DEPLOY_SSH_KEY" "$DEPLOY_SSH_KEY"
+          require_secret "GHCR_USERNAME" "$GHCR_USERNAME"
+          require_secret "GHCR_TOKEN" "$GHCR_TOKEN"
+          require_secret "APP_BASIC_AUTH_PASSWORD" "$APP_BASIC_AUTH_PASSWORD"
+
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::Deploy aborted because required secrets are missing. Configure the repository secrets and rerun the workflow."
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
