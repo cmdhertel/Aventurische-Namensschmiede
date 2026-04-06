@@ -247,6 +247,8 @@ def test_profession_category_filters_out_non_matching_regional_professions() -> 
 def test_profession_theme_catalog_exposes_stable_theme_ids() -> None:
     themes = {theme.id: theme.label for theme in get_profession_themes()}
     assert themes["graumagier_aus_perricum"] == "Graumagier aus Perricum"
+    assert themes["bannstrahler"] == "Bannstrahler"
+    assert themes["ardarit"] == "Ardarit"
 
 
 def test_profession_themes_for_selection_only_returns_matching_region_themes() -> None:
@@ -257,6 +259,29 @@ def test_profession_themes_for_selection_only_returns_matching_region_themes() -
 
     assert "graumagier_aus_perricum" in perricum_themes
     assert "graumagier_aus_perricum" not in kosch_themes
+
+
+def test_audit_moved_professions_are_no_longer_global() -> None:
+    geweihte = _load_professions_by_category(ProfessionCategory.GEWEIHTE)
+    kaempfer = _load_professions_by_category(ProfessionCategory.KAEMPFER)
+
+    assert "Bannstrahler" not in geweihte
+    assert "Ardarit" not in geweihte
+    assert "Amazone" not in kaempfer
+
+
+def test_audit_themes_show_up_only_in_matching_regions() -> None:
+    horasreich_themes = {
+        theme.id for theme in get_profession_themes_for_selection("horasreich")
+    }
+    mittelreich_themes = {
+        theme.id for theme in get_profession_themes_for_selection("mittelreich")
+    }
+
+    assert "ardarit" in horasreich_themes
+    assert "rosenritter" in horasreich_themes
+    assert "bannstrahler" in mittelreich_themes
+    assert "ardarit" not in mittelreich_themes
 
 
 def test_profession_themes_for_selection_respect_category_filter() -> None:

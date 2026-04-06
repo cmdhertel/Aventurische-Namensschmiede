@@ -9,5 +9,14 @@ culture_id = "thorwaler"
 region_id = "thorwal"
 
 [character]
-professions = ["Waljäger", "Runenschnitzer", "Ottajaskoeld", "Plünderfahrer"]
-
+professions = [
+  "Waljäger",
+  "Runenschnitzer",
+  "Runenschöpfer (Runahöfundur)",
+  "Thorwaler Krieger",
+  "Thorwalsche Godi",
+  "Ottajasko-Rekkerin",
+  "Premer Kriegerin",
+  "Ottajaskoeld",
+  "Plünderfahrer",
+]

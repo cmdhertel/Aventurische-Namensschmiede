@@ -11,5 +11,12 @@ female = ["Aglaya", "Aldara", "Arakne", "Boronike", "Iokaste", "Korina", "Kyklan
 neutral = ["Atholios", "Chyrikos", "Laikis", "Praiopoulos", "Tyrakis", "A'Layis", "dyll Atholios", "dylli Thaliyin", "a Palakar", "a Teremon"]
 
 [character]
-professions = ["Philosoph", "Schmied", "Seefahrer", "Hofgelehrte"]
-
+professions = [
+  "Philosoph",
+  "Zyklopäische Philosophin",
+  "Zyklopäischer Avesgeweihter",
+  "Hylailer Kriegerin",
+  "Schmied",
+  "Seefahrer",
+  "Hofgelehrte",
+]

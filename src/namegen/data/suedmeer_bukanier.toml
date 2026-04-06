@@ -18,5 +18,10 @@ type = "given_byname"
 description = "Piraten tragen oft Vornamen plus markanten Beinamen."
 
 [character]
-professions = ["Piratenkapitän", "Freibeuter", "Smutje", "Steuermann"]
-
+professions = [
+  "Piratenkapitän",
+  "Freibeuter",
+  "Smutje",
+  "Steuermann",
+  { name = "Numinorupriester", categories = ["geweihte"], themes = ["numinorupriester"], weight = 4 },
+]

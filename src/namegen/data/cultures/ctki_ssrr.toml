@@ -17,7 +17,17 @@ languages = ["Rssahh"]
 scripts = ["Chrmk"]
 local_knowledge = ["Dorf und angrenzendes Gebiet"]
 social_status = ["Adel", "Unfrei"]
-professions = ["Echsenreiter", "Fallensteller", "Händler", "Heiler", "Stammeskrieger"]
+professions = [
+  "Echsenreiter",
+  "Achazschamane",
+  "Chr’Ssir’Ssr-Priester",
+  "H’Szint-Priester",
+  "Zsahh-Priesterin",
+  "Fallensteller",
+  "Händler",
+  "Heiler",
+  "Stammeskrieger",
+]
 typical_disadvantages = ["Arroganz", "Vorurteile gegenüber Nicht-Achaz"]
 typical_talents = ["Schwimmen", "Sinnesschärfe", "Verbergen", "Wildnisleben"]
 personality = ["spricht knapp und mit reptilischer Ruhe"]
@@ -25,4 +35,3 @@ motivations = ["dient Gelege, Tempel oder Siedlung"]
 quirks = ["gibt Menschen zur Verwirrung wechselnde Rufnamen"]
 
 package_ap = 49
-

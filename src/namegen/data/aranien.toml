@@ -100,4 +100,8 @@ professions = [
   "Karawanenführer", "Wüstenläufer", "Teppichhändler", "Wasserträger",
   "Sklavenhändler", "Dolmetscher", "Beduinenbote", "Oasenwirt",
   "Sandalenmacher", "Gewürzkrämer",
+  "Aranischer Sippenkrieger", "Baburiner Kriegerin",
+  { name = "Ishannah al’Kira-Balayan", categories = ["kaempfer"], themes = ["ishannah_al_kira_balayan"], weight = 5 },
+  { name = "Qabaloth", categories = ["zauberer"], themes = ["qabaloth"], weight = 5 },
+  { name = "Säbeltänzerin", categories = ["geweihte", "kaempfer"], themes = ["saebeltaenzerin"], weight = 4 },
 ]

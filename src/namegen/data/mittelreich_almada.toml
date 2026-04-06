@@ -58,3 +58,14 @@ neutral = [
   # Adelsnamen
   "d'Artesa", "da Vanya", "di Lacara", "di Madjani", "von Abundil"
 ]
+
+[character]
+professions = [
+  "Mengbiller Krieger",
+  "Winzer",
+  "Caballero",
+  { name = "Rahjakavalier", categories = ["geweihte"], themes = ["rahjakavalier"], weight = 4 },
+  { name = "Rhodensteinerin", categories = ["geweihte"], themes = ["rhodensteinerin"], weight = 4 },
+  { name = "Etilianer", categories = ["geweihte"], themes = ["etilianer"], weight = 4 },
+  { name = "Therbûnit", categories = ["geweihte"], themes = ["therbuenit"], weight = 4 },
+]

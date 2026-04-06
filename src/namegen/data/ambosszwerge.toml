@@ -9,5 +9,4 @@ culture_id = "ambosszwerge"
 region_id = "ambosszwerge"
 
 [character]
-professions = ["Bingewächter", "Erzschürfer", "Ahnenschmied"]
-
+professions = ["Bingewächter", "Erzschürfer", "Ahnenschmied", "Xorloscher Drachenkämpfer", "Zwergenkrieger nach Hardas"]

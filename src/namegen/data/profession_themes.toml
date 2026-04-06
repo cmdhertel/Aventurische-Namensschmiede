@@ -1,3 +1,119 @@
 [themes.graumagier_aus_perricum]
 label = "Graumagier aus Perricum"
 description = "Regionale Themenschablone für gildenmagische Figuren aus Perricum."
+
+[themes.adoru_magier]
+label = "Adoru-Magier"
+description = "Magische Tradition der Adoru."
+
+[themes.ardarit]
+label = "Ardarit"
+description = "Ordens- und Traditionsprofil der Ardariten."
+
+[themes.bannstrahler]
+label = "Bannstrahler"
+description = "Ordensprofil der Bannstrahler."
+
+[themes.bruder_des_feuers]
+label = "Bruder des Feuers"
+description = "Spezifische geweihte Traditionslinie des Feuers."
+
+[themes.draconiterin]
+label = "Draconiterin"
+description = "Ordensprofil der Draconiter."
+
+[themes.etilianer]
+label = "Etilianer"
+description = "Ordensprofil der Etilianer."
+
+[themes.golgaritin]
+label = "Golgaritin"
+description = "Ordensprofil der Golgariten."
+
+[themes.ishannah_al_kira_balayan]
+label = "Ishannah al’Kira-Balayan"
+description = "Spezifische Schwertkampfschule der Balayan-Tradition."
+
+[themes.lyceum_kurtisane]
+label = "Lyceum-Kurtisane"
+description = "Schul- und Gesellschaftsprofil des Lyceums."
+
+[themes.mada_basari_ordensmitglied]
+label = "Mada Basari-Ordensmitglied"
+description = "Ordens- und Handelsnetzprofil der Mada Basari."
+
+[themes.mitglied_des_dreischwesternordens]
+label = "Mitglied des Dreischwesternordens"
+description = "Ordensprofil des Dreischwesternordens."
+
+[themes.noionit]
+label = "Noionit"
+description = "Ordensprofil der Noioniten."
+
+[themes.numinorupriester]
+label = "Numinorupriester"
+description = "Spezifischer Kult des Numinoru."
+
+[themes.ojomyaa_priesterin_der_vier]
+label = "Ojomyaa – Priesterin der Vier"
+description = "Adoru-geprägte Priesterinnen-Tradition der Vier."
+
+[themes.ordenskrieger_der_tarisharim]
+label = "Ordenskrieger der Tarisharim"
+description = "Ordensprofil der Tarisharim."
+
+[themes.ordenskriegerin_der_al_drakorhim]
+label = "Ordenskriegerin der Al’Drakorhim"
+description = "Ordensprofil der Al’Drakorhim."
+
+[themes.ordenskriegerin_der_beni_uchakani]
+label = "Ordenskriegerin der Beni Uchakâni"
+description = "Ordensprofil der Beni Uchakâni."
+
+[themes.ordensmitglied_der_beni_fessiri]
+label = "Ordensmitglied der Beni Fessiri"
+description = "Ordensprofil der Beni Fessiri."
+
+[themes.qabaloth]
+label = "Qabaloth"
+description = "Magische Sondertradition der Qabalyim."
+
+[themes.rabengardistin]
+label = "Rabengardistin"
+description = "Ordensprofil des Schwarzen Raben."
+
+[themes.rahjakavalier]
+label = "Rahjakavalier"
+description = "Spezifisches Profil rahjagefälliger Hof- und Ordensnähe."
+
+[themes.rhodensteinerin]
+label = "Rhodensteinerin"
+description = "Spezifische Ordens- oder Schultradition aus Rhodenstein."
+
+[themes.rosenritter]
+label = "Rosenritter"
+description = "Ordensprofil der Rosenritter."
+
+[themes.runenschoepfer_runahofundur]
+label = "Runenschöpfer (Runahöfundur)"
+description = "Runische Sondertradition des Nordens."
+
+[themes.saebeltaenzerin]
+label = "Säbeltänzerin"
+description = "Tulamidisch geprägte Traditionsprofession."
+
+[themes.shindai_adoru_schwertkaempfer]
+label = "Shindai (Adoru-Schwertkämpfer)"
+description = "Adoru-geprägte Schwertkämpfertradition."
+
+[themes.sonnenlegionaerin]
+label = "Sonnenlegionärin"
+description = "Ordensprofil der Sonnenlegion."
+
+[themes.therbuenit]
+label = "Therbûnit"
+description = "Ordensprofil der Therbûniten."
+
+[themes.ucuriatin]
+label = "Ucuriatin"
+description = "Ordensprofil der Ucuriaten."

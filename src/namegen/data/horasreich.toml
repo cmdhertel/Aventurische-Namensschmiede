@@ -172,4 +172,8 @@ professions = [
   "Hofschreiber", "Kunstmäzen", "Weinkenner", "Duellant", "Philosophiestudent",
   "Galeerenoffizier", "Seidenweberin", "Parfümeur", "Rhetoriker", "Jurist",
   "Stadtpatrizier", "Kirchendiener Bosparans", "Intrigant am Hof",
+  { name = "Ardarit", categories = ["geweihte"], themes = ["ardarit"], weight = 5 },
+  { name = "Draconiterin", categories = ["kaempfer"], themes = ["draconiterin"], weight = 4 },
+  { name = "Rosenritter", categories = ["kaempfer"], themes = ["rosenritter"], weight = 4 },
+  "Horasischer Kartograph", "Vinsalter Krieger",
 ]

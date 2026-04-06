@@ -78,3 +78,6 @@ prefix = ["Gäns", "Herd", "Darp", "Tuch", "Vieh", "Silb", "Ochsen"]
 infix  = []
 suffix = ["egard", "fried", "ater", "schneider", "treiber", "ergießer",
           "herder"]
+
+[character]
+professions = ["Rommilyser Kriegerin", "Traviageweihter", "Tuchschneider", "Landwehrsoldat"]
