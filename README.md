@@ -25,13 +25,12 @@ Varianten und einfache NSC-Profile.
   - CLI: `rich`, `plain`, `json`, `csv`, `markdown`, `clipboard`, `pdf`
   - Web: `PDF`-Download sowie `JSON`-Download und `JSON`-Import
 - **Observability-Stack** via Docker mit Grafana, Prometheus, Loki und Tempo
+  
+# ⚠️ WARNING: VIBE-CODE PROJECT ⚠️
 
-## Hinweis zur Entstehung
-
-> **Wichtiger Hinweis:** Ein erheblicher Teil dieser Codebase wurde mit
-> Unterstützung von AI-Tools erstellt, insbesondere **ChatGPT Codex** und
-> **Claude Code**. Das Repository ist bewusst auch ein Lern- und
-> Experimentierprojekt für AI-gestützte Softwareentwicklung.
+> [!WARNING]
+> Große Teile dieser Codebase wurden mit AI-Tools erstellt
+> (z. B. **ChatGPT Codex**, **Claude Code**).
 
 ## Schnellstart
 
