@@ -120,7 +120,7 @@ async def test_legal_page_renders_placeholder_impressum() -> None:
     assert response.status_code == 200
     body = response.body.decode("utf-8")
     assert "Impressum" in body
-    assert "PLATZHALTER NAME" in body
+    assert "Gian Luca Hertel" in body
     assert "§ 5 DDG" in body
 
 
@@ -130,6 +130,7 @@ async def test_privacy_page_renders_placeholder_policy() -> None:
     assert response.status_code == 200
     body = response.body.decode("utf-8")
     assert "Datenschutzerklärung" in body
+    assert "Gian Luca Hertel" in body
     assert "Server-Logs" in body
     assert "Art. 6 Abs. 1 lit. f DSGVO" in body
 

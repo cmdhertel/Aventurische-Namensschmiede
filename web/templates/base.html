@@ -85,26 +85,6 @@
                   {% endif %}">
           Favoriten
         </a>
-        <a href="/rechtliches"
-           class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
-           style="font-family: 'Inter', system-ui, sans-serif;
-                  {% if '/rechtliches' in request.url.path %}
-                    background-color: var(--color-input-bg); color: var(--color-text);
-                  {% else %}
-                    color: var(--color-text-muted);
-                  {% endif %}">
-          Impressum
-        </a>
-        <a href="/datenschutz"
-           class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
-           style="font-family: 'Inter', system-ui, sans-serif;
-                  {% if '/datenschutz' in request.url.path %}
-                    background-color: var(--color-input-bg); color: var(--color-text);
-                  {% else %}
-                    color: var(--color-text-muted);
-                  {% endif %}">
-          Datenschutz
-        </a>
       </div>
 
       <!-- Theme toggle -->
