@@ -1,22 +1,30 @@
 {% extends "base.html" %}
-{% block title %}Impressum & Rechtliches • Aventurische Namensschmiede{% endblock %}
+{% block title %}Impressum • Aventurische Namensschmiede{% endblock %}
 
 {% block content %}
 <section class="space-y-6 sm:space-y-8">
   <header class="page-hero">
     <h1 class="page-title" style="color: var(--color-accent);">
-      Impressum & Rechtliches
+      Impressum
     </h1>
     <p class="page-subtitle">
-      Transparenzseite für Impressum, Markenhinweise, Fanprojekt-Status und Datenherkunft.
+      Anbieterkennzeichnung, Markenhinweise und Quellenhinweise für das Projekt.
     </p>
   </header>
 
   <article class="card rounded-2xl card-responsive space-y-4"
            style="border-color: var(--color-divider); background-color: var(--color-surface);">
-    <h2 class="font-display text-xl" style="color: var(--color-text);">Impressum</h2>
+    <h2 class="font-display text-xl" style="color: var(--color-text);">Angaben gemäß § 5 DDG</h2>
     <p style="color: var(--color-text-muted);">
-      Die Anbieterkennzeichnung und die veröffentlichten Kontaktdaten befinden sich auf dieser Seite.
+      <strong>Gian Luca Hertel</strong><br />
+      Kirchendell 14<br />
+      66787 Wadgassen
+    </p>
+    <p style="color: var(--color-text-muted);">
+      E-Mail:
+      <a class="underline underline-offset-2" style="color: var(--color-accent);" href="mailto:aventurischenamenschmiede@gmail.com">
+        aventurischenamenschmiede@gmail.com
+      </a>
     </p>
   </article>
 
@@ -31,17 +39,11 @@
       Dieses Projekt ist ein privates, nicht-kommerzielles Fanprojekt ohne offizielle
       Verbindung zu Ulisses Spiele.
     </p>
-  </article>
-
-  <article class="card rounded-2xl card-responsive space-y-4"
-           style="border-color: var(--color-divider); background-color: var(--color-surface);">
-    <h2 class="font-display text-xl" style="color: var(--color-text);">Quellenpolitik</h2>
-    <ul class="list-disc pl-5 space-y-2" style="color: var(--color-text-muted);">
-      <li>Namens- und Professionsdaten verwenden Begriffe aus <strong>Das Schwarze Auge</strong> im Rahmen der Ulisses-Fan-Richtlinie.</li>
-      <li>Bezeichnungen und Listen basieren auf aventurischen Referenzen aus dem DSA-Umfeld.</li>
-      <li>Die Fan-Richtlinien von Ulisses sind die Leitplanke für Darstellung und Nutzung im Projekt.</li>
-      <li>Bei berechtigten Hinweisen werden Datensätze zügig korrigiert, reduziert oder entfernt.</li>
-    </ul>
+    <p style="color: var(--color-text-muted);">
+      Namens- und Professionsdaten verwenden Begriffe aus <strong>Das Schwarze Auge</strong>
+      im Rahmen der Ulisses-Fan-Richtlinie. Bei berechtigten Hinweisen werden Inhalte
+      zügig korrigiert, reduziert oder entfernt.
+    </p>
   </article>
 
   <article class="card rounded-2xl card-responsive space-y-4"
