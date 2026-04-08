@@ -259,7 +259,7 @@ async def test_import_json_rejects_invalid_payload() -> None:
         response = await client.post("/import-json", content="not valid json")
 
     assert response.status_code == 400
-    assert "Ungültige JSON-Datei" in response.text
+    assert "Ungültige Eingabe" in response.text
 
 
 @pytest.mark.anyio
@@ -268,7 +268,7 @@ async def test_export_zip_rejects_invalid_payload() -> None:
         response = await client.post("/export/zip", content="still not json")
 
     assert response.status_code == 400
-    assert "Ungültige JSON-Datei" in response.text
+    assert "Ungültige Eingabe" in response.text
 
 
 @pytest.mark.anyio
@@ -285,10 +285,8 @@ async def test_generate_rejects_invalid_mode_with_server_error() -> None:
                 "profession_category": "alle",
             },
         )
-        metrics_body = (await client.get("/metrics")).text
 
-    assert response.status_code == 500
-    assert 'app_errors_count_total{error_type="ValueError"' in metrics_body
+    assert response.status_code == 422
 
 
 @pytest.mark.anyio

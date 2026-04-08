@@ -388,7 +388,7 @@ def generate_character(
     gender: Gender = Gender.ANY,
     profession_category: ProfessionCategory = ProfessionCategory.ALL,
     profession_theme: str | None = None,
-    experience: ExperienceLevel = ExperienceLevel.GESELLE,
+    experience: ExperienceLevel | None = None,
     infix_probability_override: float | None = None,
     min_syllables: int = 2,
     max_syllables: int = 4,
@@ -409,7 +409,10 @@ def generate_character(
         max_syllables=max_syllables,
         exclude_names=exclude_names,
     )
-    age = _generate_experience_age(experience, _rng)
+    if experience is None:
+        age = _generate_age(data, _rng)
+    else:
+        age = _generate_experience_age(experience, _rng)
     profession = _pick_profession(data, profession_category, profession_theme, _rng)
     traits = _generate_traits(data, _rng)
 

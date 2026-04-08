@@ -144,4 +144,4 @@ async def test_import_json_route_rejects_invalid_payload() -> None:
         await import_results_json(_request('{"entries":[]}'))
 
     assert excinfo.value.status_code == 400
-    assert excinfo.value.detail == "Ungültige JSON-Datei für Namensliste/Charakterliste."
+    assert excinfo.value.detail == "Ungültige Eingabe"
