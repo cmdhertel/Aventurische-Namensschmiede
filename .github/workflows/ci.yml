@@ -132,6 +132,7 @@ jobs:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          APP_DOMAIN: ${{ secrets.APP_DOMAIN }}
           APP_BASIC_AUTH_PASSWORD: ${{ secrets.APP_BASIC_AUTH_PASSWORD }}
           GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
         run: |
@@ -152,6 +153,7 @@ jobs:
           require_secret "DEPLOY_SSH_KEY" "$DEPLOY_SSH_KEY"
           require_secret "GHCR_USERNAME" "$GHCR_USERNAME"
           require_secret "GHCR_TOKEN" "$GHCR_TOKEN"
+          require_secret "APP_DOMAIN" "$APP_DOMAIN"
           require_secret "APP_BASIC_AUTH_PASSWORD" "$APP_BASIC_AUTH_PASSWORD"
           require_secret "GRAFANA_ADMIN_PASSWORD" "$GRAFANA_ADMIN_PASSWORD"
 
@@ -177,6 +179,8 @@ jobs:
           script: |
             mkdir -p "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/infra"
             mkdir -p "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/ops"
+            mkdir -p "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/certbot/conf"
+            mkdir -p "${{ vars.DEPLOY_TARGET_DIR || secrets.DEPLOY_TARGET_DIR || '/opt/namenschmiede' }}/certbot/www"
 
       - name: Create deployment bundle
         run: tar -czf deploy-bundle.tgz infra/docker-compose.prod.yml ops/observability ops/nginx
@@ -207,8 +211,10 @@ jobs:
             cat > "$TARGET_DIR/infra/.env" <<EOF
             IMAGE_NAME=ghcr.io/${{ steps.repo.outputs.lower }}/namegen-web
             IMAGE_TAG=${{ github.sha }}
+            APP_DOMAIN=${{ secrets.APP_DOMAIN }}
             APP_BASIC_AUTH_USERNAME=${{ secrets.APP_BASIC_AUTH_USERNAME || 'admin' }}
             APP_BASIC_AUTH_PASSWORD=${{ secrets.APP_BASIC_AUTH_PASSWORD }}
+            APP_ENABLE_API_DOCS=0
             GRAFANA_ADMIN_USER=${{ secrets.GRAFANA_ADMIN_USER || 'admin' }}
             GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }}
             EOF

@@ -66,10 +66,11 @@ Danach verfügbar unter:
 Observability-Stack wird das Overlay `docker-compose.observability.yml`
 zusätzlich eingebunden.
 
-### Einfacher Produktionsstart per IP
+### Produktionsstart mit Domain und HTTPS
 
-Für einen ersten Deploy ohne DNS gibt es einen Produktions-Compose-Stack für
-Web-App und Observability:
+Für den Produktions-Compose-Stack wird eine Domain oder Subdomain benötigt, die
+auf den Server zeigt. nginx übernimmt HTTP/HTTPS und kann mit Let's Encrypt
+Zertifikate verwenden:
 
 ```bash
 cp infra/.env.example infra/.env
@@ -81,19 +82,21 @@ Danach verfügbar unter:
 
 | Service | URL | Hinweis |
 |---|---|---|
-| Web-App | `http://<SERVER-IP>/` | per Basic Auth geschützt |
-| Health | `http://<SERVER-IP>/health` | ohne Auth |
-| Grafana | `http://<SERVER-IP>/grafana/` | Login aus `infra/.env` |
+| Web-App | `https://<DOMAIN>/` | per Basic Auth geschützt |
+| Health | `https://<DOMAIN>/health` | ohne Auth |
+| Grafana | `https://<DOMAIN>/grafana/` | Login aus `infra/.env` |
 
 Wichtig:
 
 - das Compose-File zieht GHCR-Images und baut nicht lokal
+- setze in `infra/.env` unbedingt `APP_DOMAIN`
 - setze in `infra/.env` unbedingt `APP_BASIC_AUTH_PASSWORD`
 - setze in `infra/.env` unbedingt `GRAFANA_ADMIN_PASSWORD`
 - die Web-App ist dann per HTTP Basic Auth geschützt
 - Grafana ist unter `/grafana/` erreichbar (über nginx Reverse Proxy)
 - `/health` bleibt absichtlich ohne Auth für Healthchecks erreichbar
 - FastAPI-Dokumentation (`/docs`, `/redoc`, `/openapi.json`) ist im Produktions-Stack standardmäßig deaktiviert
+- für die erste Zertifikatsausstellung muss Let's Encrypt einmal gegen die Domain laufen
 
 Details stehen in [infra/DEPLOYMENT.md](infra/DEPLOYMENT.md).
 
