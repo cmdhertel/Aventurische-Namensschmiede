@@ -249,10 +249,12 @@ async def test_index_page_renders_seo_meta_tags() -> None:
     assert response.status_code == 200
     body = response.body.decode("utf-8")
     assert '<meta name="description"' in body
-    assert 'content="Aventurischer Namensgenerator fuer Das Schwarze Auge' in body
+    assert 'content="DSA Namensgenerator fuer Das Schwarze Auge' in body
+    assert '<meta name="keywords" content="DSA, Das Schwarze Auge, Fantasy Namensgenerator' in body
     assert '<link rel="canonical" href="https://aventurische-namensschmiede.de/"' in body
     assert (
-        '<meta property="og:title" content="Aventurische Namensschmiede – Generator fuer DSA-Namen"'
+        '<meta property="og:title" content="DSA Namensgenerator Fantasy – '
+        'Aventurische Namensschmiede"'
     ) in body
 
 

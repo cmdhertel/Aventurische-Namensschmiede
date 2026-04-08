@@ -20,6 +20,7 @@ class SeoMeta:
     description: str
     canonical_url: str
     robots: str
+    keywords: str
     og_type: str = "website"
     image_url: str | None = None
 
@@ -46,13 +47,23 @@ def build_seo_meta(
     path: str,
     robots: str = "index,follow",
     image_path: str = DEFAULT_SOCIAL_IMAGE_PATH,
+    keywords: list[str] | None = None,
 ) -> SeoMeta:
     base_url = _normalized_base_url()
+    merged_keywords = keywords or [
+        "DSA",
+        "Das Schwarze Auge",
+        "Fantasy Namensgenerator",
+        "Aventurien",
+        "Charaktergenerator",
+        "Rollenspiel",
+    ]
     return SeoMeta(
         title=title,
         description=description,
         canonical_url=_join_url(base_url, path),
         robots=robots,
+        keywords=", ".join(merged_keywords),
         image_url=_join_url(base_url, image_path),
     )
 

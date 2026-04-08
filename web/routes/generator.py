@@ -115,11 +115,11 @@ async def index(
     }
     context.update(
         _page_context(
-            seo_title="Generator – Aventurische Namensschmiede",
+            seo_title="DSA Namensgenerator Fantasy – Aventurische Namensschmiede",
             seo_description=(
-                "Aventurischer Namensgenerator fuer Das Schwarze Auge: kulturell "
-                "passende Namen, regionale Varianten und einfache Charaktere "
-                "direkt im Browser erzeugen."
+                "DSA Namensgenerator fuer Das Schwarze Auge: Fantasy-Namen, "
+                "regionale Varianten und einfache Charaktere fuer Aventurien "
+                "und Pen-and-Paper-Rollenspiel direkt im Browser erzeugen."
             ),
             path="/",
         )
@@ -140,9 +140,9 @@ async def legal_page(request: Request):
         _page_context(
             seo_title="Impressum – Aventurische Namensschmiede",
             seo_description=(
-                "Impressum und rechtliche Hinweise der Aventurischen "
-                "Namensschmiede mit Anbieterangaben, Markenhinweisen und "
-                "Fanprojekt-Kontext."
+                "Impressum und rechtliche Hinweise zur Aventurischen "
+                "Namensschmiede, dem DSA Fantasy-Namensgenerator fuer Das "
+                "Schwarze Auge."
             ),
             path="/impressum",
         ),
@@ -158,7 +158,8 @@ async def privacy_page(request: Request):
             seo_title="Datenschutz – Aventurische Namensschmiede",
             seo_description=(
                 "Datenschutzerklaerung der Aventurischen Namensschmiede mit "
-                "Hinweisen zu Server-Logs und technischen Betriebsdaten."
+                "Hinweisen zu Server-Logs und technischen Betriebsdaten des "
+                "DSA Fantasy-Namensgenerators."
             ),
             path="/datenschutz",
         ),
@@ -171,11 +172,11 @@ async def favourites_page(request: Request):
         request,
         "favourites.html",
         _page_context(
-            seo_title="Favoriten – Aventurische Namensschmiede",
+            seo_title="DSA Favoriten und Namenlisten – Aventurische Namensschmiede",
             seo_description=(
                 "Gespeicherte Favoriten der Aventurischen Namensschmiede: lokal "
-                "im Browser verwaltete DSA-Namen und Charaktere erneut laden und "
-                "exportieren."
+                "im Browser verwaltete DSA-Namen, Fantasy-Namen und Charaktere "
+                "erneut laden und exportieren."
             ),
             path="/favourites",
         ),
