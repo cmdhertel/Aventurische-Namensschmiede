@@ -1,8 +1,4 @@
-![Banner](docs/av_namensschmiede.png)
-
-<p align="center">
-  <img src="docs/av_namensschmiede_fav.png" width="120" alt="Aventurische Namensschmiede Logo" />
-</p>
+![Aventurische Namensschmiede](docs/av_namensschmiede_fav.png)
 
 # Aventurische Namensschmiede
 
