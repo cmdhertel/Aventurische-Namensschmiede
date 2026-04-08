@@ -158,7 +158,7 @@ async def generate_names(
             span.set_attribute("error.kind", "validation")
             span.set_attribute("validation.phase", "input")
             span.record_exception(exc)
-            raise
+            raise HTTPException(status_code=422, detail="Ungültige Parameter") from exc
         except Exception as exc:
             span.set_attribute("error.kind", "load_region")
             span.set_attribute("validation.phase", "region")
@@ -294,7 +294,7 @@ async def import_results_json(request: Request):
     try:
         results = parse_results_json(payload)
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=400, detail="Ungültige Eingabe") from exc
 
     return _TEMPLATES.TemplateResponse(
         request,
@@ -314,7 +314,7 @@ async def export_zip(request: Request):
     try:
         export = load_results_export(payload)
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=400, detail="Ungültige Eingabe") from exc
 
     zip_bytes = build_export_zip(export)
     return StreamingResponse(

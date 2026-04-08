@@ -14,6 +14,8 @@ mkdir -p /var/www/certbot
 
 if [ -f "${CERT_DIR}/fullchain.pem" ] && [ -f "${CERT_DIR}/privkey.pem" ]; then
   cat > "$CONF_FILE" <<EOF
+limit_req_zone \$binary_remote_addr zone=general:10m rate=60r/m;
+limit_req_zone \$binary_remote_addr zone=pdf:10m rate=10r/m;
 
 server {
     listen 80;
@@ -59,7 +61,19 @@ server {
         deny all;
     }
 
+    location /pdf {
+        limit_req zone=pdf burst=3 nodelay;
+        limit_req_status 429;
+        proxy_pass http://web:8000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
     location / {
+        limit_req zone=general burst=20 nodelay;
+        limit_req_status 429;
         proxy_pass http://web:8000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
@@ -70,6 +84,8 @@ server {
 EOF
 else
   cat > "$CONF_FILE" <<EOF
+limit_req_zone \$binary_remote_addr zone=general:10m rate=60r/m;
+limit_req_zone \$binary_remote_addr zone=pdf:10m rate=10r/m;
 
 server {
     listen 80;
@@ -102,7 +118,19 @@ server {
         proxy_set_header Connection "upgrade";
     }
 
+    location /pdf {
+        limit_req zone=pdf burst=3 nodelay;
+        limit_req_status 429;
+        proxy_pass http://web:8000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
     location / {
+        limit_req zone=general burst=20 nodelay;
+        limit_req_status 429;
         proxy_pass http://web:8000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
