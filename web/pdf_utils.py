@@ -20,10 +20,13 @@ def build_export_pdf_bytes(export: ResultsExport) -> tuple[bytes, str]:
     characters = [entry for entry in export.entries if isinstance(entry, CharacterExportEntry)]
 
     if names and characters:
-        pdf_bytes = build_mixed_pdf(
-            _names_for_pdf(names),
-            _characters_for_pdf(characters),
-        ) or b""
+        pdf_bytes = (
+            build_mixed_pdf(
+                _names_for_pdf(names),
+                _characters_for_pdf(characters),
+            )
+            or b""
+        )
         return pdf_bytes, "dsa_export.pdf"
     if characters:
         return (
