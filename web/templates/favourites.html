@@ -2,41 +2,37 @@
 {% block title %}Favoriten – Aventurische Namensschmiede{% endblock %}
 
 {% block content %}
-<div class="space-y-10">
-  <div class="text-center space-y-3 pt-2">
-    <p class="text-xs tracking-[0.35em] uppercase"
-       style="font-family: 'Inter', sans-serif; color: var(--color-accent); opacity: 0.6;">
+<div class="space-y-8 sm:space-y-10">
+  <div class="page-hero">
+    <p class="page-kicker">
       Das Schwarze Auge
     </p>
-    <h1 class="font-display text-4xl sm:text-5xl font-semibold tracking-wide"
-        style="color: var(--color-text);">
-      Gespeicherte&nbsp;<span style="color: var(--color-accent);">Favoriten</span>
+    <h1 class="page-title">
+      Gespeicherte <span style="color: var(--color-accent);">Favoriten</span>
     </h1>
-    <p class="text-lg italic max-w-md mx-auto"
-       style="font-family: 'Crimson Text', serif; color: var(--color-text-muted);">
+    <p class="page-subtitle">
       Lokal im Browser gespeichert, ohne Serverzustand
     </p>
     <div class="ornament max-w-xs mx-auto pt-2"><span>✦</span></div>
   </div>
 
-  <div class="card p-6 min-h-64">
-    <div class="flex items-center justify-between mb-5 pb-3 border-b"
-         style="border-color: var(--color-divider);">
-      <div class="section-header flex items-center gap-2">
+  <div class="card card-responsive min-h-64">
+    <div class="section-heading-row">
+      <div class="section-heading-meta section-header">
         <span>Favoritenliste</span>
         <span id="favourites-count" class="text-xs font-normal normal-case tracking-normal"
               style="font-family: 'Inter', sans-serif; color: var(--color-text-faint); opacity: 1;">
           (0)
         </span>
       </div>
-      <div class="flex gap-2">
-        <button type="button" onclick="clearFavourites()" class="btn-secondary text-xs py-1 px-2.5">
+      <div class="action-bar sm:justify-end">
+        <button type="button" onclick="clearFavourites()" class="btn-secondary text-xs py-1 px-2.5 flex-1 sm:flex-none">
           Leeren
         </button>
-        <button type="button" onclick="downloadFavouritesCsv()" class="btn-secondary text-xs py-1 px-2.5">
+        <button type="button" onclick="downloadFavouritesCsv()" class="btn-secondary text-xs py-1 px-2.5 flex-1 sm:flex-none">
           CSV
         </button>
-        <button type="button" onclick="downloadFavouritesJson()" class="btn-secondary text-xs py-1 px-2.5">
+        <button type="button" onclick="downloadFavouritesJson()" class="btn-secondary text-xs py-1 px-2.5 flex-1 sm:flex-none">
           JSON
         </button>
       </div>
@@ -52,7 +48,7 @@
       </p>
     </div>
 
-    <div id="favourites-list" class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-2"></div>
+    <div id="favourites-list" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-2"></div>
   </div>
 </div>
 {% endblock %}
@@ -152,7 +148,14 @@
     scope.querySelectorAll('.favourite-toggle').forEach(button => updateFavouriteButton(button, true));
   }
 
+  function requiresTouchDeleteConfirmation() {
+    return window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  }
+
   function removeName(button) {
+    if (requiresTouchDeleteConfirmation() && !window.confirm('Diesen Favoriten wirklich entfernen?')) {
+      return;
+    }
     toggleFavourite(button.closest('.name-entry').querySelector('.favourite-toggle'));
   }
 
