@@ -1,6 +1,6 @@
 # VPS Setup Guide
 
-Zielsystem: Ubuntu 24.04 LTS, initial erreichbar per SSH und vorerst ohne DNS.
+Zielsystem: Ubuntu 24.04 LTS, per SSH erreichbar und mit Domain auf die Server-IP.
 
 ## Basisprüfung
 
@@ -31,11 +31,12 @@ docker compose version
 
 ## Firewall
 
-Minimal für den aktuellen IP-basierten Betrieb:
+Minimal für HTTPS-Betrieb mit Let's Encrypt:
 
 ```bash
 ufw allow 22/tcp
 ufw allow 80/tcp
+ufw allow 443/tcp
 ufw enable
 ufw status
 ```
@@ -44,7 +45,17 @@ ufw status
 
 ```bash
 mkdir -p /opt/namenschmiede/infra
+mkdir -p /opt/namenschmiede/certbot/conf
+mkdir -p /opt/namenschmiede/certbot/www
 cd /opt/namenschmiede
+```
+
+## DNS prüfen
+
+Vor der Zertifikatsausstellung muss die Domain bereits auf die Server-IP zeigen:
+
+```bash
+dig +short namen.example.de
 ```
 
 ## SSH-Zugang für GitHub Actions
@@ -76,17 +87,22 @@ docker pull ghcr.io/cmdhertel/aventurische-namensschmiede/namegen-web:latest
 ```bash
 cd /opt/namenschmiede
 docker compose --env-file infra/.env -f infra/docker-compose.prod.yml ps
-curl http://<SERVER-IP>/health
-curl -u admin:<passwort> http://<SERVER-IP>/
+curl http://namen.example.de/health
+curl -u admin:<passwort> http://namen.example.de/
 ```
 
-Grafana ist danach unter `http://<SERVER-IP>/grafana/` erreichbar.
+Nach ausgestelltem Zertifikat:
+
+```bash
+curl https://namen.example.de/health
+curl -u admin:<passwort> https://namen.example.de/
+```
+
+Grafana ist danach unter `https://namen.example.de/grafana/` erreichbar.
 
 ## Spätere Härtung
 
-Sobald DNS vorhanden ist:
-
 - Non-root Deploy-User anlegen
 - SSH-Login für Root deaktivieren
-- Reverse Proxy mit TLS davor setzen
+- Renewal automatisieren
 - Security Headers und Rate Limiting ergänzen
