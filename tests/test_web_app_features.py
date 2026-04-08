@@ -19,8 +19,8 @@ WEB_DIR = ROOT / "web"
 if str(WEB_DIR) not in sys.path:
     sys.path.insert(0, str(WEB_DIR))
 
-from export_bundle import build_export_zip  # noqa: E402
 import main as main_module  # noqa: E402
+from export_bundle import build_export_zip  # noqa: E402
 from result_transfer import load_results_export  # noqa: E402
 from routes.generator import favourites_page, index  # noqa: E402
 
