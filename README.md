@@ -1,4 +1,6 @@
-# Aventurische Namensschmiede
+<p align="center" style="margin: 0; padding: 0;">
+  <img src="docs/av_namensschmiede_banner.png" alt="Aventurische Namensschmiede" style="display: block; margin: 0 auto;" />
+</p>
 
 Ein Namens- und Charaktergenerator für **Das Schwarze Auge**. Das Projekt läuft
 im Browser oder im Terminal und erzeugt kulturell passende Namen, regionale
@@ -25,7 +27,6 @@ Varianten und einfache NSC-Profile.
 - **Export / Import**
   - CLI: `rich`, `plain`, `json`, `csv`, `markdown`, `clipboard`, `pdf`
   - Web: `PDF`-Download sowie `JSON`-Download und `JSON`-Import
-- **Observability-Stack** via Docker mit Grafana, Prometheus, Loki und Tempo
   
 # ⚠️ WARNING: VIBE-CODE PROJECT ⚠️
 
@@ -44,11 +45,10 @@ uv run namegen
 
 `uv run namegen` startet ohne Unterbefehl direkt das interaktive Menü.
 
-### Web-App und Observability mit Docker
+### Web-App mit Docker
 
 ```bash
 docker compose up --build
-docker compose -f docker-compose.yml -f docker-compose.observability.yml up --build
 ```
 
 Danach verfügbar unter:
@@ -56,49 +56,13 @@ Danach verfügbar unter:
 | Service | URL | Hinweis |
 |---|---|---|
 | Web-App | <http://localhost:8000> | Generator-Oberfläche |
-| Metrics | <http://localhost:8000/metrics> | Prometheus-Format |
-| Grafana | <http://localhost:3300> | Login: `admin` / `admin` |
-| Prometheus | <http://localhost:9090> | Metriken |
-| Loki (API) | <http://localhost:3100> | Logs |
-| Tempo (API) | <http://localhost:3200> | Traces |
 
-`docker compose up --build` startet nur die Web-App. Für den kompletten
-Observability-Stack wird das Overlay `docker-compose.observability.yml`
-zusätzlich eingebunden.
+Optional gibt es ein separates Observability-Overlay für lokale Entwicklung.
+Die Betriebs- und Deploy-Dokumentation liegt bewusst getrennt von dieser
+Projektübersicht:
 
-### Produktionsstart mit Domain und HTTPS
-
-Für den Produktions-Compose-Stack wird eine Domain oder Subdomain benötigt, die
-auf den Server zeigt. nginx übernimmt HTTP/HTTPS und kann mit Let's Encrypt
-Zertifikate verwenden:
-
-```bash
-cp infra/.env.example infra/.env
-docker compose --env-file infra/.env -f infra/docker-compose.prod.yml pull
-docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d
-```
-
-Danach verfügbar unter:
-
-| Service | URL | Hinweis |
-|---|---|---|
-| Web-App | `https://<DOMAIN>/` | per Basic Auth geschützt |
-| Health | `https://<DOMAIN>/health` | ohne Auth |
-| Grafana | `https://<DOMAIN>/grafana/` | Login aus `infra/.env` |
-
-Wichtig:
-
-- das Compose-File zieht GHCR-Images und baut nicht lokal
-- setze in `infra/.env` unbedingt `APP_DOMAIN`
-- setze in `infra/.env` unbedingt `APP_BASIC_AUTH_PASSWORD`
-- setze in `infra/.env` unbedingt `GRAFANA_ADMIN_PASSWORD`
-- die Web-App ist dann per HTTP Basic Auth geschützt
-- Grafana ist unter `/grafana/` erreichbar (über nginx Reverse Proxy)
-- `/health` bleibt absichtlich ohne Auth für Healthchecks erreichbar
-- FastAPI-Dokumentation (`/docs`, `/redoc`, `/openapi.json`) ist im Produktions-Stack standardmäßig deaktiviert
-- für die erste Zertifikatsausstellung muss Let's Encrypt einmal gegen die Domain laufen
-
-Details stehen in [infra/DEPLOYMENT.md](infra/DEPLOYMENT.md).
+- [Deployment](infra/DEPLOYMENT.md)
+- [VPS Setup](infra/VPS_SETUP.md)
 
 ## CLI-Nutzung
 
@@ -162,6 +126,11 @@ Die Web-Oberfläche ist eine HTMX-basierte Single-Page-Ansicht. Sie bietet:
 - Listenverwaltung im Browser
 - `PDF`-Download für reine Namens- oder reine Charakterlisten
 - `JSON`-Download und `JSON`-Import für persistente Listen
+
+Für lokale Beobachtbarkeit und Diagnose gibt es zusätzlich ein optionales
+Docker-Overlay mit Metriken, Logs und Traces. Die konkrete Betriebsdokumentation
+liegt in [infra/DEPLOYMENT.md](infra/DEPLOYMENT.md) und nicht in dieser
+README.
 
 Das Web-JSON ist bewusst versioniert:
 
@@ -294,34 +263,11 @@ uv run ruff check --fix .
 uv run ruff format .
 ```
 
-## Observability
+## Technische Hinweise
 
-Die Web-App instrumentiert den Request-Lifecycle mit OpenTelemetry-Tracing,
-Prometheus-Metriken auf `/metrics` und strukturierten JSON-Logs mit
-`request_id`, `trace_id` und `span_id`.
-
-Start:
-
-```bash
-docker compose up --build
-docker compose -f docker-compose.yml -f docker-compose.observability.yml up --build
-```
-
-- Basis-Compose: nur die Web-App
-- Overlay: OpenTelemetry Collector, Prometheus, Tempo, Loki, Alloy und Grafana
-
-### Stack-Versionen
-
-| Komponente | Image | Zweck |
-|---|---|---|
-| OpenTelemetry Collector | `otel/opentelemetry-collector-contrib:0.149.0` | OTLP-Empfang, Routing |
-| Prometheus | `prom/prometheus:v3.11.0` | Metriken |
-| Tempo | `grafana/tempo:2.10.3` | Traces |
-| Loki | `grafana/loki:3.4.2` | Logs |
-| Alloy | `grafana/alloy:v1.8.3` | Docker-Log-Kollektor |
-| Grafana | `grafana/grafana:12.4.2` | Visualisierung |
-
-### Wichtige Metriken
+Die Web-App instrumentiert den Request-Lifecycle mit Tracing, Metriken und
+strukturierten Logs. Für Entwicklung und Fehleranalyse sind insbesondere diese
+Metriken relevant:
 
 | Metrik | Bedeutung |
 |---|---|
@@ -332,7 +278,7 @@ docker compose -f docker-compose.yml -f docker-compose.observability.yml up --bu
 | `namegen_empty_results_count_total` | leere Ergebnisse |
 | `namegen_name_length_chars_bucket` | Namenslängen |
 
-### Health & Request-Korrelation
+Außerdem hilfreich:
 
 - `/health` liefert `status`, `version`, `regions_loaded`, `uptime_s` und
   `python_version`
