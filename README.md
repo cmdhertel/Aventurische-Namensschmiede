@@ -2,8 +2,6 @@
   <img src="docs/av_namensschmiede_banner.png" alt="Aventurische Namensschmiede" />
 </p>
 
-# Aventurische Namensschmiede
-
 Ein Namens- und Charaktergenerator für **Das Schwarze Auge**. Das Projekt läuft
 im Browser oder im Terminal und erzeugt kulturell passende Namen, regionale
 Varianten und einfache NSC-Profile.
