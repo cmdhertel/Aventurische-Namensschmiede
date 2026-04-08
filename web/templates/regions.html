@@ -37,18 +37,6 @@
         </span>
       </div>
 
-      <!-- Beschreibung -->
-      {% if r.notes %}
-      <p class="text-sm leading-relaxed flex-1"
-         style="font-family: 'Crimson Text', serif; color: var(--color-text-muted);">
-        {{ r.notes }}
-      </p>
-      {% else %}
-      <p class="text-sm italic flex-1" style="color: var(--color-text-faint);">
-        Keine Beschreibung.
-      </p>
-      {% endif %}
-
       <!-- CTA -->
       <div class="flex items-center gap-1.5 text-xs font-medium mt-1 transition-colors duration-150"
            style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
