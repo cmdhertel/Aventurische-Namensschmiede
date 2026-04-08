@@ -1,4 +1,4 @@
-<p align="center" style="margin: 0; padding: 0;">
+<p align="center">
   <img src="docs/av_namensschmiede_banner.png" alt="Aventurische Namensschmiede" />
 </p>
 
