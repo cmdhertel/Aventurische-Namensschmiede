@@ -39,11 +39,11 @@ async def regions_page(request: Request):
         {
             "regions": regions,
             "seo_meta": build_seo_meta(
-                title="Regionen – Aventurische Namensschmiede",
+                title="DSA Regionen und Kulturen – Aventurische Namensschmiede",
                 description=(
-                    "Regionenuebersicht der Aventurischen Namensschmiede mit "
-                    "direkt waehlbaren DSA-Kulturen und Regionen fuer die "
-                    "Namens- und Charaktergenerierung."
+                    "Regionenuebersicht mit DSA-Kulturen und aventurischen "
+                    "Regionen fuer Fantasy-Namensgenerator und "
+                    "Charaktergenerator."
                 ),
                 path="/regions",
             ),
