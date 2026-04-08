@@ -115,9 +115,7 @@ async def sitemap_xml() -> Response:
         f"{base_url}/datenschutz",
     ]
     lines = ['<?xml version="1.0" encoding="UTF-8"?>']
-    lines.append(
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-    )
+    lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
     for url in urls:
         lines.append("  <url>")
         lines.append(f"    <loc>{url}</loc>")

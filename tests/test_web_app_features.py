@@ -252,8 +252,7 @@ async def test_index_page_renders_seo_meta_tags() -> None:
     assert 'content="Aventurischer Namensgenerator fuer Das Schwarze Auge' in body
     assert '<link rel="canonical" href="https://aventurische-namensschmiede.de/"' in body
     assert (
-        '<meta property="og:title" content="Aventurische Namensschmiede – '
-        'Generator fuer DSA-Namen"'
+        '<meta property="og:title" content="Aventurische Namensschmiede – Generator fuer DSA-Namen"'
     ) in body
 
 
