@@ -21,17 +21,17 @@ Varianten und einfache NSC-Profile.
   - im interaktiven CLI-Menü gar nicht erst angeboten
 - **Geschlechtsfilter**: `male`, `female`, `any`
 - **Charaktergenerierung** mit Alter, Beruf und Eigenschaften
+  - inklusive **Berufskategorie** (`alle`, `geweihte`, `zauberer`, `kaempfer`, `profan`)
 - **Export / Import**
   - CLI: `rich`, `plain`, `json`, `csv`, `markdown`, `clipboard`, `pdf`
   - Web: `PDF`-Download sowie `JSON`-Download und `JSON`-Import
 - **Observability-Stack** via Docker mit Grafana, Prometheus, Loki und Tempo
+  
+# ⚠️ WARNING: VIBE-CODE PROJECT ⚠️
 
-## Hinweis zur Entstehung
-
-> **Wichtiger Hinweis:** Ein erheblicher Teil dieser Codebase wurde mit
-> Unterstützung von AI-Tools erstellt, insbesondere **ChatGPT Codex** und
-> **Claude Code**. Das Repository ist bewusst auch ein Lern- und
-> Experimentierprojekt für AI-gestützte Softwareentwicklung.
+> [!WARNING]
+> Große Teile dieser Codebase wurden mit AI-Tools erstellt
+> (z. B. **ChatGPT Codex**, **Claude Code**).
 
 ## Schnellstart
 
@@ -66,10 +66,11 @@ Danach verfügbar unter:
 Observability-Stack wird das Overlay `docker-compose.observability.yml`
 zusätzlich eingebunden.
 
-### Einfacher Produktionsstart per IP
+### Produktionsstart mit Domain und HTTPS
 
-Für einen ersten Deploy ohne DNS gibt es einen Produktions-Compose-Stack für
-Web-App und Observability:
+Für den Produktions-Compose-Stack wird eine Domain oder Subdomain benötigt, die
+auf den Server zeigt. nginx übernimmt HTTP/HTTPS und kann mit Let's Encrypt
+Zertifikate verwenden:
 
 ```bash
 cp infra/.env.example infra/.env
@@ -81,18 +82,21 @@ Danach verfügbar unter:
 
 | Service | URL | Hinweis |
 |---|---|---|
-| Web-App | `http://<SERVER-IP>/` | per Basic Auth geschützt |
-| Health | `http://<SERVER-IP>/health` | ohne Auth |
-| Grafana | `http://<SERVER-IP>/grafana/` | Login aus `infra/.env` |
+| Web-App | `https://<DOMAIN>/` | per Basic Auth geschützt |
+| Health | `https://<DOMAIN>/health` | ohne Auth |
+| Grafana | `https://<DOMAIN>/grafana/` | Login aus `infra/.env` |
 
 Wichtig:
 
 - das Compose-File zieht GHCR-Images und baut nicht lokal
+- setze in `infra/.env` unbedingt `APP_DOMAIN`
 - setze in `infra/.env` unbedingt `APP_BASIC_AUTH_PASSWORD`
 - setze in `infra/.env` unbedingt `GRAFANA_ADMIN_PASSWORD`
 - die Web-App ist dann per HTTP Basic Auth geschützt
 - Grafana ist unter `/grafana/` erreichbar (über nginx Reverse Proxy)
 - `/health` bleibt absichtlich ohne Auth für Healthchecks erreichbar
+- FastAPI-Dokumentation (`/docs`, `/redoc`, `/openapi.json`) ist im Produktions-Stack standardmäßig deaktiviert
+- für die erste Zertifikatsausstellung muss Let's Encrypt einmal gegen die Domain laufen
 
 Details stehen in [infra/DEPLOYMENT.md](infra/DEPLOYMENT.md).
 
@@ -153,7 +157,8 @@ Die Web-Oberfläche ist eine HTMX-basierte Single-Page-Ansicht. Sie bietet:
 
 - Auswahl von Spezies, Kultur und bei Bedarf Region
 - automatische Deaktivierung des Compose-Modus bei fehlenden Silbenbausteinen
-- Umschaltung zwischen Namensliste und Charakterbogen
+- Umschaltung zwischen Namensliste und Charakterdetails
+- Charakterdetails mit Berufskategorie-Filter
 - Listenverwaltung im Browser
 - `PDF`-Download für reine Namens- oder reine Charakterlisten
 - `JSON`-Download und `JSON`-Import für persistente Listen
@@ -348,6 +353,6 @@ Erstellt gemäß den
 - Namens-, Kultur- und Professionsdaten nutzen bewusst Begriffe aus
   **Das Schwarze Auge**
 - die Nutzung erfolgt im Rahmen der Ulisses-Fan-Richtlinie
-- das Web-Frontend enthält zusätzlich die Seite [`/rechtliches`](/rechtliches)
+- das Web-Frontend enthält zusätzlich die Seiten [`/rechtliches`](/rechtliches) und [`/datenschutz`](/datenschutz)
   mit Markenhinweis und Quellenpolitik
 - falls Inhalte problematisch sind, bitte ein Issue oder einen PR anlegen

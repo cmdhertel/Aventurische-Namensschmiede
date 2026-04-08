@@ -18,7 +18,9 @@
     </p>
     <p class="text-xs mt-0.5"
        style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
-      {{ r.species or 'Unbekannt' }} · {{ r.culture or 'Unbekannt' }} · {{ r.region }}
+      {{ r.species or 'Unbekannt' }}
+      {% if r.culture and r.culture != r.region %} · {{ r.culture }}{% endif %}
+      {% if r.region %} · {{ r.region }}{% endif %}
     </p>
   </div>
 
@@ -30,24 +32,21 @@
     {{ gender_de[gv] }}
   </span>
 
-  <button type="button"
-          onclick="toggleFavourite(this)"
-          aria-label="Favorit umschalten"
-          class="favourite-toggle shrink-0 w-6 h-6 rounded flex items-center justify-center text-sm leading-none
-                 transition-all duration-150 opacity-0 group-hover:opacity-100 focus:opacity-100"
-          style="color: var(--color-text-faint);">
-    ☆
-  </button>
+  <div class="entry-actions">
+    <button type="button"
+            onclick="toggleFavourite(this)"
+            aria-label="Favorit umschalten"
+            class="favourite-toggle entry-action-button"
+            style="color: var(--color-text-faint);">
+      ☆
+    </button>
 
-  <!-- Löschen -->
-  <button type="button" onclick="removeName(this)" aria-label="Entfernen"
-          class="shrink-0 w-6 h-6 rounded flex items-center justify-center text-base leading-none
-                 transition-all duration-150 opacity-0 group-hover:opacity-100 focus:opacity-100"
-          style="color: var(--color-text-faint);"
-          onmouseenter="this.style.color='#dc2626'; this.style.backgroundColor='rgba(220,38,38,0.08)'"
-          onmouseleave="this.style.color='var(--color-text-faint)'; this.style.backgroundColor='transparent'">
-    &times;
-  </button>
+    <!-- Löschen -->
+    <button type="button" onclick="removeName(this)" aria-label="Entfernen"
+            class="entry-action-button entry-action-danger text-base">
+      &times;
+    </button>
+  </div>
   </div><!-- /flex row -->
 
 </div><!-- /name-entry -->

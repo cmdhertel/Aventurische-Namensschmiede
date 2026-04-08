@@ -24,7 +24,6 @@ from namegen.catalog import (
 from namegen.chargen import (
     generate_character,
     get_profession_preview_for_selection,
-    get_profession_themes_for_selection,
 )
 from namegen.generator import generate
 from namegen.models import Gender, GenerationMode, ProfessionCategory
@@ -78,22 +77,6 @@ def _default_selected_region(origins: list[dict]) -> str:
     return origins[0]["id"] if origins else ""
 
 
-def _theme_map_for_origins(origins: list[dict]) -> dict[str, list[dict[str, str]]]:
-    return {
-        origin["id"]: {
-            category.value: [
-                {
-                    "id": theme.id,
-                    "label": theme.label,
-                }
-                for theme in get_profession_themes_for_selection(origin["id"], category=category)
-            ]
-            for category in ProfessionCategory
-        }
-        for origin in origins
-    }
-
-
 def _profession_preview_map_for_origins(origins: list[dict]) -> dict[str, dict]:
     return {
         origin["id"]: {
@@ -120,7 +103,6 @@ async def index(
             "origins": origins,
             "selected_region": selected,
             "compose_default_enabled": selection_supports_compose(selected),
-            "profession_theme_map": _theme_map_for_origins(origins),
             "profession_preview_map": _profession_preview_map_for_origins(origins),
         },
     )
@@ -129,6 +111,11 @@ async def index(
 @router.get("/rechtliches")
 async def legal_page(request: Request):
     return _TEMPLATES.TemplateResponse(request, "rechtliches.html", {})
+
+
+@router.get("/datenschutz")
+async def privacy_page(request: Request):
+    return _TEMPLATES.TemplateResponse(request, "datenschutz.html", {})
 
 
 @router.get("/favourites")
@@ -171,7 +158,7 @@ async def generate_names(
             span.set_attribute("error.kind", "validation")
             span.set_attribute("validation.phase", "input")
             span.record_exception(exc)
-            raise
+            raise HTTPException(status_code=422, detail="Ungültige Parameter") from exc
         except Exception as exc:
             span.set_attribute("error.kind", "load_region")
             span.set_attribute("validation.phase", "region")
@@ -279,16 +266,40 @@ async def generate_names(
 
 
 @router.post("/pdf")
-async def download_pdf(names: str = Form(...), kind: str = Form("name")):
-    from pdf_utils import build_pdf_bytes  # noqa: PLC0415
+async def download_pdf(
+    payload: str | None = Form(default=None),
+    names: str | None = Form(default=None),
+    kind: str = Form("name"),
+):
+    from pdf_utils import build_export_pdf_bytes, build_pdf_bytes  # noqa: PLC0415
 
     with _tracer.start_as_current_span("namegen.pdf.build") as span:
-        name_data: list[dict] = json.loads(names)
-        span.set_attribute("namegen.pdf.names_count", len(name_data))
-        span.set_attribute("namegen.pdf.kind", kind)
+        payload_value = payload if isinstance(payload, str) else None
+        names_value = names if isinstance(names, str) else None
+        kind_value = kind if isinstance(kind, str) else "name"
 
         start = perf_counter()
-        pdf_bytes = build_pdf_bytes(name_data, kind=kind)
+        if payload_value is not None:
+            try:
+                export = load_results_export(payload_value)
+            except ValueError as exc:
+                raise HTTPException(status_code=400, detail=str(exc)) from exc
+            span.set_attribute("namegen.pdf.names_count", len(export.entries))
+            has_names = any(entry.kind == "name" for entry in export.entries)
+            has_characters = any(entry.kind == "character" for entry in export.entries)
+            export_kind = (
+                "mixed"
+                if has_names and has_characters
+                else ("character" if has_characters else "name")
+            )
+            span.set_attribute("namegen.pdf.kind", export_kind)
+            pdf_bytes, filename = build_export_pdf_bytes(export)
+        else:
+            name_data: list[dict] = json.loads(names_value or "[]")
+            span.set_attribute("namegen.pdf.names_count", len(name_data))
+            span.set_attribute("namegen.pdf.kind", kind_value)
+            pdf_bytes = build_pdf_bytes(name_data, kind=kind_value)
+            filename = "dsa_charaktere.pdf" if kind_value == "character" else "dsa_namen.pdf"
         elapsed_ms = (perf_counter() - start) * 1000
 
         if _metrics:
@@ -297,7 +308,7 @@ async def download_pdf(names: str = Form(...), kind: str = Form("name")):
         return StreamingResponse(
             io.BytesIO(pdf_bytes),
             media_type="application/pdf",
-            headers={"Content-Disposition": 'attachment; filename="dsa_namen.pdf"'},
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
         )
 
 
@@ -307,7 +318,7 @@ async def import_results_json(request: Request):
     try:
         results = parse_results_json(payload)
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=400, detail="Ungültige Eingabe") from exc
 
     return _TEMPLATES.TemplateResponse(
         request,
@@ -327,7 +338,7 @@ async def export_zip(request: Request):
     try:
         export = load_results_export(payload)
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=400, detail="Ungültige Eingabe") from exc
 
     zip_bytes = build_export_zip(export)
     return StreamingResponse(

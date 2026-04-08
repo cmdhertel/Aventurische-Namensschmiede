@@ -126,7 +126,8 @@ def _chars_to_plain(results: list[CharacterResult]) -> str:
         lines += [
             (
                 f"{r.full_name}  ({r.species or '–'}, {r.culture or '–'}, {r.name.region},"
-                f" {_GENDER_DE[r.gender.value]}, {r.experience.value}, {r.age} J., {r.profession})"
+                f" {_GENDER_DE[r.gender.value]},"
+                f" {r.experience.value if r.experience else '–'}, {r.age} J., {r.profession})"
             ),
             (
                 f"  Äußeres:  Haare {t.physical.hair},"
@@ -148,7 +149,7 @@ def _chars_to_json(results: list[CharacterResult]) -> str:
     def _dump(r: CharacterResult) -> dict:
         return {
             "name": r.name.model_dump(mode="json", exclude_none=True),
-            "experience": r.experience.value,
+            "experience": r.experience.value if r.experience else None,
             "age": r.age,
             "profession": r.profession,
             "species": r.species,
@@ -197,7 +198,7 @@ def _chars_to_csv(results: list[CharacterResult]) -> str:
             {
                 "full_name": r.full_name,
                 "gender": r.gender.value,
-                "experience": r.experience.value,
+                "experience": r.experience.value if r.experience else "",
                 "species": r.species or "",
                 "culture": r.culture or "",
                 "region": r.region,

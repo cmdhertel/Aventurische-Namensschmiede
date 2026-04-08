@@ -2,31 +2,28 @@
 {% block title %}Generator – Aventurische Namensschmiede{% endblock %}
 
 {% block content %}
-<div class="space-y-10">
+<div class="space-y-8 sm:space-y-10">
 
   <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
-  <div class="text-center space-y-3 pt-2">
-    <p class="text-xs tracking-[0.35em] uppercase"
-       style="font-family: 'Inter', sans-serif; color: var(--color-accent); opacity: 0.6;">
+  <div class="page-hero">
+    <p class="page-kicker">
       Das Schwarze Auge
     </p>
-    <h1 class="font-display text-4xl sm:text-5xl font-semibold tracking-wide"
-        style="color: var(--color-text);">
-      Aventurische&nbsp;<span style="color: var(--color-accent);">Namensschmiede</span>
+    <h1 class="page-title">
+      Aventurische <span style="color: var(--color-accent);">Namensschmiede</span>
     </h1>
-    <p class="text-lg italic max-w-md mx-auto"
-       style="font-family: 'Crimson Text', serif; color: var(--color-text-muted);">
+    <p class="page-subtitle">
       Kulturell passende Namen und Charaktere für Helden und Meisterpersonen
     </p>
     <div class="ornament max-w-xs mx-auto pt-2"><span>✦</span></div>
   </div>
 
   <!-- ── Layout ─────────────────────────────────────────────────────────────── -->
-  <div class="grid grid-cols-1 lg:grid-cols-5 xl:grid-cols-7 gap-6 items-start">
+  <div class="grid grid-cols-1 xl:grid-cols-7 gap-4 sm:gap-6 items-start">
 
     <!-- ── Formular ──────────────────────────────────────────────────────── -->
-    <div class="lg:col-span-2">
-      <div class="card p-6 lg:sticky lg:top-20 space-y-5">
+    <div class="xl:col-span-2">
+      <div class="card card-responsive space-y-5 xl:sticky xl:top-20">
 
         <div class="section-header pb-3 border-b" style="border-color: var(--color-divider);">
           Einstellungen
@@ -41,7 +38,6 @@
           class="space-y-5">
 
           <script id="origin-catalog" type="application/json">{{ origins|tojson }}</script>
-          <script id="profession-theme-map" type="application/json">{{ profession_theme_map|tojson }}</script>
           <script id="profession-preview-map" type="application/json">{{ profession_preview_map|tojson }}</script>
 
           <div>
@@ -126,7 +122,7 @@
             </div>
           </div>
 
-          <!-- Charakterbogen Toggle -->
+          <!-- Charakterdetails Toggle -->
           <div>
             <span class="form-label">Ausgabe</span>
             <div class="flex items-center gap-3 cursor-pointer select-none"
@@ -142,7 +138,7 @@
               <input type="checkbox" name="character" id="character-checkbox"
                      value="true" class="sr-only" />
               <div>
-                <p class="text-sm" style="color: var(--color-text);">Charakterbogen generieren</p>
+                <p class="text-sm" style="color: var(--color-text);">Charakterdetails generieren</p>
                 <p class="text-xs" style="font-family: 'Inter', sans-serif; color: var(--color-text-faint);">
                   Beruf, Alter und Eigenschaften hinzufügen
                 </p>
@@ -150,7 +146,7 @@
             </div>
           </div>
 
-          <!-- Berufskategorie (nur sichtbar wenn Charakterbogen aktiv) -->
+          <!-- Berufskategorie (nur sichtbar wenn Charakterdetails aktiv) -->
           <div id="category-section" style="display:none;">
             <span class="form-label">Berufskategorie</span>
             <div class="radio-group flex-wrap">
@@ -168,13 +164,6 @@
                 <span>{{ label }}</span>
               </label>
               {% endfor %}
-            </div>
-
-            <div id="profession-theme-section" class="mt-4" style="display:none;">
-              <label class="form-label" for="profession-theme">Thema/Gruppe</label>
-              <select id="profession-theme" name="profession_theme" class="input-base w-full">
-                <option value="">Kein Thema</option>
-              </select>
             </div>
           </div>
 
@@ -198,33 +187,32 @@
     </div>
 
     <!-- ── Namensliste ─────────────────────────────────────────────────────── -->
-    <div class="lg:col-span-3 xl:col-span-5">
-      <div class="card p-6 min-h-64" id="name-list-wrapper">
+    <div class="xl:col-span-5">
+      <div class="card card-responsive min-h-64" id="name-list-wrapper">
 
         <!-- Header -->
-        <div class="flex items-center justify-between mb-5 pb-3 border-b"
-             style="border-color: var(--color-divider);">
-          <div class="section-header flex items-center gap-2">
+        <div class="section-heading-row">
+          <div class="section-heading-meta section-header">
             <span>Namensliste</span>
             <span id="name-count" class="text-xs font-normal normal-case tracking-normal"
                   style="font-family: 'Inter', sans-serif; color: var(--color-text-faint); opacity: 1;">
               (0)
             </span>
           </div>
-          <div class="flex gap-2">
-            <button type="button" onclick="clearList()" class="btn-secondary text-xs py-1 px-2.5">
+          <div class="action-bar sm:justify-end">
+            <button type="button" onclick="clearList()" class="btn-secondary text-xs py-1 px-2.5 flex-1 sm:flex-none">
               Leeren
             </button>
-            <button type="button" onclick="triggerImportJson()" class="btn-secondary text-xs py-1 px-2.5">
+            <button type="button" onclick="triggerImportJson()" class="btn-secondary text-xs py-1 px-2.5 flex-1 sm:flex-none">
               Import
             </button>
-            <button type="button" onclick="downloadJson()" class="btn-secondary text-xs py-1 px-2.5">
+            <button type="button" onclick="downloadJson()" class="btn-secondary text-xs py-1 px-2.5 flex-1 sm:flex-none">
               JSON
             </button>
-            <button type="button" onclick="downloadZip()" class="btn-secondary text-xs py-1 px-2.5">
+            <button type="button" onclick="downloadZip()" class="btn-secondary text-xs py-1 px-2.5 flex-1 sm:flex-none">
               ZIP
             </button>
-            <button type="button" onclick="downloadPdf()" class="btn-primary text-xs py-1 px-2.5">
+            <button type="button" onclick="downloadPdf()" class="btn-primary text-xs py-1 px-2.5 flex-1 sm:flex-none">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
@@ -254,14 +242,14 @@
         </div>
 
         <!-- Namensliste -->
-        <div id="name-list" class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-2"></div>
+        <div id="name-list" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-2"></div>
         <input type="file" id="json-import-input" accept="application/json,.json" class="hidden"
                onchange="importJsonFile(this.files?.[0])" />
 
         <div id="character-preview-panel"
-             class="mt-6 rounded-3xl border p-6 space-y-4"
+             class="mt-6 rounded-3xl border p-4 sm:p-5 lg:p-6 space-y-4"
              style="display:none; border-color: var(--color-divider); background: linear-gradient(180deg, var(--color-card-bg) 0%, var(--color-surface) 100%);">
-          <div class="flex items-start justify-between gap-3">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 class="section-header" style="margin-bottom: 0.25rem;">Mögliche Professionen</h2>
               <p class="text-sm"
@@ -288,9 +276,6 @@
 {% block scripts %}
 <script>
   const ORIGINS = JSON.parse(document.getElementById('origin-catalog').textContent);
-  const PROFESSION_THEME_MAP = JSON.parse(
-    document.getElementById('profession-theme-map').textContent
-  );
   const PROFESSION_PREVIEW_MAP = JSON.parse(
     document.getElementById('profession-preview-map').textContent
   );
@@ -354,25 +339,6 @@
     return document.querySelector('input[name="profession_category"]:checked')?.value || 'alle';
   }
 
-  function syncProfessionThemes(selectionId, categoryValue) {
-    const themeSection = document.getElementById('profession-theme-section');
-    const themeSelect = document.getElementById('profession-theme');
-    const availableThemes = PROFESSION_THEME_MAP[selectionId]?.[categoryValue] || [];
-    const currentTheme = availableThemes.some(theme => theme.id === themeSelect.value)
-      ? themeSelect.value
-      : '';
-
-    fillSelect(
-      themeSelect,
-      [{ value: '', label: 'Kein Thema' }, ...availableThemes.map(theme => ({
-        value: theme.id,
-        label: theme.label,
-      }))],
-      currentTheme,
-    );
-    themeSection.style.display = availableThemes.length > 0 ? '' : 'none';
-  }
-
   function syncCharacterPreview() {
     const characterEnabled = document.getElementById('character-checkbox').checked;
     const selectionId = document.getElementById('region').value;
@@ -382,8 +348,6 @@
     const preview = PROFESSION_PREVIEW_MAP[selectionId]?.[categoryValue];
     const content = [];
     const caption = document.getElementById('character-preview-caption');
-
-    syncProfessionThemes(selectionId, categoryValue);
 
     if (!characterEnabled) {
       previewPanel.style.display = 'none';
@@ -398,17 +362,6 @@
           <h3 class="text-sm font-semibold" style="color: var(--color-text);">${group.label}</h3>
           <p class="text-xs leading-6" style="font-family: 'Inter', sans-serif; color: var(--color-text-muted);">
             ${group.professions.join(' · ')}
-          </p>
-        </div>
-      `);
-    }
-
-    if ((preview?.themes || []).length > 0) {
-      content.push(`
-        <div class="space-y-2">
-          <h3 class="text-sm font-semibold" style="color: var(--color-text);">Themen-Gruppen</h3>
-          <p class="text-xs leading-6" style="font-family: 'Inter', sans-serif; color: var(--color-text-muted);">
-            ${preview.themes.map(theme => theme.label).join(' · ')}
           </p>
         </div>
       `);
@@ -474,7 +427,14 @@
     if (n === 0) document.getElementById('name-list-empty').style.display = '';
   }
 
+  function requiresTouchDeleteConfirmation() {
+    return window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  }
+
   function removeName(btn) {
+    if (requiresTouchDeleteConfirmation() && !window.confirm('Diesen Eintrag wirklich entfernen?')) {
+      return;
+    }
     btn.closest('.name-entry').remove();
     updateCount();
   }
@@ -657,29 +617,14 @@
     const entries = collectEntries();
     if (!entries.length) { alert('Keine Namen in der Liste.'); return; }
 
-    const hasNames = entries.some(entry => entry.kind === 'name');
-    const hasCharacters = entries.some(entry => entry.kind === 'character');
-    if (hasNames && hasCharacters) {
-      alert('PDF-Download ist nur für reine Namens- oder Charakterlisten verfügbar.');
-      return;
-    }
-
-    const kind = entries[0].kind;
-    const names = entries.map(({ kind: _k, ...entry }) => entry);
-
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '/pdf';
-    const inp = document.createElement('input');
-    inp.type = 'hidden';
-    inp.name = 'names';
-    inp.value = JSON.stringify(names);
-    const kindInp = document.createElement('input');
-    kindInp.type = 'hidden';
-    kindInp.name = 'kind';
-    kindInp.value = kind;
-    form.appendChild(inp);
-    form.appendChild(kindInp);
+    const payloadInp = document.createElement('input');
+    payloadInp.type = 'hidden';
+    payloadInp.name = 'payload';
+    payloadInp.value = JSON.stringify(buildJsonExport());
+    form.appendChild(payloadInp);
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);

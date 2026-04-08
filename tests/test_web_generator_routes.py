@@ -14,7 +14,6 @@ from routes.generator import (  # noqa: E402
     _default_selected_region,
     _parse_checkbox_value,
     _profession_preview_map_for_origins,
-    _theme_map_for_origins,
 )
 
 
@@ -46,21 +45,6 @@ def test_default_selected_region_prefers_human_entries() -> None:
     ]
 
     assert _default_selected_region(origins) == "human"
-
-
-def test_theme_map_for_origins_only_contains_matching_region_themes() -> None:
-    theme_map = _theme_map_for_origins(
-        [
-            {"id": "mittelreich_perricum"},
-            {"id": "mittelreich_kosch"},
-        ]
-    )
-
-    assert theme_map["mittelreich_perricum"]["alle"] == [
-        {"id": "graumagier_aus_perricum", "label": "Graumagier aus Perricum"}
-    ]
-    assert theme_map["mittelreich_perricum"]["kaempfer"] == []
-    assert theme_map["mittelreich_kosch"]["alle"] == []
 
 
 def test_profession_preview_map_for_origins_contains_selection_specific_professions() -> None:

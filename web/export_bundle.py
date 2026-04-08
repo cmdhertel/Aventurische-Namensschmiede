@@ -10,6 +10,8 @@ import zipfile
 from pdf_utils import build_pdf_bytes
 from result_transfer import CharacterExportEntry, NameExportEntry, ResultsExport
 
+from namegen.pdf_builder import derive_region_abbr
+
 
 def build_export_zip(export: ResultsExport) -> bytes:
     """Build an in-memory ZIP with JSON plus CSV/PDF artifacts."""
@@ -104,6 +106,7 @@ def _characters_for_pdf(entries: list[CharacterExportEntry]) -> list[dict]:
             "full_name": entry.full_name,
             "gender": entry.gender,
             "region": entry.region,
+            "region_abbr": entry.region_abbr or derive_region_abbr(entry.region, entry.region_abbr),
             "age": entry.age,
             "profession": entry.profession,
             "hair": entry.hair,

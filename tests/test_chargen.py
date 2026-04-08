@@ -63,9 +63,17 @@ def test_generate_character_has_traits_and_profession() -> None:
     assert result.traits.quirk
 
 
-def test_generate_character_has_experience() -> None:
+def test_generate_character_experience_default_is_none() -> None:
     result = generate_character("mittelreich_kosch", rng=random.Random(1))
+    assert result.experience is None
+
+
+def test_generate_character_explicit_experience() -> None:
+    result = generate_character(
+        "mittelreich_kosch", experience=ExperienceLevel.GESELLE, rng=random.Random(1)
+    )
     assert result.experience == ExperienceLevel.GESELLE
+    assert 17 <= result.age <= 25
 
 
 def test_generate_character_has_all_traits() -> None:
@@ -343,4 +351,4 @@ def test_all_regions_generate_character() -> None:
         result = generate_character(region_id, rng=random.Random(3))
         assert result.full_name
         assert result.profession
-        assert 17 <= result.age <= 25
+        assert result.age >= 10
