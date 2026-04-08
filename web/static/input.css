@@ -119,12 +119,33 @@
     color: var(--color-text);
   }
 
+  .action-bar {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .action-bar .btn-primary,
+  .action-bar .btn-secondary {
+    @apply justify-center;
+  }
+
+  @screen sm {
+    .action-bar .btn-primary,
+    .action-bar .btn-secondary {
+      @apply justify-start;
+    }
+  }
+
   /* ── Cards ────────────────────────────────────────────────────────────── */
   .card {
     @apply rounded-xl border transition-all duration-200;
     background-color: var(--color-card-bg);
     border-color: var(--color-card-border);
   }
+
+  .card-responsive {
+    @apply p-4 sm:p-5 lg:p-6;
+  }
+
   .card-interactive {
     @apply card cursor-pointer;
   }
@@ -198,6 +219,76 @@
     font-family: 'Cinzel', Georgia, serif;
     color: var(--color-accent);
     opacity: 0.8;
+  }
+
+  .page-hero {
+    @apply text-center space-y-3 pt-1 sm:pt-2;
+  }
+
+  .page-kicker {
+    @apply text-[0.65rem] sm:text-xs tracking-[0.3em] sm:tracking-[0.35em] uppercase;
+    font-family: 'Inter', sans-serif;
+    color: var(--color-accent);
+    opacity: 0.6;
+  }
+
+  .page-title {
+    @apply font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-wide leading-tight;
+    color: var(--color-text);
+  }
+
+  .page-subtitle {
+    @apply text-base sm:text-lg italic max-w-md mx-auto px-2 sm:px-0;
+    font-family: 'Crimson Text', serif;
+    color: var(--color-text-muted);
+  }
+
+  .section-heading-row {
+    @apply flex flex-col gap-3 mb-5 pb-3 border-b sm:flex-row sm:items-center sm:justify-between;
+    border-color: var(--color-divider);
+  }
+
+  .section-heading-meta {
+    @apply flex items-center gap-2;
+  }
+
+  .entry-actions {
+    @apply flex items-center gap-1 shrink-0;
+  }
+
+  .entry-action-button {
+    @apply shrink-0 w-10 h-10 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center text-sm leading-none
+           transition-all duration-150;
+    color: var(--color-text-faint);
+  }
+
+  .entry-action-button:hover,
+  .entry-action-button:focus-visible {
+    background-color: var(--color-input-bg);
+    color: var(--color-text);
+  }
+
+  .entry-action-danger:hover,
+  .entry-action-danger:focus-visible {
+    color: #dc2626;
+    background-color: rgba(220, 38, 38, 0.08);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .entry-actions {
+      @apply opacity-0;
+    }
+
+    .name-entry:hover .entry-actions,
+    .name-entry:focus-within .entry-actions {
+      @apply opacity-100;
+    }
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    .entry-actions {
+      @apply opacity-100;
+    }
   }
 
   /* ── Name list entry ──────────────────────────────────────────────────── */

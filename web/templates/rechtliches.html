@@ -2,14 +2,17 @@
 {% block title %}Impressum • Aventurische Namensschmiede{% endblock %}
 
 {% block content %}
-<section class="space-y-6">
-  <header class="space-y-2">
-    <h1 class="font-display text-3xl sm:text-4xl" style="color: var(--color-accent);">
+<section class="space-y-6 sm:space-y-8">
+  <header class="page-hero">
+    <h1 class="page-title" style="color: var(--color-accent);">
       Impressum
     </h1>
+    <p class="page-subtitle">
+      Anbieterkennzeichnung, Markenhinweise und Quellenhinweise für das Projekt.
+    </p>
   </header>
 
-  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
+  <article class="card rounded-2xl card-responsive space-y-4"
            style="border-color: var(--color-divider); background-color: var(--color-surface);">
     <h2 class="font-display text-xl" style="color: var(--color-text);">Angaben gemäß § 5 DDG</h2>
     <p style="color: var(--color-text-muted);">
@@ -25,7 +28,7 @@
     </p>
   </article>
 
-  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
+  <article class="card rounded-2xl card-responsive space-y-4"
            style="border-color: var(--color-divider); background-color: var(--color-surface);">
     <h2 class="font-display text-xl" style="color: var(--color-text);">Markenhinweis</h2>
     <p style="color: var(--color-text-muted);">
@@ -41,6 +44,25 @@
       im Rahmen der Ulisses-Fan-Richtlinie. Bei berechtigten Hinweisen werden Inhalte
       zügig korrigiert, reduziert oder entfernt.
     </p>
+  </article>
+
+  <article class="card rounded-2xl card-responsive space-y-4"
+           style="border-color: var(--color-divider); background-color: var(--color-surface);">
+    <h2 class="font-display text-xl" style="color: var(--color-text);">Links</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li>
+        <a class="underline underline-offset-2" style="color: var(--color-accent);"
+           href="https://ulisses-spiele.de/fan-richtlinie/" target="_blank" rel="noopener">
+          Ulisses Fan-Richtlinie
+        </a>
+      </li>
+      <li>
+        <a class="underline underline-offset-2" style="color: var(--color-accent);"
+           href="https://dsa.ulisses-regelwiki.de/" target="_blank" rel="noopener">
+          DSA-Regelwiki
+        </a>
+      </li>
+    </ul>
   </article>
 </section>
 {% endblock %}

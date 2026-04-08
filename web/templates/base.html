@@ -35,77 +35,80 @@
   <!-- ── Navigationsleiste ────────────────────────────────────────────────── -->
   <header class="sticky top-0 z-50 border-b backdrop-blur-sm"
           style="background-color: var(--color-bg); border-color: var(--color-divider); opacity: 0.97;">
-    <nav class="max-w-5xl xl:max-w-7xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 xl:px-8 h-14 flex items-center justify-between gap-4">
+    <nav class="max-w-5xl xl:max-w-7xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 xl:px-8 py-3 sm:py-2">
+      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 sm:flex-nowrap">
 
-      <!-- Logo -->
-      <a href="/" class="flex items-center gap-2.5 shrink-0 group">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center ring-1 transition-all duration-200
-                    group-hover:ring-2"
-             style="background-color: var(--color-accent-soft); ring-color: var(--color-accent);">
-          <svg class="w-4 h-4" style="color: var(--color-accent);"
-               fill="currentColor" viewBox="0 0 24 24">
-            <path d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z" />
-          </svg>
-        </div>
-        <span class="font-display font-semibold text-base tracking-wide transition-opacity group-hover:opacity-80"
-              style="color: var(--color-accent);">
-          Namensschmiede
-        </span>
-      </a>
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2.5 shrink-0 group">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center ring-1 transition-all duration-200
+                      group-hover:ring-2"
+               style="background-color: var(--color-accent-soft); ring-color: var(--color-accent);">
+            <svg class="w-4 h-4" style="color: var(--color-accent);"
+                 fill="currentColor" viewBox="0 0 24 24">
+              <path d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z" />
+            </svg>
+          </div>
+          <span class="font-display font-semibold text-sm sm:text-base tracking-wide transition-opacity group-hover:opacity-80"
+                style="color: var(--color-accent);">
+            Namensschmiede
+          </span>
+        </a>
 
-      <!-- Nav links -->
-      <div class="flex items-center gap-1">
-        <a href="/"
-           class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
-           style="font-family: 'Inter', system-ui, sans-serif;
-                  {% if request.url.path == '/' %}
-                    background-color: var(--color-input-bg); color: var(--color-text);
-                  {% else %}
-                    color: var(--color-text-muted);
-                  {% endif %}">
-          Generator
-        </a>
-        <a href="/regions"
-           class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
-           style="font-family: 'Inter', system-ui, sans-serif;
-                  {% if '/regions' in request.url.path %}
-                    background-color: var(--color-input-bg); color: var(--color-text);
-                  {% else %}
-                   color: var(--color-text-muted);
-                  {% endif %}">
-          Regionen
-        </a>
-        <a href="/favourites"
-           class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
-           style="font-family: 'Inter', system-ui, sans-serif;
-                  {% if '/favourites' in request.url.path %}
-                    background-color: var(--color-input-bg); color: var(--color-text);
-                  {% else %}
-                    color: var(--color-text-muted);
-                  {% endif %}">
-          Favoriten
-        </a>
+        <div class="flex items-center gap-2 sm:ml-auto">
+          <!-- Nav links -->
+          <div class="flex flex-wrap items-center justify-end gap-1 sm:justify-start">
+            <a href="/"
+               class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
+               style="font-family: 'Inter', system-ui, sans-serif;
+                      {% if request.url.path == '/' %}
+                        background-color: var(--color-input-bg); color: var(--color-text);
+                      {% else %}
+                        color: var(--color-text-muted);
+                      {% endif %}">
+              Generator
+            </a>
+            <a href="/regions"
+               class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
+               style="font-family: 'Inter', system-ui, sans-serif;
+                      {% if '/regions' in request.url.path %}
+                        background-color: var(--color-input-bg); color: var(--color-text);
+                      {% else %}
+                       color: var(--color-text-muted);
+                      {% endif %}">
+              Regionen
+            </a>
+            <a href="/favourites"
+               class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
+               style="font-family: 'Inter', system-ui, sans-serif;
+                      {% if '/favourites' in request.url.path %}
+                        background-color: var(--color-input-bg); color: var(--color-text);
+                      {% else %}
+                        color: var(--color-text-muted);
+                      {% endif %}">
+              Favoriten
+            </a>
+          </div>
+
+          <!-- Theme toggle -->
+          <button onclick="toggleTheme()" aria-label="Design wechseln" class="btn-icon shrink-0">
+            <!-- Sun: shown in dark mode -->
+            <svg class="dark:block hidden w-5 h-5" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591
+                       M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636
+                       M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/>
+            </svg>
+            <!-- Moon: shown in light mode -->
+            <svg class="dark:hidden block w-5 h-5" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75
+                       0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21
+                       12.75 21a9.753 9.753 0 009.002-5.998z"/>
+            </svg>
+          </button>
       </div>
-
-      <!-- Theme toggle -->
-      <button onclick="toggleTheme()" aria-label="Design wechseln" class="btn-icon shrink-0">
-        <!-- Sun: shown in dark mode -->
-        <svg class="dark:block hidden w-5 h-5" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591
-                   M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636
-                   M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/>
-        </svg>
-        <!-- Moon: shown in light mode -->
-        <svg class="dark:hidden block w-5 h-5" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75
-                   0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21
-                   12.75 21a9.753 9.753 0 009.002-5.998z"/>
-        </svg>
-      </button>
 
     </nav>
   </header>
@@ -124,7 +127,7 @@
         <span style="font-family: 'Inter', sans-serif;">Das Schwarze Auge</span>
         ist eine eingetragene Marke der Ulisses Spiele GmbH.
       </p>
-      <p class="text-xs" style="color: var(--color-text-faint); font-family: 'Inter', sans-serif;">
+      <p class="text-xs leading-relaxed px-2 sm:px-0" style="color: var(--color-text-faint); font-family: 'Inter', sans-serif;">
         Fan-Projekt gemäß den
         <a href="https://ulisses-spiele.de/fan-richtlinie/" target="_blank" rel="noopener"
            class="underline underline-offset-2 transition-colors hover:opacity-70">
