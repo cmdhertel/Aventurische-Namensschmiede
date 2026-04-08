@@ -152,7 +152,7 @@ Die Web-Oberfläche ist eine HTMX-basierte Single-Page-Ansicht. Sie bietet:
 
 - Auswahl von Spezies, Kultur und bei Bedarf Region
 - automatische Deaktivierung des Compose-Modus bei fehlenden Silbenbausteinen
-- Umschaltung zwischen Namensliste und Charakterbogen
+- Umschaltung zwischen Namensliste und Charakterdetails
 - Listenverwaltung im Browser
 - `PDF`-Download für reine Namens- oder reine Charakterlisten
 - `JSON`-Download und `JSON`-Import für persistente Listen

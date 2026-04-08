@@ -218,16 +218,16 @@ def _ask_configuration() -> _GenerationConfig | None:
         if show_components is None:
             return None
 
-    # ── Charakterbogen ─────────────────────────────────────────────────────────
+    # ── Charakterdetails ─────────────────────────────────────────────────────────
     character = questionary.confirm(
-        "Charakterbogen generieren? (Beruf, Alter, Eigenschaften)",
+        "Charakterdetails generieren? (Beruf, Alter, Eigenschaften)",
         default=False,
         style=_STYLE,
     ).ask()
     if character is None:
         return None
 
-    # ── Berufskategorie (nur wenn Charakterbogen aktiv) ────────────────────────
+    # ── Berufskategorie (nur wenn Charakterdetails aktiv) ────────────────────────
     profession_category = ProfessionCategory.ALL
     profession_theme: str | None = None
     experience = ExperienceLevel.GESELLE
