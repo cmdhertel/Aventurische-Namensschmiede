@@ -136,6 +136,51 @@ async def test_generate_character_path_and_pdf_metric_are_exposed() -> None:
 
 
 @pytest.mark.anyio
+async def test_pdf_route_supports_mixed_export_payload() -> None:
+    payload = json.dumps(
+        {
+            "format": "namenschmiede-results",
+            "version": 1,
+            "entries": [
+                {
+                    "kind": "name",
+                    "full_name": "Alrik von Gareth",
+                    "gender": "male",
+                    "region": "Garetien",
+                    "culture": "Mittelreicher",
+                    "species": "Mensch",
+                    "region_abbr": "GAR",
+                    "mode": "simple",
+                },
+                {
+                    "kind": "character",
+                    "full_name": "Linya vom Blautann",
+                    "gender": "female",
+                    "region": "Nostria",
+                    "culture": "Nostrier",
+                    "species": "Mensch",
+                    "region_abbr": "NOS",
+                    "mode": "simple",
+                    "age": 27,
+                    "profession": "Jägerin",
+                    "hair": "blond",
+                    "eyes": "grün",
+                    "build": "schlank",
+                    "personality": "wachsam",
+                    "motivation": "Schulden begleichen",
+                    "quirk": "spricht mit Krähen",
+                },
+            ],
+        }
+    )
+
+    response = await download_pdf(payload=payload)
+
+    assert response.status_code == 200
+    assert response.headers["content-disposition"] == 'attachment; filename="dsa_export.pdf"'
+
+
+@pytest.mark.anyio
 async def test_request_id_header_is_forwarded_and_logs_are_json(caplog) -> None:
     caplog.set_level(logging.INFO)
 
