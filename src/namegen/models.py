@@ -276,7 +276,7 @@ class CharacterTraits(BaseModel):
 class CharacterResult(BaseModel):
     """Full fluff character sheet wrapping a NameResult."""
 
-    experience: ExperienceLevel
+    experience: ExperienceLevel | None = None
     name: NameResult
     age: int
     profession: str
