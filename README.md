@@ -1,4 +1,6 @@
-![Aventurische Namensschmiede](docs/av_namensschmiede_banner.png)
+<p align="center">
+  <img src="docs/av_namensschmiede_banner.png" alt="Aventurische Namensschmiede" />
+</p>
 
 # Aventurische Namensschmiede
 
