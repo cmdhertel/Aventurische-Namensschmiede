@@ -217,7 +217,7 @@ async def test_legal_page_renders_placeholder_impressum() -> None:
     body = response.body.decode("utf-8")
     assert "Impressum" in body
     assert "Gian Luca Hertel" in body
-    assert "§ 5 DDG" in body
+    assert "Anbieterangaben" in body
 
 
 @pytest.mark.anyio
