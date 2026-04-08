@@ -242,6 +242,32 @@ async def test_index_page_renders_profession_preview_payload() -> None:
     assert "Thema/Gruppe" not in body
 
 
+@pytest.mark.anyio
+async def test_index_page_renders_seo_meta_tags() -> None:
+    response = await index(_request(), region="mittelreich_perricum")
+
+    assert response.status_code == 200
+    body = response.body.decode("utf-8")
+    assert '<meta name="description"' in body
+    assert 'content="DSA Namensgenerator fuer Das Schwarze Auge' in body
+    assert '<meta name="keywords" content="DSA, Das Schwarze Auge, Fantasy Namensgenerator' in body
+    assert '<link rel="canonical" href="https://aventurische-namensschmiede.de/"' in body
+    assert (
+        '<meta property="og:title" content="DSA Namensgenerator Fantasy – '
+        'Aventurische Namensschmiede"'
+    ) in body
+
+
+@pytest.mark.anyio
+async def test_legal_page_renders_canonical_and_robots_meta() -> None:
+    response = await legal_page(_request())
+
+    assert response.status_code == 200
+    body = response.body.decode("utf-8")
+    assert '<meta name="robots" content="index,follow"' in body
+    assert '<link rel="canonical" href="https://aventurische-namensschmiede.de/impressum"' in body
+
+
 def _client() -> httpx.AsyncClient:
     transport = httpx.ASGITransport(app=app)
     return httpx.AsyncClient(transport=transport, base_url="http://testserver")

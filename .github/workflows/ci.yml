@@ -210,6 +210,7 @@ jobs:
             IMAGE_NAME=ghcr.io/${{ steps.repo.outputs.lower }}/namegen-web
             IMAGE_TAG=${{ github.sha }}
             APP_DOMAIN=${{ secrets.APP_DOMAIN }}
+            APP_BASE_URL=https://${{ secrets.APP_DOMAIN }}
             APP_ENABLE_API_DOCS=0
             GRAFANA_ADMIN_USER=${{ secrets.GRAFANA_ADMIN_USER || 'admin' }}
             GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }}

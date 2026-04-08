@@ -7,6 +7,7 @@ from pathlib import Path
 import structlog
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
+from seo import build_seo_meta
 
 from namegen.loader import list_regions, load_region
 
@@ -37,5 +38,14 @@ async def regions_page(request: Request):
         "regions.html",
         {
             "regions": regions,
+            "seo_meta": build_seo_meta(
+                title="DSA Regionen und Kulturen – Aventurische Namensschmiede",
+                description=(
+                    "Regionenuebersicht mit DSA-Kulturen und aventurischen "
+                    "Regionen fuer Fantasy-Namensgenerator und "
+                    "Charaktergenerator."
+                ),
+                path="/regions",
+            ),
         },
     )

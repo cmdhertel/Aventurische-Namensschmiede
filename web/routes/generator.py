@@ -15,6 +15,7 @@ from metrics import AppMetrics
 from observability_utils import count_empty_names, name_length, safe_full_name
 from opentelemetry.trace import Tracer, get_tracer
 from result_transfer import load_results_export, parse_results_json
+from seo import build_seo_meta
 
 from namegen.catalog import (
     get_origin_catalog,
@@ -89,6 +90,16 @@ def _profession_preview_map_for_origins(origins: list[dict]) -> dict[str, dict]:
     }
 
 
+def _page_context(*, seo_title: str, seo_description: str, path: str) -> dict[str, object]:
+    return {
+        "seo_meta": build_seo_meta(
+            title=seo_title,
+            description=seo_description,
+            path=path,
+        )
+    }
+
+
 @router.get("/")
 async def index(
     request: Request,
@@ -96,31 +107,80 @@ async def index(
 ):
     origins = _get_origins()
     selected = region or _default_selected_region(origins)
+    context = {
+        "origins": origins,
+        "selected_region": selected,
+        "compose_default_enabled": selection_supports_compose(selected),
+        "profession_preview_map": _profession_preview_map_for_origins(origins),
+    }
+    context.update(
+        _page_context(
+            seo_title="DSA Namensgenerator Fantasy – Aventurische Namensschmiede",
+            seo_description=(
+                "DSA Namensgenerator fuer Das Schwarze Auge: Fantasy-Namen, "
+                "regionale Varianten und einfache Charaktere fuer Aventurien "
+                "und Pen-and-Paper-Rollenspiel direkt im Browser erzeugen."
+            ),
+            path="/",
+        )
+    )
     return _TEMPLATES.TemplateResponse(
         request,
         "index.html",
-        {
-            "origins": origins,
-            "selected_region": selected,
-            "compose_default_enabled": selection_supports_compose(selected),
-            "profession_preview_map": _profession_preview_map_for_origins(origins),
-        },
+        context,
     )
 
 
 @router.get("/rechtliches")
+@router.get("/impressum")
 async def legal_page(request: Request):
-    return _TEMPLATES.TemplateResponse(request, "rechtliches.html", {})
+    return _TEMPLATES.TemplateResponse(
+        request,
+        "rechtliches.html",
+        _page_context(
+            seo_title="Impressum – Aventurische Namensschmiede",
+            seo_description=(
+                "Impressum und rechtliche Hinweise zur Aventurischen "
+                "Namensschmiede, dem DSA Fantasy-Namensgenerator fuer Das "
+                "Schwarze Auge."
+            ),
+            path="/impressum",
+        ),
+    )
 
 
 @router.get("/datenschutz")
 async def privacy_page(request: Request):
-    return _TEMPLATES.TemplateResponse(request, "datenschutz.html", {})
+    return _TEMPLATES.TemplateResponse(
+        request,
+        "datenschutz.html",
+        _page_context(
+            seo_title="Datenschutz – Aventurische Namensschmiede",
+            seo_description=(
+                "Datenschutzerklaerung der Aventurischen Namensschmiede mit "
+                "Hinweisen zu Server-Logs und technischen Betriebsdaten des "
+                "DSA Fantasy-Namensgenerators."
+            ),
+            path="/datenschutz",
+        ),
+    )
 
 
 @router.get("/favourites")
 async def favourites_page(request: Request):
-    return _TEMPLATES.TemplateResponse(request, "favourites.html", {})
+    return _TEMPLATES.TemplateResponse(
+        request,
+        "favourites.html",
+        _page_context(
+            seo_title="DSA Favoriten und Namenlisten – Aventurische Namensschmiede",
+            seo_description=(
+                "Gespeicherte Favoriten der Aventurischen Namensschmiede: lokal "
+                "im Browser verwaltete DSA-Namen, Fantasy-Namen und Charaktere "
+                "erneut laden und exportieren."
+            ),
+            path="/favourites",
+        ),
+    )
 
 
 @router.post("/generate")

@@ -59,6 +59,28 @@ async def test_health_returns_observability_metadata() -> None:
 
 
 @pytest.mark.anyio
+async def test_robots_txt_and_sitemap_xml_are_public_and_advertise_site() -> None:
+    old_password = os.environ.get("APP_BASIC_AUTH_PASSWORD")
+    os.environ["APP_BASIC_AUTH_PASSWORD"] = "secret-pass"
+    try:
+        async with _client() as client:
+            robots_response = await client.get("/robots.txt")
+            sitemap_response = await client.get("/sitemap.xml")
+    finally:
+        if old_password is None:
+            os.environ.pop("APP_BASIC_AUTH_PASSWORD", None)
+        else:
+            os.environ["APP_BASIC_AUTH_PASSWORD"] = old_password
+
+    assert robots_response.status_code == 200
+    assert "Sitemap: https://aventurische-namensschmiede.de/sitemap.xml" in robots_response.text
+    assert sitemap_response.status_code == 200
+    assert "<loc>https://aventurische-namensschmiede.de/regions</loc>" in sitemap_response.text
+    assert "<loc>https://aventurische-namensschmiede.de/datenschutz</loc>" in sitemap_response.text
+    assert "<loc>https://aventurische-namensschmiede.de/impressum</loc>" in sitemap_response.text
+
+
+@pytest.mark.anyio
 async def test_metrics_endpoint_exposes_http_and_namegen_metrics() -> None:
     async with _client() as client:
         await client.get("/health")
