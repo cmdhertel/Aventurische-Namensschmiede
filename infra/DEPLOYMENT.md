@@ -31,6 +31,7 @@ Für den Deploy-Workflow werden folgende Repository-Secrets benötigt:
 - `GHCR_USERNAME` – Benutzername für GHCR
 - `GHCR_TOKEN` – Token mit `read:packages`
 - `APP_DOMAIN` – öffentliche Domain oder Subdomain der Web-App
+- `APP_BASE_URL` – vollständige öffentliche Basis-URL, z. B. `https://namen.example.de`
 - `APP_BASIC_AUTH_USERNAME` – Loginname für die Web-App
 - `APP_BASIC_AUTH_PASSWORD` – Passwort für die Web-App
 - `GRAFANA_ADMIN_USER` – optional, Standard `admin`
@@ -56,6 +57,7 @@ Datei: `infra/.env`
 IMAGE_NAME=ghcr.io/cmdhertel/aventurische-namensschmiede/namegen-web
 IMAGE_TAG=latest
 APP_DOMAIN=namen.example.de
+APP_BASE_URL=https://namen.example.de
 APP_BASIC_AUTH_USERNAME=admin
 APP_BASIC_AUTH_PASSWORD=<starkes-passwort>
 APP_ENABLE_API_DOCS=0

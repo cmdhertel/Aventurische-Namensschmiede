@@ -22,6 +22,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from routes.generator import configure_observability
 from routes.generator import router as generator_router
 from routes.regions import router as regions_router
+from seo import site_origin_for_robots
 
 from namegen.loader import list_regions
 
@@ -83,3 +84,42 @@ async def health() -> dict:
 @app.get("/metrics", include_in_schema=False)
 async def metrics() -> Response:
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
+
+@app.get("/robots.txt", include_in_schema=False)
+async def robots_txt() -> Response:
+    site_root = site_origin_for_robots()
+    content = "\n".join(
+        [
+            "User-agent: *",
+            "Allow: /",
+            "Disallow: /docs",
+            "Disallow: /redoc",
+            "Disallow: /openapi.json",
+            "",
+            f"Sitemap: {site_root}/sitemap.xml",
+            "",
+        ]
+    )
+    return Response(content, media_type="text/plain; charset=utf-8")
+
+
+@app.get("/sitemap.xml", include_in_schema=False)
+async def sitemap_xml() -> Response:
+    base_url = site_origin_for_robots()
+    urls = [
+        f"{base_url}/",
+        f"{base_url}/regions",
+        f"{base_url}/favourites",
+        f"{base_url}/impressum",
+        f"{base_url}/datenschutz",
+    ]
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>']
+    lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    for url in urls:
+        lines.append("  <url>")
+        lines.append(f"    <loc>{url}</loc>")
+        lines.append("    <changefreq>weekly</changefreq>")
+        lines.append("  </url>")
+    lines.append("</urlset>")
+    return Response("\n".join(lines), media_type="application/xml")
