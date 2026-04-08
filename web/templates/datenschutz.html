@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Datenschutz • Aventurische Namensschmiede{% endblock %}
+
+{% block content %}
+<section class="space-y-6">
+  <header class="space-y-2">
+    <h1 class="font-display text-3xl sm:text-4xl" style="color: var(--color-accent);">
+      Datenschutzerklärung
+    </h1>
+    <p style="color: var(--color-text-muted);">
+      Vorläufige Datenschutzerklärung mit Platzhaltern. Die Angaben müssen vor dem finalen Public Launch
+      mit den echten Kontaktdaten ergänzt werden.
+    </p>
+  </header>
+
+  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
+           style="border-color: var(--color-divider); background-color: var(--color-surface);">
+    <h2 class="font-display text-xl" style="color: var(--color-text);">Verantwortlicher</h2>
+    <p style="color: var(--color-text-muted);">
+      <strong>PLATZHALTER NAME</strong><br />
+      PLATZHALTER STRASSE HAUSNUMMER<br />
+      PLATZHALTER PLZ ORT<br />
+      E-Mail: <a class="underline underline-offset-2" style="color: var(--color-accent);" href="mailto:PLATZHALTER@BEISPIEL.DE">PLATZHALTER@BEISPIEL.DE</a>
+    </p>
+  </article>
+
+  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
+           style="border-color: var(--color-divider); background-color: var(--color-surface);">
+    <h2 class="font-display text-xl" style="color: var(--color-text);">Zweck und Umfang der Verarbeitung</h2>
+    <p style="color: var(--color-text-muted);">
+      Beim Aufruf dieser Website verarbeitet der Server technische Betriebsdaten, die für die Auslieferung,
+      Stabilität und Sicherheit des Angebots erforderlich sind.
+    </p>
+    <ul class="list-disc pl-5 space-y-2" style="color: var(--color-text-muted);">
+      <li>IP-Adresse</li>
+      <li>Datum und Uhrzeit der Anfrage</li>
+      <li>aufgerufene URL</li>
+      <li>HTTP-Statuscode</li>
+      <li>technische Header- und Protokolldaten</li>
+    </ul>
+  </article>
+
+  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
+           style="border-color: var(--color-divider); background-color: var(--color-surface);">
+    <h2 class="font-display text-xl" style="color: var(--color-text);">Server-Logs und technische Betriebsdaten</h2>
+    <p style="color: var(--color-text-muted);">
+      Zur technischen Überwachung und Fehleranalyse werden Server-Logs und betriebliche Telemetriedaten verarbeitet.
+      Dazu können Zugriffsprotokolle, Laufzeitmetriken und technische Trace-Daten gehören.
+    </p>
+    <p style="color: var(--color-text-muted);">
+      Die Verarbeitung erfolgt zur Gewährleistung von Verfügbarkeit, Sicherheit, Missbrauchserkennung und
+      Störungsbehebung des Angebots.
+    </p>
+  </article>
+
+  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
+           style="border-color: var(--color-divider); background-color: var(--color-surface);">
+    <h2 class="font-display text-xl" style="color: var(--color-text);">Rechtsgrundlage</h2>
+    <p style="color: var(--color-text-muted);">
+      Die Verarbeitung erfolgt auf Grundlage des berechtigten Interesses an einem sicheren und funktionsfähigen
+      Betrieb der Website gemäß Art. 6 Abs. 1 lit. f DSGVO.
+    </p>
+  </article>
+
+  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
+           style="border-color: var(--color-divider); background-color: var(--color-surface);">
+    <h2 class="font-display text-xl" style="color: var(--color-text);">Speicherdauer</h2>
+    <p style="color: var(--color-text-muted);">
+      Log- und Betriebsdaten werden nur so lange gespeichert, wie dies für den sicheren technischen Betrieb,
+      die Fehleranalyse oder die Abwehr von Missbrauch erforderlich ist.
+    </p>
+  </article>
+
+  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
+           style="border-color: var(--color-divider); background-color: var(--color-surface);">
+    <h2 class="font-display text-xl" style="color: var(--color-text);">Betroffenenrechte</h2>
+    <p style="color: var(--color-text-muted);">
+      Betroffene Personen haben nach Maßgabe der gesetzlichen Voraussetzungen insbesondere das Recht auf Auskunft,
+      Berichtigung, Löschung, Einschränkung der Verarbeitung, Widerspruch sowie Beschwerde bei einer Datenschutzaufsichtsbehörde.
+    </p>
+  </article>
+</section>
+{% endblock %}

@@ -113,6 +113,11 @@ async def legal_page(request: Request):
     return _TEMPLATES.TemplateResponse(request, "rechtliches.html", {})
 
 
+@router.get("/datenschutz")
+async def privacy_page(request: Request):
+    return _TEMPLATES.TemplateResponse(request, "datenschutz.html", {})
+
+
 @router.get("/favourites")
 async def favourites_page(request: Request):
     return _TEMPLATES.TemplateResponse(request, "favourites.html", {})

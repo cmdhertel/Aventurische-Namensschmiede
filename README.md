@@ -353,6 +353,6 @@ Erstellt gemäß den
 - Namens-, Kultur- und Professionsdaten nutzen bewusst Begriffe aus
   **Das Schwarze Auge**
 - die Nutzung erfolgt im Rahmen der Ulisses-Fan-Richtlinie
-- das Web-Frontend enthält zusätzlich die Seite [`/rechtliches`](/rechtliches)
+- das Web-Frontend enthält zusätzlich die Seiten [`/rechtliches`](/rechtliches) und [`/datenschutz`](/datenschutz)
   mit Markenhinweis und Quellenpolitik
 - falls Inhalte problematisch sind, bitte ein Issue oder einen PR anlegen
