@@ -20,9 +20,12 @@ if str(WEB_DIR) not in sys.path:
     sys.path.insert(0, str(WEB_DIR))
 
 import main as main_module  # noqa: E402
-from export_bundle import build_export_zip  # noqa: E402
+from export_bundle import _characters_for_pdf, build_export_zip  # noqa: E402
+from pdf_utils import build_export_pdf_bytes  # noqa: E402
 from result_transfer import load_results_export  # noqa: E402
 from routes.generator import favourites_page, index, legal_page, privacy_page  # noqa: E402
+
+from namegen.pdf_builder import summarize_region_abbrs  # noqa: E402
 
 app = main_module.app
 
@@ -87,6 +90,99 @@ def test_build_export_zip_contains_expected_files() -> None:
         assert "namen.pdf" in names
         assert "charaktere.csv" in names
         assert "charaktere.pdf" in names
+
+
+def test_build_export_pdf_bytes_returns_single_pdf_for_mixed_entries() -> None:
+    export = load_results_export(
+        json.dumps(
+            {
+                "format": "namenschmiede-results",
+                "version": 1,
+                "entries": [
+                    {
+                        "kind": "name",
+                        "full_name": "Alrik von Gareth",
+                        "gender": "male",
+                        "region": "Garetien",
+                        "culture": "Mittelreicher",
+                        "species": "Mensch",
+                        "region_abbr": "GAR",
+                        "mode": "simple",
+                    },
+                    {
+                        "kind": "character",
+                        "full_name": "Linya vom Blautann",
+                        "gender": "female",
+                        "region": "Nostria",
+                        "culture": "Nostrier",
+                        "species": "Mensch",
+                        "region_abbr": "NOS",
+                        "mode": "simple",
+                        "age": 27,
+                        "profession": "Jägerin",
+                        "hair": "blond",
+                        "eyes": "grün",
+                        "build": "schlank",
+                        "personality": "wachsam",
+                        "motivation": "Schulden begleichen",
+                        "quirk": "spricht mit Krähen",
+                    },
+                ],
+            }
+        )
+    )
+
+    pdf_bytes, filename = build_export_pdf_bytes(export)
+
+    assert filename == "dsa_export.pdf"
+    assert pdf_bytes.startswith(b"%PDF")
+
+
+def test_summarize_region_abbrs_uses_region_name_with_abbreviation() -> None:
+    summary = summarize_region_abbrs(
+        [
+            {"region": "Garetien", "region_abbr": "GAR"},
+            {"region": "Thorwal", "region_abbr": "THO"},
+        ]
+    )
+
+    assert summary == "Garetien (GAR), Thorwal (THO)"
+
+
+def test_character_pdf_export_data_includes_region_abbr() -> None:
+    export = load_results_export(
+        json.dumps(
+            {
+                "format": "namenschmiede-results",
+                "version": 1,
+                "entries": [
+                    {
+                        "kind": "character",
+                        "full_name": "Linya vom Blautann",
+                        "gender": "female",
+                        "region": "Nostria",
+                        "culture": "Nostrier",
+                        "species": "Mensch",
+                        "region_abbr": "NOS",
+                        "mode": "simple",
+                        "age": 27,
+                        "profession": "Jägerin",
+                        "hair": "blond",
+                        "eyes": "grün",
+                        "build": "schlank",
+                        "personality": "wachsam",
+                        "motivation": "Schulden begleichen",
+                        "quirk": "spricht mit Krähen",
+                    }
+                ],
+            }
+        )
+    )
+
+    character_entry = export.entries[0]
+    pdf_entries = _characters_for_pdf([character_entry])
+
+    assert pdf_entries[0]["region_abbr"] == "NOS"
 
 
 def _request() -> Request:

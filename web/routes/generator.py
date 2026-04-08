@@ -266,16 +266,40 @@ async def generate_names(
 
 
 @router.post("/pdf")
-async def download_pdf(names: str = Form(...), kind: str = Form("name")):
-    from pdf_utils import build_pdf_bytes  # noqa: PLC0415
+async def download_pdf(
+    payload: str | None = Form(default=None),
+    names: str | None = Form(default=None),
+    kind: str = Form("name"),
+):
+    from pdf_utils import build_export_pdf_bytes, build_pdf_bytes  # noqa: PLC0415
 
     with _tracer.start_as_current_span("namegen.pdf.build") as span:
-        name_data: list[dict] = json.loads(names)
-        span.set_attribute("namegen.pdf.names_count", len(name_data))
-        span.set_attribute("namegen.pdf.kind", kind)
+        payload_value = payload if isinstance(payload, str) else None
+        names_value = names if isinstance(names, str) else None
+        kind_value = kind if isinstance(kind, str) else "name"
 
         start = perf_counter()
-        pdf_bytes = build_pdf_bytes(name_data, kind=kind)
+        if payload_value is not None:
+            try:
+                export = load_results_export(payload_value)
+            except ValueError as exc:
+                raise HTTPException(status_code=400, detail=str(exc)) from exc
+            span.set_attribute("namegen.pdf.names_count", len(export.entries))
+            has_names = any(entry.kind == "name" for entry in export.entries)
+            has_characters = any(entry.kind == "character" for entry in export.entries)
+            export_kind = (
+                "mixed"
+                if has_names and has_characters
+                else ("character" if has_characters else "name")
+            )
+            span.set_attribute("namegen.pdf.kind", export_kind)
+            pdf_bytes, filename = build_export_pdf_bytes(export)
+        else:
+            name_data: list[dict] = json.loads(names_value or "[]")
+            span.set_attribute("namegen.pdf.names_count", len(name_data))
+            span.set_attribute("namegen.pdf.kind", kind_value)
+            pdf_bytes = build_pdf_bytes(name_data, kind=kind_value)
+            filename = "dsa_charaktere.pdf" if kind_value == "character" else "dsa_namen.pdf"
         elapsed_ms = (perf_counter() - start) * 1000
 
         if _metrics:
@@ -284,7 +308,7 @@ async def download_pdf(names: str = Form(...), kind: str = Form("name")):
         return StreamingResponse(
             io.BytesIO(pdf_bytes),
             media_type="application/pdf",
-            headers={"Content-Disposition": 'attachment; filename="dsa_namen.pdf"'},
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
         )
 
 

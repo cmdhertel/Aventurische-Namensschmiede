@@ -617,29 +617,14 @@
     const entries = collectEntries();
     if (!entries.length) { alert('Keine Namen in der Liste.'); return; }
 
-    const hasNames = entries.some(entry => entry.kind === 'name');
-    const hasCharacters = entries.some(entry => entry.kind === 'character');
-    if (hasNames && hasCharacters) {
-      alert('PDF-Download ist nur für reine Namens- oder Charakterlisten verfügbar.');
-      return;
-    }
-
-    const kind = entries[0].kind;
-    const names = entries.map(({ kind: _k, ...entry }) => entry);
-
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '/pdf';
-    const inp = document.createElement('input');
-    inp.type = 'hidden';
-    inp.name = 'names';
-    inp.value = JSON.stringify(names);
-    const kindInp = document.createElement('input');
-    kindInp.type = 'hidden';
-    kindInp.name = 'kind';
-    kindInp.value = kind;
-    form.appendChild(inp);
-    form.appendChild(kindInp);
+    const payloadInp = document.createElement('input');
+    payloadInp.type = 'hidden';
+    payloadInp.name = 'payload';
+    payloadInp.value = JSON.stringify(buildJsonExport());
+    form.appendChild(payloadInp);
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
