@@ -1,5 +1,5 @@
-<p align="center">
-  <img src="docs/av_namensschmiede_banner.png" alt="Aventurische Namensschmiede" />
+<p align="center" style="margin: 0; padding: 0;">
+  <img src="docs/av_namensschmiede_banner.png" alt="Aventurische Namensschmiede" style="display: block; margin: 0 auto;" />
 </p>
 
 Ein Namens- und Charaktergenerator für **Das Schwarze Auge**. Das Projekt läuft
