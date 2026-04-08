@@ -1,4 +1,4 @@
-![Aventurische Namensschmiede](docs/av_namensschmiede_fav.png)
+![Aventurische Namensschmiede](docs/av_namensschmiede_banner.png)
 
 # Aventurische Namensschmiede
 
