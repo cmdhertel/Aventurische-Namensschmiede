@@ -1,16 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Rechtliches • Aventurische Namensschmiede{% endblock %}
+{% block title %}Impressum • Aventurische Namensschmiede{% endblock %}
 
 {% block content %}
 <section class="space-y-6">
   <header class="space-y-2">
     <h1 class="font-display text-3xl sm:text-4xl" style="color: var(--color-accent);">
-      Rechtliches & Quellen
+      Impressum
     </h1>
-    <p style="color: var(--color-text-muted);">
-      Transparenzseite für Markenhinweise, Fanprojekt-Status und Datenherkunft.
-    </p>
   </header>
+
+  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
+           style="border-color: var(--color-divider); background-color: var(--color-surface);">
+    <h2 class="font-display text-xl" style="color: var(--color-text);">Angaben gemäß § 5 DDG</h2>
+    <p style="color: var(--color-text-muted);">
+      <strong>Gian Luca Hertel</strong><br />
+      Kirchendell 14<br />
+      66787 Wadgassen
+    </p>
+    <p style="color: var(--color-text-muted);">
+      E-Mail:
+      <a class="underline underline-offset-2" style="color: var(--color-accent);" href="mailto:aventurischenamenschmiede@gmail.com">
+        aventurischenamenschmiede@gmail.com
+      </a>
+    </p>
+  </article>
 
   <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
            style="border-color: var(--color-divider); background-color: var(--color-surface);">
@@ -23,36 +36,11 @@
       Dieses Projekt ist ein privates, nicht-kommerzielles Fanprojekt ohne offizielle
       Verbindung zu Ulisses Spiele.
     </p>
-  </article>
-
-  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
-           style="border-color: var(--color-divider); background-color: var(--color-surface);">
-    <h2 class="font-display text-xl" style="color: var(--color-text);">Quellenpolitik</h2>
-    <ul class="list-disc pl-5 space-y-2" style="color: var(--color-text-muted);">
-      <li>Namens- und Professionsdaten verwenden Begriffe aus <strong>Das Schwarze Auge</strong> im Rahmen der Ulisses-Fan-Richtlinie.</li>
-      <li>Bezeichnungen und Listen basieren auf aventurischen Referenzen aus dem DSA-Umfeld.</li>
-      <li>Die Fan-Richtlinien von Ulisses sind die Leitplanke für Darstellung und Nutzung im Projekt.</li>
-      <li>Bei berechtigten Hinweisen werden Datensätze zügig korrigiert, reduziert oder entfernt.</li>
-    </ul>
-  </article>
-
-  <article class="rounded-2xl border p-5 sm:p-6 space-y-4"
-           style="border-color: var(--color-divider); background-color: var(--color-surface);">
-    <h2 class="font-display text-xl" style="color: var(--color-text);">Links</h2>
-    <ul class="list-disc pl-5 space-y-2">
-      <li>
-        <a class="underline underline-offset-2" style="color: var(--color-accent);"
-           href="https://ulisses-spiele.de/fan-richtlinie/" target="_blank" rel="noopener">
-          Ulisses Fan-Richtlinie
-        </a>
-      </li>
-      <li>
-        <a class="underline underline-offset-2" style="color: var(--color-accent);"
-           href="https://dsa.ulisses-regelwiki.de/" target="_blank" rel="noopener">
-          DSA-Regelwiki
-        </a>
-      </li>
-    </ul>
+    <p style="color: var(--color-text-muted);">
+      Namens- und Professionsdaten verwenden Begriffe aus <strong>Das Schwarze Auge</strong>
+      im Rahmen der Ulisses-Fan-Richtlinie. Bei berechtigten Hinweisen werden Inhalte
+      zügig korrigiert, reduziert oder entfernt.
+    </p>
   </article>
 </section>
 {% endblock %}

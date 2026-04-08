@@ -22,7 +22,7 @@ if str(WEB_DIR) not in sys.path:
 import main as main_module  # noqa: E402
 from export_bundle import build_export_zip  # noqa: E402
 from result_transfer import load_results_export  # noqa: E402
-from routes.generator import favourites_page, index  # noqa: E402
+from routes.generator import favourites_page, index, legal_page, privacy_page  # noqa: E402
 
 app = main_module.app
 
@@ -112,6 +112,27 @@ async def test_favourites_page_renders() -> None:
     body = response.body.decode("utf-8")
     assert "Favoritenliste" in body
     assert "localStorage" in body
+
+
+@pytest.mark.anyio
+async def test_legal_page_renders_placeholder_impressum() -> None:
+    response = await legal_page(_request())
+    assert response.status_code == 200
+    body = response.body.decode("utf-8")
+    assert "Impressum" in body
+    assert "Gian Luca Hertel" in body
+    assert "§ 5 DDG" in body
+
+
+@pytest.mark.anyio
+async def test_privacy_page_renders_placeholder_policy() -> None:
+    response = await privacy_page(_request())
+    assert response.status_code == 200
+    body = response.body.decode("utf-8")
+    assert "Datenschutzerklärung" in body
+    assert "Gian Luca Hertel" in body
+    assert "Server-Logs" in body
+    assert "Art. 6 Abs. 1 lit. f DSGVO" in body
 
 
 @pytest.mark.anyio

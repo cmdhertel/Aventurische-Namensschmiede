@@ -85,16 +85,6 @@
                   {% endif %}">
           Favoriten
         </a>
-        <a href="/rechtliches"
-           class="px-3 py-1.5 rounded-lg text-sm transition-colors duration-150"
-           style="font-family: 'Inter', system-ui, sans-serif;
-                  {% if '/rechtliches' in request.url.path %}
-                    background-color: var(--color-input-bg); color: var(--color-text);
-                  {% else %}
-                    color: var(--color-text-muted);
-                  {% endif %}">
-          Rechtliches
-        </a>
       </div>
 
       <!-- Theme toggle -->
@@ -143,7 +133,11 @@
         &middot; Nicht kommerziell
         &middot;
         <a href="/rechtliches" class="underline underline-offset-2 transition-colors hover:opacity-70">
-          Rechtliches
+          Impressum
+        </a>
+        &middot;
+        <a href="/datenschutz" class="underline underline-offset-2 transition-colors hover:opacity-70">
+          Datenschutz
         </a>
       </p>
     </div>
