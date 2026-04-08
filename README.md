@@ -21,6 +21,7 @@ Varianten und einfache NSC-Profile.
   - im interaktiven CLI-Menü gar nicht erst angeboten
 - **Geschlechtsfilter**: `male`, `female`, `any`
 - **Charaktergenerierung** mit Alter, Beruf und Eigenschaften
+  - inklusive **Berufskategorie** (`alle`, `geweihte`, `zauberer`, `kaempfer`, `profan`)
 - **Export / Import**
   - CLI: `rich`, `plain`, `json`, `csv`, `markdown`, `clipboard`, `pdf`
   - Web: `PDF`-Download sowie `JSON`-Download und `JSON`-Import
@@ -92,6 +93,7 @@ Wichtig:
 - die Web-App ist dann per HTTP Basic Auth geschützt
 - Grafana ist unter `/grafana/` erreichbar (über nginx Reverse Proxy)
 - `/health` bleibt absichtlich ohne Auth für Healthchecks erreichbar
+- FastAPI-Dokumentation (`/docs`, `/redoc`, `/openapi.json`) ist im Produktions-Stack standardmäßig deaktiviert
 
 Details stehen in [infra/DEPLOYMENT.md](infra/DEPLOYMENT.md).
 
@@ -153,6 +155,7 @@ Die Web-Oberfläche ist eine HTMX-basierte Single-Page-Ansicht. Sie bietet:
 - Auswahl von Spezies, Kultur und bei Bedarf Region
 - automatische Deaktivierung des Compose-Modus bei fehlenden Silbenbausteinen
 - Umschaltung zwischen Namensliste und Charakterdetails
+- Charakterdetails mit Berufskategorie-Filter
 - Listenverwaltung im Browser
 - `PDF`-Download für reine Namens- oder reine Charakterlisten
 - `JSON`-Download und `JSON`-Import für persistente Listen

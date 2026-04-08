@@ -10,6 +10,7 @@ Stand: GitHub-Actions-Deploy auf einen Server ohne DNS und ohne TLS-Termination.
 - nginx läuft als Reverse Proxy auf Port 80 und leitet `/grafana/` an Grafana weiter
 - der Observability-Stack läuft intern (Prometheus, Tempo, Loki, Alloy, Grafana)
 - `/health` bleibt ohne Auth erreichbar, damit Docker-Healthchecks funktionieren
+- FastAPI-Dokumentation ist im Produktionsmodus standardmäßig deaktiviert
 
 ## Voraussetzungen
 
@@ -52,6 +53,7 @@ IMAGE_NAME=ghcr.io/cmdhertel/aventurische-namensschmiede/namegen-web
 IMAGE_TAG=latest
 APP_BASIC_AUTH_USERNAME=admin
 APP_BASIC_AUTH_PASSWORD=<starkes-passwort>
+APP_ENABLE_API_DOCS=0
 GRAFANA_ADMIN_USER=admin
 GRAFANA_ADMIN_PASSWORD=<starkes-passwort>
 ```
@@ -88,6 +90,8 @@ docker compose --env-file infra/.env -f infra/docker-compose.prod.yml up -d
   - `curl -u admin:<passwort> http://<SERVER-IP>/`
 - Grafana:
   - `http://<SERVER-IP>/grafana/`
+- API-Dokumentation bei Bedarf temporär aktivieren:
+  - `APP_ENABLE_API_DOCS=1`
 
 ## Nächster Schritt nach DNS
 

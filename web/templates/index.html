@@ -41,7 +41,6 @@
           class="space-y-5">
 
           <script id="origin-catalog" type="application/json">{{ origins|tojson }}</script>
-          <script id="profession-theme-map" type="application/json">{{ profession_theme_map|tojson }}</script>
           <script id="profession-preview-map" type="application/json">{{ profession_preview_map|tojson }}</script>
 
           <div>
@@ -169,13 +168,6 @@
               </label>
               {% endfor %}
             </div>
-
-            <div id="profession-theme-section" class="mt-4" style="display:none;">
-              <label class="form-label" for="profession-theme">Thema/Gruppe</label>
-              <select id="profession-theme" name="profession_theme" class="input-base w-full">
-                <option value="">Kein Thema</option>
-              </select>
-            </div>
           </div>
 
           <!-- Button -->
@@ -288,9 +280,6 @@
 {% block scripts %}
 <script>
   const ORIGINS = JSON.parse(document.getElementById('origin-catalog').textContent);
-  const PROFESSION_THEME_MAP = JSON.parse(
-    document.getElementById('profession-theme-map').textContent
-  );
   const PROFESSION_PREVIEW_MAP = JSON.parse(
     document.getElementById('profession-preview-map').textContent
   );
@@ -354,25 +343,6 @@
     return document.querySelector('input[name="profession_category"]:checked')?.value || 'alle';
   }
 
-  function syncProfessionThemes(selectionId, categoryValue) {
-    const themeSection = document.getElementById('profession-theme-section');
-    const themeSelect = document.getElementById('profession-theme');
-    const availableThemes = PROFESSION_THEME_MAP[selectionId]?.[categoryValue] || [];
-    const currentTheme = availableThemes.some(theme => theme.id === themeSelect.value)
-      ? themeSelect.value
-      : '';
-
-    fillSelect(
-      themeSelect,
-      [{ value: '', label: 'Kein Thema' }, ...availableThemes.map(theme => ({
-        value: theme.id,
-        label: theme.label,
-      }))],
-      currentTheme,
-    );
-    themeSection.style.display = availableThemes.length > 0 ? '' : 'none';
-  }
-
   function syncCharacterPreview() {
     const characterEnabled = document.getElementById('character-checkbox').checked;
     const selectionId = document.getElementById('region').value;
@@ -382,8 +352,6 @@
     const preview = PROFESSION_PREVIEW_MAP[selectionId]?.[categoryValue];
     const content = [];
     const caption = document.getElementById('character-preview-caption');
-
-    syncProfessionThemes(selectionId, categoryValue);
 
     if (!characterEnabled) {
       previewPanel.style.display = 'none';
@@ -398,17 +366,6 @@
           <h3 class="text-sm font-semibold" style="color: var(--color-text);">${group.label}</h3>
           <p class="text-xs leading-6" style="font-family: 'Inter', sans-serif; color: var(--color-text-muted);">
             ${group.professions.join(' · ')}
-          </p>
-        </div>
-      `);
-    }
-
-    if ((preview?.themes || []).length > 0) {
-      content.push(`
-        <div class="space-y-2">
-          <h3 class="text-sm font-semibold" style="color: var(--color-text);">Themen-Gruppen</h3>
-          <p class="text-xs leading-6" style="font-family: 'Inter', sans-serif; color: var(--color-text-muted);">
-            ${preview.themes.map(theme => theme.label).join(' · ')}
           </p>
         </div>
       `);

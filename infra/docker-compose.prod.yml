@@ -21,6 +21,7 @@ services:
     environment:
       PYTHONUNBUFFERED: "1"
       APP_ENV: "prod"
+      APP_ENABLE_API_DOCS: "${APP_ENABLE_API_DOCS:-0}"
       OTEL_SERVICE_NAME: "aventurische-namensschmiede-web"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
       APP_BASIC_AUTH_USERNAME: "${APP_BASIC_AUTH_USERNAME:-admin}"

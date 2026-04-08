@@ -24,7 +24,6 @@ from namegen.catalog import (
 from namegen.chargen import (
     generate_character,
     get_profession_preview_for_selection,
-    get_profession_themes_for_selection,
 )
 from namegen.generator import generate
 from namegen.models import Gender, GenerationMode, ProfessionCategory
@@ -78,22 +77,6 @@ def _default_selected_region(origins: list[dict]) -> str:
     return origins[0]["id"] if origins else ""
 
 
-def _theme_map_for_origins(origins: list[dict]) -> dict[str, list[dict[str, str]]]:
-    return {
-        origin["id"]: {
-            category.value: [
-                {
-                    "id": theme.id,
-                    "label": theme.label,
-                }
-                for theme in get_profession_themes_for_selection(origin["id"], category=category)
-            ]
-            for category in ProfessionCategory
-        }
-        for origin in origins
-    }
-
-
 def _profession_preview_map_for_origins(origins: list[dict]) -> dict[str, dict]:
     return {
         origin["id"]: {
@@ -120,7 +103,6 @@ async def index(
             "origins": origins,
             "selected_region": selected,
             "compose_default_enabled": selection_supports_compose(selected),
-            "profession_theme_map": _theme_map_for_origins(origins),
             "profession_preview_map": _profession_preview_map_for_origins(origins),
         },
     )

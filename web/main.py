@@ -1,5 +1,6 @@
 """FastAPI web application for DSA Namengenerator."""
 
+import os
 import platform
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
@@ -24,11 +25,21 @@ from routes.regions import router as regions_router
 
 from namegen.loader import list_regions
 
+
+def _env_flag(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+_docs_enabled = _env_flag("APP_ENABLE_API_DOCS", default=True)
+
 app = FastAPI(
     title="DSA Namengenerator",
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json",
+    docs_url="/docs" if _docs_enabled else None,
+    redoc_url="/redoc" if _docs_enabled else None,
+    openapi_url="/openapi.json" if _docs_enabled else None,
 )
 
 logger = setup_logging()

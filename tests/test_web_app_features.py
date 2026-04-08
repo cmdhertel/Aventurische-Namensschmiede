@@ -20,15 +20,22 @@ if str(WEB_DIR) not in sys.path:
     sys.path.insert(0, str(WEB_DIR))
 
 from export_bundle import build_export_zip  # noqa: E402
-from main import app  # noqa: E402
+import main as main_module  # noqa: E402
 from result_transfer import load_results_export  # noqa: E402
 from routes.generator import favourites_page, index  # noqa: E402
+
+app = main_module.app
 
 
 def test_fastapi_docs_are_enabled() -> None:
     assert app.docs_url == "/docs"
     assert app.redoc_url == "/redoc"
     assert app.openapi_url == "/openapi.json"
+
+
+def test_env_flag_can_disable_api_docs(monkeypatch) -> None:
+    monkeypatch.setenv("APP_ENABLE_API_DOCS", "0")
+    assert main_module._env_flag("APP_ENABLE_API_DOCS", default=True) is False
 
 
 def test_build_export_zip_contains_expected_files() -> None:
@@ -115,6 +122,7 @@ async def test_index_page_renders_profession_preview_payload() -> None:
     assert "profession-preview-map" in body
     assert "character-preview-panel" in body
     assert "Graumagier aus Perricum" in body
+    assert "Thema/Gruppe" not in body
 
 
 def _client() -> httpx.AsyncClient:
