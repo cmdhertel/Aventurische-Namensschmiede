@@ -4,6 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Aventurische Namensschmiede{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Aventurischer Namensgenerator fuer Das Schwarze Auge mit Web-App fuer Namen, Charaktere, Regionen und Favoriten.{% endblock %}" />
+  <meta name="robots" content="{{ seo_meta.robots if seo_meta else 'index,follow' }}" />
+  <link rel="canonical" href="{{ seo_meta.canonical_url if seo_meta else request.url }}" />
+
+  <meta property="og:locale" content="de_DE" />
+  <meta property="og:type" content="{{ seo_meta.og_type if seo_meta else 'website' }}" />
+  <meta property="og:site_name" content="Aventurische Namensschmiede" />
+  <meta property="og:title" content="{% block og_title %}{% block title_og_fallback %}Aventurische Namensschmiede{% endblock %}{% endblock %}" />
+  <meta property="og:description" content="{{ seo_meta.description if seo_meta else 'Aventurischer Namensgenerator fuer Das Schwarze Auge mit Web-App fuer Namen, Charaktere, Regionen und Favoriten.' }}" />
+  <meta property="og:url" content="{{ seo_meta.canonical_url if seo_meta else request.url }}" />
+  {% if seo_meta and seo_meta.image_url %}
+  <meta property="og:image" content="{{ seo_meta.image_url }}" />
+  {% endif %}
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="{% block twitter_title %}{% block title_twitter_fallback %}Aventurische Namensschmiede{% endblock %}{% endblock %}" />
+  <meta name="twitter:description" content="{{ seo_meta.description if seo_meta else 'Aventurischer Namensgenerator fuer Das Schwarze Auge mit Web-App fuer Namen, Charaktere, Regionen und Favoriten.' }}" />
+  {% if seo_meta and seo_meta.image_url %}
+  <meta name="twitter:image" content="{{ seo_meta.image_url }}" />
+  {% endif %}
 
   <!-- Theme: prevent flash of wrong mode -->
   <script>
@@ -139,7 +159,7 @@
         </a>
         &middot; Nicht kommerziell
         &middot;
-        <a href="/rechtliches" class="underline underline-offset-2 transition-colors hover:opacity-70">
+        <a href="/impressum" class="underline underline-offset-2 transition-colors hover:opacity-70">
           Impressum
         </a>
         &middot;
