@@ -63,7 +63,6 @@ neutral = []
 
 [simple.last]
 neutral = [
-  # Familiennamen
   "Agricola", "Aldubhor", "Altrovis", "Anguissola", "Anzani", "Arbalista",
   "Arsago", "Ballurat", "Barberigo", "Berylli", "Bibbiena", "Boccalino",
   "Bomarzo", "Bosvani", "Botta", "Bresefinck", "Bronzino", "Broock",
@@ -89,13 +88,14 @@ neutral = [
   "Torese", "Torre", "Tortona", "Trabbacantes", "Trequona", "Tripalda",
   "Ulfaran", "Vansanti", "Vardeen", "Villani", "Westerfolden", "Willant",
   "Zampante", "Zoppino", "Zubertin",
-  # Adelsnamen
+]
+noble = [
   "ya Costermana", "von Hussbek-Galahan", "von Malur", "von Radoleth",
   "von Thegun", "von Veliris", "da Malagreia", "della Camerano",
   "della Pena", "della Tegalliani", "della Trezzi", "della Turani",
   "di Balligur", "di Bellafoldi", "di Camaro", "di Matienna",
   "Firdayon", "Galahan", "Garlischgrötz", "Marvinko", "Oikaldiki",
-  "Salingor", "Sirensteen", "Tarcallo", "Thirindar"
+  "Salingor", "Sirensteen", "Tarcallo", "Thirindar",
 ]
 
 [compose.first]

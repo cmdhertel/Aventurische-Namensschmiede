@@ -17,6 +17,7 @@ from .models import (
     NameComponents,
     NameResult,
     NameSchemaType,
+    NobilityStatus,
     RegionData,
 )
 
@@ -50,6 +51,36 @@ def _resolve_simple_pool(
             f"Add entries to the TOML file."
         )
     return candidates
+
+
+def _resolve_last_name_pool(
+    pool: GenderedStringPool,
+    gender: Gender,
+    nobility_status: NobilityStatus,
+    region: str,
+) -> list[tuple[str, Gender]] | None:
+    """Return last-name candidates filtered by nobility_status.
+
+    Returns None when the pool has no entries at all (single-name regions).
+    Returns an empty list only when noble data is requested but unavailable —
+    callers should then omit the last name rather than raising an error.
+    """
+    noble_set: frozenset[str] = frozenset(pool.noble)
+
+    if nobility_status == NobilityStatus.NOBLE:
+        if not noble_set:
+            return None  # region has no noble data → no last name for noble chars
+        return [(n, Gender.ANY) for n in pool.noble]
+
+    # Build the base pool (all gendered + neutral entries)
+    all_candidates = _resolve_simple_pool(pool, gender, "last name", region)
+
+    if nobility_status == NobilityStatus.COMMON:
+        filtered = [(n, g) for n, g in all_candidates if n not in noble_set]
+        return filtered if filtered else all_candidates  # graceful: use all if nothing left
+
+    # NobilityStatus.ANY — original behaviour (includes noble names mixed in)
+    return all_candidates
 
 
 def _resolve_compose_parts(
@@ -111,6 +142,7 @@ def _apply_schema(
     mode: GenerationMode,
     components: NameComponents | None,
     last_candidate: str | None,
+    nobility_status: NobilityStatus = NobilityStatus.ANY,
 ) -> NameResult:
     schema = data.naming_schema
     last_name: str | None = None
@@ -158,6 +190,7 @@ def _apply_schema(
         name_schema=schema.type,
         connector=connector,
         components=components,
+        nobility_status=nobility_status,
     )
 
 
@@ -170,6 +203,7 @@ def generate(
     min_syllables: int = _DEFAULT_MIN_SYLLABLES,
     max_syllables: int = _DEFAULT_MAX_SYLLABLES,
     exclude_names: Collection[str] | None = None,
+    nobility_status: NobilityStatus = NobilityStatus.ANY,
 ) -> NameResult:
     _rng = rng if rng is not None else random
     _validate_generation_constraints(mode, min_syllables, max_syllables)
@@ -184,7 +218,7 @@ def generate(
         data: RegionData = load_region(target_id)
 
         if mode == GenerationMode.SIMPLE:
-            result = _generate_simple(data, gender, _rng)
+            result = _generate_simple(data, gender, _rng, nobility_status)
         else:
             result = _generate_compose(
                 data,
@@ -193,6 +227,7 @@ def generate(
                 infix_probability_override,
                 min_syllables=min_syllables,
                 max_syllables=max_syllables,
+                nobility_status=nobility_status,
             )
 
         if result.full_name.casefold() not in excluded:
@@ -216,14 +251,22 @@ def _validate_generation_constraints(
         raise GeneratorError("Syllable limits are only available in compose mode.")
 
 
-def _generate_simple(data: RegionData, gender: Gender, rng: random.Random) -> NameResult:
+def _generate_simple(
+    data: RegionData,
+    gender: Gender,
+    rng: random.Random,
+    nobility_status: NobilityStatus = NobilityStatus.ANY,
+) -> NameResult:
     first_pool = _resolve_simple_pool(data.simple.first, gender, "first name", data.meta.region)
     first, resolved_gender = rng.choice(first_pool)
 
     last_candidate: str | None = None
     if _has_any_simple(data.simple.last):
-        last_pool = _resolve_simple_pool(data.simple.last, gender, "last name", data.meta.region)
-        last_candidate, _ = rng.choice(last_pool)
+        last_pool = _resolve_last_name_pool(
+            data.simple.last, gender, nobility_status, data.meta.region
+        )
+        if last_pool:
+            last_candidate, _ = rng.choice(last_pool)
 
     return _apply_schema(
         data=data,
@@ -234,6 +277,7 @@ def _generate_simple(data: RegionData, gender: Gender, rng: random.Random) -> Na
         mode=GenerationMode.SIMPLE,
         components=None,
         last_candidate=last_candidate,
+        nobility_status=nobility_status,
     )
 
 
@@ -245,6 +289,7 @@ def _generate_compose(
     *,
     min_syllables: int = _DEFAULT_MIN_SYLLABLES,
     max_syllables: int = _DEFAULT_MAX_SYLLABLES,
+    nobility_status: NobilityStatus = NobilityStatus.ANY,
 ) -> NameResult:
     for _ in range(_MAX_GENERATION_ATTEMPTS):
         first_section = data.compose.first
@@ -312,6 +357,7 @@ def _generate_compose(
             mode=GenerationMode.COMPOSE,
             components=components,
             last_candidate=last_candidate,
+            nobility_status=nobility_status,
         )
 
     raise GeneratorError("No compose name matched the requested syllable limits.")
