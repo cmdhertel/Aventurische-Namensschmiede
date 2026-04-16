@@ -95,6 +95,20 @@
             </div>
           </div>
 
+          <!-- Adelsstatus -->
+          <div>
+            <span class="form-label">Adelsstatus</span>
+            <div class="radio-group">
+              {% for val, label in [('any','Beliebig'),('noble','Adlig'),('common','Nicht adlig')] %}
+              <label class="radio-pill">
+                <input type="radio" name="nobility_status" value="{{ val }}"
+                       {% if val == 'any' %}checked{% endif %} />
+                <span>{{ label }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+
           <!-- Modus -->
           <div>
             <span class="form-label">Modus</span>
