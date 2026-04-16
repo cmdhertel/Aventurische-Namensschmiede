@@ -20,7 +20,7 @@ from .chargen import (
 )
 from .generator import GeneratorError, generate
 from .loader import LoaderError, list_regions, load_region
-from .models import ExperienceLevel, Gender, GenerationMode, ProfessionCategory
+from .models import ExperienceLevel, Gender, GenerationMode, NobilityStatus, ProfessionCategory
 from .output import OutputFormat
 from .output import write as output_write
 from .profiles import GenerationProfile, dump_profile, list_profiles, load_profile, save_profile
@@ -143,6 +143,15 @@ ExcludeFileOpt = Annotated[
         help="Datei mit bereits verwendeten Namen, ein Name pro Zeile, case-insensitive.",
     ),
 ]
+NobilityOpt = Annotated[
+    NobilityStatus,
+    typer.Option(
+        "--nobility",
+        "-N",
+        help="Adelsstatus: any | noble | common",
+        case_sensitive=False,
+    ),
+]
 MinSyllablesOpt = Annotated[
     int,
     typer.Option("--min-syllables", min=1, help="Minimale Part-Anzahl pro Compose-Name."),
@@ -176,6 +185,7 @@ def cmd_simple(
     output: OutputOpt = None,
     profile: ProfileOpt = None,
     exclude_file: ExcludeFileOpt = None,
+    nobility: NobilityOpt = NobilityStatus.ANY,
 ) -> None:
     """Namen aus vordefinierten Listen generieren."""
     _validate_character_options(ctx, character)
@@ -194,6 +204,7 @@ def cmd_simple(
         profile_name=profile,
         show_components=False,
         exclude_file=exclude_file,
+        nobility=nobility,
     )
     _run(
         config["region"],
@@ -208,6 +219,7 @@ def cmd_simple(
         fmt=config["fmt"],
         dest=config["output"],
         exclude_names=_load_excluded_names(config["exclude_file"]),
+        nobility_status=config["nobility"],
     )
 
 
@@ -229,6 +241,7 @@ def cmd_compose(
     exclude_file: ExcludeFileOpt = None,
     min_syllables: MinSyllablesOpt = 2,
     max_syllables: MaxSyllablesOpt = 4,
+    nobility: NobilityOpt = NobilityStatus.ANY,
 ) -> None:
     """Namen aus Silbenbausteinen zusammensetzen."""
     _validate_character_options(ctx, character)
@@ -250,6 +263,7 @@ def cmd_compose(
         min_syllables=min_syllables,
         max_syllables=max_syllables,
         exclude_file=exclude_file,
+        nobility=nobility,
     )
     _run(
         config["region"],
@@ -267,6 +281,7 @@ def cmd_compose(
         min_syllables=config["min_syllables"],
         max_syllables=config["max_syllables"],
         exclude_names=_load_excluded_names(config["exclude_file"]),
+        nobility_status=config["nobility"],
     )
 
 
@@ -454,6 +469,7 @@ def _run(
     min_syllables: int = 2,
     max_syllables: int = 4,
     exclude_names: set[str] | None = None,
+    nobility_status: NobilityStatus = NobilityStatus.ANY,
 ) -> None:
     try:
         if character:
@@ -469,6 +485,7 @@ def _run(
                     min_syllables=min_syllables,
                     max_syllables=max_syllables,
                     exclude_names=exclude_names,
+                    nobility_status=nobility_status,
                 )
                 for _ in range(count)
             ]
@@ -482,6 +499,7 @@ def _run(
                     min_syllables=min_syllables,
                     max_syllables=max_syllables,
                     exclude_names=exclude_names,
+                    nobility_status=nobility_status,
                 )
                 for _ in range(count)
             ]
@@ -529,6 +547,7 @@ def _resolve_profile_overrides(
     min_syllables: int = 2,
     max_syllables: int = 4,
     exclude_file: Path | None = None,
+    nobility: NobilityStatus = NobilityStatus.ANY,
 ) -> dict:
     try:
         profile = load_profile(profile_name) if profile_name else None
@@ -610,6 +629,7 @@ def _resolve_profile_overrides(
             profile.max_syllables if profile else None,
         ),
         "exclude_file": Path(exclude_value) if exclude_value else None,
+        "nobility": nobility,
     }
 
 

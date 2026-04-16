@@ -104,6 +104,7 @@ async def test_metrics_endpoint_exposes_http_and_namegen_metrics() -> None:
     assert (
         'namegen_generate_count_total{namegen_character="false",'
         'namegen_gender="any",namegen_mode="simple",'
+        'namegen_nobility_status="any",'
         'namegen_profession_category="alle",namegen_profession_theme="none",'
         'namegen_region="human"}'
     ) in body
@@ -151,6 +152,7 @@ async def test_generate_character_path_and_pdf_metric_are_exposed() -> None:
     assert (
         'namegen_generate_count_total{namegen_character="true",'
         'namegen_gender="female",namegen_mode="simple",'
+        'namegen_nobility_status="any",'
         'namegen_profession_category="zauberer",'
         'namegen_profession_theme="graumagier_aus_perricum",namegen_region="mittelreich_perricum"}'
     ) in metrics_body

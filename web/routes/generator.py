@@ -27,7 +27,7 @@ from namegen.chargen import (
     get_profession_preview_for_selection,
 )
 from namegen.generator import generate
-from namegen.models import Gender, GenerationMode, ProfessionCategory
+from namegen.models import Gender, GenerationMode, NobilityStatus, ProfessionCategory
 
 router = APIRouter()
 
@@ -193,6 +193,7 @@ async def generate_names(
     character: str | None = Form(None),
     profession_category: str = Form("alle"),
     profession_theme: str = Form(""),
+    nobility_status: str = Form("any"),
 ):
     with _tracer.start_as_current_span("namegen.generate") as span:
         count = max(1, min(count, 50))
@@ -206,6 +207,7 @@ async def generate_names(
             "namegen_character": str(character_enabled).lower(),
             "namegen_profession_category": profession_category,
             "namegen_profession_theme": normalized_theme or "none",
+            "namegen_nobility_status": nobility_status,
         }
 
         load_start = perf_counter()
@@ -214,6 +216,7 @@ async def generate_names(
             gmode = GenerationMode(mode)
             gend = Gender(gender)
             category = ProfessionCategory(profession_category)
+            nobility = NobilityStatus(nobility_status)
         except ValueError as exc:
             span.set_attribute("error.kind", "validation")
             span.set_attribute("validation.phase", "input")
@@ -239,13 +242,17 @@ async def generate_names(
                     gender=gend,
                     profession_category=category,
                     profession_theme=normalized_theme or None,
+                    nobility_status=nobility,
                 )
                 for _ in range(count)
             ]
             template = "partials/character_row.html"
             output_chars = sum(len(f"{safe_full_name(c)} {c.profession}".strip()) for c in results)
         else:
-            results = [generate(region=region, mode=gmode, gender=gend) for _ in range(count)]
+            results = [
+                generate(region=region, mode=gmode, gender=gend, nobility_status=nobility)
+                for _ in range(count)
+            ]
             template = "partials/name_row.html"
             output_chars = sum(len(safe_full_name(n)) for n in results)
 
@@ -263,6 +270,7 @@ async def generate_names(
             "namegen.character": character_enabled,
             "namegen.profession_category": profession_category,
             "namegen.profession_theme": normalized_theme,
+            "namegen.nobility_status": nobility_status,
             "namegen.requested_count": count,
             "namegen.input_chars": input_chars,
             "namegen.output_chars": output_chars,

@@ -19,6 +19,7 @@ from .models import (
     Gender,
     GenerationMode,
     NameResult,
+    NobilityStatus,
     ProfessionCategory,
 )
 from .output import OutputFormat, default_filename
@@ -64,6 +65,7 @@ def run() -> None:
             config.experience,
             config.fmt,
             config.dest,
+            config.nobility,
         )
 
         console.print()
@@ -92,6 +94,7 @@ class _GenerationConfig:
     experience: ExperienceLevel
     fmt: OutputFormat
     dest: Path | None
+    nobility: NobilityStatus = NobilityStatus.ANY
 
 
 def _ask_configuration() -> _GenerationConfig | None:
@@ -189,6 +192,20 @@ def _ask_configuration() -> _GenerationConfig | None:
     if gender_str is None:
         return None
     gender = Gender(gender_str)
+
+    # ── Adelsstatus ───────────────────────────────────────────────────────────
+    nobility_str = questionary.select(
+        "Adelsstatus:",
+        choices=[
+            questionary.Choice("Beliebig", value="any"),
+            questionary.Choice("Adlig", value="noble"),
+            questionary.Choice("Nicht adlig", value="common"),
+        ],
+        style=_STYLE,
+    ).ask()
+    if nobility_str is None:
+        return None
+    nobility = NobilityStatus(nobility_str)
 
     # ── Anzahl ─────────────────────────────────────────────────────────────────
     count_str = questionary.text(
@@ -321,6 +338,7 @@ def _ask_configuration() -> _GenerationConfig | None:
         experience=experience,
         fmt=fmt,
         dest=dest,
+        nobility=nobility,
     )
 
 
@@ -335,6 +353,7 @@ def _generate_and_output(
     experience: ExperienceLevel,
     fmt: OutputFormat,
     dest: Path | None,
+    nobility: NobilityStatus = NobilityStatus.ANY,
 ) -> None:
     try:
         if character:
@@ -345,11 +364,15 @@ def _generate_and_output(
                     gender=gender,
                     profession_category=profession_category,
                     experience=experience,
+                    nobility_status=nobility,
                 )
                 for _ in range(count)
             ]
         else:
-            results = [generate(region=region, mode=mode, gender=gender) for _ in range(count)]
+            results = [
+                generate(region=region, mode=mode, gender=gender, nobility_status=nobility)
+                for _ in range(count)
+            ]
     except (GeneratorError, LoaderError) as exc:
         console.print(f"[red]Fehler:[/red] {exc}")
         return

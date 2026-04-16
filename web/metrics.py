@@ -16,6 +16,7 @@ _NAMEGEN_LABELS = (
     "namegen_character",
     "namegen_profession_category",
     "namegen_profession_theme",
+    "namegen_nobility_status",
 )
 
 
