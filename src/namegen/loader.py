@@ -136,6 +136,7 @@ def _merge_gendered(base: GenderedStringPool, override: GenderedStringPool) -> G
         male=_concat_unique(base.male, override.male),
         female=_concat_unique(base.female, override.female),
         neutral=_concat_unique(base.neutral, override.neutral),
+        noble=_concat_unique(base.noble, override.noble),
     )
 
 
