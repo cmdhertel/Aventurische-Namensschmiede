@@ -190,10 +190,24 @@ def _profession_matches_category(
     )
 
 
+def _profession_matches_nobility(
+    entry: ProfessionEntry,
+    nobility_status: NobilityStatus,
+) -> bool:
+    if nobility_status == NobilityStatus.ANY:
+        return True
+    if nobility_status == NobilityStatus.NOBLE:
+        # unmarkierte Berufe sind für alle verfügbar (z.B. Magier, Geweihte)
+        return not entry.social_statuses or NobilityStatus.NOBLE in entry.social_statuses
+    # NobilityStatus.COMMON: adelsexklusive Berufe ausschließen
+    return NobilityStatus.NOBLE not in entry.social_statuses
+
+
 def _resolve_profession_pool(
     data: RegionData,
     category: ProfessionCategory,
     profession_theme: str | None,
+    nobility_status: NobilityStatus = NobilityStatus.ANY,
 ) -> list[tuple[str, int]]:
     theme_id = (profession_theme or "").strip()
     if theme_id and theme_id not in _load_profession_themes():
@@ -203,6 +217,8 @@ def _resolve_profession_pool(
 
     def add_entry(entry: ProfessionEntry, base_weight: int) -> None:
         if not _profession_matches_category(entry, category):
+            return
+        if not _profession_matches_nobility(entry, nobility_status):
             return
         if theme_id and theme_id not in entry.themes:
             return
@@ -352,8 +368,9 @@ def _pick_profession(
     category: ProfessionCategory,
     profession_theme: str | None,
     rng: random.Random,
+    nobility_status: NobilityStatus = NobilityStatus.ANY,
 ) -> str:
-    pool = _resolve_profession_pool(data, category, profession_theme)
+    pool = _resolve_profession_pool(data, category, profession_theme, nobility_status)
     if not pool:
         raise ValueError(
             "No professions available for the selected region/category/theme combination."
@@ -399,6 +416,7 @@ def generate_character(
     max_syllables: int = 4,
     exclude_names: Collection[str] | None = None,
     rng: random.Random | None = None,
+    nobility_status: NobilityStatus = NobilityStatus.ANY,
 ) -> CharacterResult:
     _rng = rng if rng is not None else random
     target_id = pick_generation_target(region, _rng, compose_only=mode == GenerationMode.COMPOSE)
@@ -413,12 +431,13 @@ def generate_character(
         min_syllables=min_syllables,
         max_syllables=max_syllables,
         exclude_names=exclude_names,
+        nobility_status=nobility_status,
     )
     if experience is None:
         age = _generate_age(data, _rng)
     else:
         age = _generate_experience_age(experience, _rng)
-    profession = _pick_profession(data, profession_category, profession_theme, _rng)
+    profession = _pick_profession(data, profession_category, profession_theme, _rng, nobility_status)
     traits = _generate_traits(data, _rng)
 
     language = _rng.choice(data.character.languages) if data.character.languages else None
@@ -436,6 +455,7 @@ def generate_character(
         language=language,
         script=script,
         social_status=social_status,
+        nobility_status=nobility_status,
         species_stats=data.species.stats if data.species else None,
         typical_advantages=data.character.typical_advantages,
         typical_disadvantages=data.character.typical_disadvantages,
