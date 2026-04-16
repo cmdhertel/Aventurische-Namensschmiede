@@ -219,7 +219,6 @@ neutral = []
 
 [simple.last]
 neutral = [
-  # Familiennamen (aus Screenshot 1)
   "Andersin",
   "Armshaus",
   "Arrelfinger",
@@ -269,7 +268,8 @@ neutral = [
   "Wolfshag",
   "Zehntner",
   "Zweyfeldt",
-  # Adelsnamen
+]
+noble = [
   "von Altenfurt",
   "von Barschengrund",
   "vom Berg",

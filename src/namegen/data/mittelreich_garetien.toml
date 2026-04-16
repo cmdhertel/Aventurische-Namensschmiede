@@ -56,7 +56,6 @@ neutral = []
 
 [simple.last]
 neutral = [
-  # Familiennamen (Gemeine)
   "Adersin", "Algerein", "Anjuhal", "Arberdan", "Arres", "Arsteener",
   "Babek", "Bachental", "Bellentor", "Berlind", "Bodiak", "Bruchklinger",
   "Burkherdall", "Damotil", "Darben", "Dargel", "Darpater", "Daske",
@@ -77,7 +76,8 @@ neutral = [
   "Toberen", "Trallo", "Travinger", "Treublatt", "Trifon", "Tucher",
   "Tulop", "Ulfaren", "Unterbauer", "Winkelhauser", "Winterkalt",
   "Wollweber", "Zornbold", "Zandor", "Zeel", "Zerte", "Zweischwert",
-  # Adelsnamen
+]
+noble = [
   "von Aarburg", "von Bärenau", "vom Berg", "von Brachental",
   "von Dornensee", "von Dunkelschlund", "von Ehrenstein", "von Eisensteyn",
   "von Erlenstamm", "von Falkenstein", "von Fronforst", "von Gareth",
@@ -86,7 +86,7 @@ neutral = [
   "von Löwenthal", "von Luring", "von Orkenschild", "von Rabenmund",
   "von Schilfweih", "von Schreyenfels", "von Schwarztannen", "von Streitzigj",
   "von Sturmfels", "von Sturzbach", "von Tannwirk", "von Ulmenhain",
-  "von Zweifelfels"
+  "von Zweifelfels",
 ]
 
 [compose.first]
