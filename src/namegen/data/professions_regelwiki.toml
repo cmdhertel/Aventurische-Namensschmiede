@@ -1,6 +1,9 @@
 # DSA-Regelwiki-Stand: 2026-04-03
 # Quelle: https://dsa.ulisses-regelwiki.de/professionen.html
 # Hinweis: Sortierung nach den Oberkategorien Geweihte, Weltliche, Zauberer.
+#
+# adelsnahe: Professionen, die ausschließlich für adlige Charaktere verfügbar sind.
+# Namen müssen exakt mit Einträgen in geweihte/zauberer/weltliche übereinstimmen.
 
 [professionen]
 
@@ -84,6 +87,16 @@ kaempfer = [
 
 ordensleute = [
   "Rahjasutra-Meister",
+]
+
+adelsnahe = [
+  "Adlige",
+  "Herrscher",
+  "Höfling",
+  "Ritter",
+  "Distelritter",
+  "Feenritter",
+  "Heckenreiterin",
 ]
 
 profane = [

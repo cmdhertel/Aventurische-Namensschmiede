@@ -18,6 +18,7 @@ from .models import (
     ExperienceLevel,
     Gender,
     GenerationMode,
+    NobilityStatus,
     PhysicalTraits,
     ProfessionCategory,
     ProfessionChoiceGroup,
@@ -71,12 +72,14 @@ def _build_profession_entry(
     categories: list[ProfessionCategory],
     weight: int = 1,
     themes: list[str] | None = None,
+    social_statuses: list[NobilityStatus] | None = None,
 ) -> ProfessionEntry:
     return ProfessionEntry(
         name=name,
         categories=categories,
         weight=weight,
         themes=themes or [],
+        social_statuses=social_statuses or [],
     )
 
 
@@ -84,12 +87,14 @@ def _build_profession_entry(
 def _load_general_professions() -> tuple[ProfessionEntry, ...]:
     raw = _load_regelwiki_raw()["professionen"]
     merged: dict[str, ProfessionEntry] = {}
+    noble_names: frozenset[str] = frozenset(raw["weltliche"].get("adelsnahe", []))
 
     def add_many(names: list[str], category: ProfessionCategory) -> None:
         for name in names:
             existing = merged.get(name)
             if existing is None:
-                merged[name] = _build_profession_entry(name, categories=[category])
+                social = [NobilityStatus.NOBLE] if name in noble_names else []
+                merged[name] = _build_profession_entry(name, categories=[category], social_statuses=social)
                 continue
             if category not in existing.categories:
                 existing.categories.append(category)

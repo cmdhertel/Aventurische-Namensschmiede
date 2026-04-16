@@ -16,6 +16,12 @@ class Gender(StrEnum):
     ANY = "any"
 
 
+class NobilityStatus(StrEnum):
+    ANY = "any"
+    NOBLE = "noble"
+    COMMON = "common"
+
+
 class GenerationMode(StrEnum):
     SIMPLE = "simple"
     COMPOSE = "compose"
@@ -59,6 +65,7 @@ class ProfessionEntry(BaseModel):
     categories: list[ProfessionCategory] = Field(default_factory=lambda: [ProfessionCategory.ALL])
     themes: list[str] = Field(default_factory=list)
     weight: int = Field(default=1, ge=1)
+    social_statuses: list[NobilityStatus] = Field(default_factory=list)
 
     @model_validator(mode="before")
     @classmethod
@@ -82,6 +89,7 @@ class GenderedStringPool(BaseModel):
     male: list[str] = Field(default_factory=list)
     female: list[str] = Field(default_factory=list)
     neutral: list[str] = Field(default_factory=list)
+    noble: list[str] = Field(default_factory=list)
 
 
 class ComposeParts(BaseModel):
@@ -284,6 +292,7 @@ class CharacterResult(BaseModel):
     language: str | None = None
     script: str | None = None
     social_status: str | None = None
+    nobility_status: NobilityStatus = NobilityStatus.ANY
     species_stats: SpeciesStats | None = None
     typical_advantages: list[str] = Field(default_factory=list)
     typical_disadvantages: list[str] = Field(default_factory=list)
@@ -331,6 +340,7 @@ class NameResult(BaseModel):
     name_schema: NameSchemaType = NameSchemaType.GIVEN_FAMILY
     connector: str | None = None
     components: NameComponents | None = None
+    nobility_status: NobilityStatus = NobilityStatus.ANY
 
     @classmethod
     def build(
@@ -349,6 +359,7 @@ class NameResult(BaseModel):
         name_schema: NameSchemaType = NameSchemaType.GIVEN_FAMILY,
         connector: str | None = None,
         full_name_override: str | None = None,
+        nobility_status: NobilityStatus = NobilityStatus.ANY,
     ) -> NameResult:
         if full_name_override is not None:
             full = full_name_override
@@ -374,4 +385,5 @@ class NameResult(BaseModel):
             name_schema=name_schema,
             connector=connector,
             components=components,
+            nobility_status=nobility_status,
         )
